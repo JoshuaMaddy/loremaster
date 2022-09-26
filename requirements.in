@@ -1,0 +1,4 @@
+# requirements.in
+flask==2.2.2
+sqlalchemy
+jupyterlab
