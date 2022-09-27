@@ -1,0 +1,1 @@
+flask --app loremaster_app.loremaster run
