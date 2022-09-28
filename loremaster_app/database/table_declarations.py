@@ -53,7 +53,7 @@ class Editable(Base):
     name:str = Column(String, nullable=False)
     description:str = Column(String)
 
-    images:list[ImageList] = relationship('ImageList', back_populates='editable')
+    images:list[ImageListItem] = relationship('ImageListItem', back_populates='editable')
 
     type:str = Column(String(15))
 
@@ -117,10 +117,10 @@ class Character(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    traits:TraitList = relationship("TraitList", back_populates="character")
-    stats:StatList = relationship("StatList", back_populates="character")
-    relationships:RelationshipList = relationship("RelationshipList", back_populates="character")
-    inventories:InventoryList = relationship("InventoryList", back_populates="character")
+    traits:TraitListItem = relationship("TraitListItem", back_populates="character")
+    stats:StatListItem = relationship("StatListItem", back_populates="character")
+    relationships:RelationshipListItem = relationship("RelationshipListItem", back_populates="character")
+    inventories:InventoryListItem = relationship("InventoryListItem", back_populates="character")
 
     location_id:int = Column(Integer, ForeignKey("location.editable_id"))
     location:Location = relationship("Location", foreign_keys=[location_id])
@@ -197,8 +197,8 @@ class Trait(Base):
     def __repr__(self) -> str:
         return f"Trait(name:{{{self.name}}})"
 
-class TraitList(Base):
-    __tablename__ = "traitlist"
+class TraitListItem(Base):
+    __tablename__ = "traitlistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -212,7 +212,7 @@ class TraitList(Base):
         self.trait = trait
 
     def __repr__(self) -> str:
-        return f"TraitList(character:{{{self.character.name}}}, name:{{{self.name}}})"
+        return f"TraitListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
 
 class Relationship(Base):
     __tablename__ = "relationship"
@@ -233,8 +233,8 @@ class Relationship(Base):
     def __repr__(self) -> str:
         return f"Relationship(name:{{{self.name}}})"
 
-class RelationshipList(Base):
-    __tablename__ = "relationshiplist"
+class RelationshipListItem(Base):
+    __tablename__ = "relationshiplistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -248,7 +248,7 @@ class RelationshipList(Base):
         self.relationship = relationship
     
     def __repr__(self) -> str:
-        return f"RelationshipList(character:{{{self.character.name}}}, name:{{{self.name}}})"
+        return f"RelationshipListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
 
 class Stat(Base):
     __tablename__ = "stat"
@@ -265,8 +265,8 @@ class Stat(Base):
     def __repr__(self) -> str:
         return f"Stat(name:{{{self.name}}})"
 
-class StatList(Base):
-    __tablename__ = "statlist"
+class StatListItem(Base):
+    __tablename__ = "statlistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -280,7 +280,7 @@ class StatList(Base):
         self.stat = stat
 
     def __repr__(self) -> str:
-        return f"StatList(character:{{{self.character.name}}}, name:{{{self.name}}})"
+        return f"StatListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
 
 class Item(Editable):
     __tablename__ = "item"
@@ -293,8 +293,8 @@ class Item(Editable):
     def __repr__(self) -> str:
         return f"Item(name:{{{self.name}}})"
 
-class ItemList(Base):
-    __tablename__ = "itemlist"
+class ItemListItem(Base):
+    __tablename__ = "itemlistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -313,14 +313,14 @@ class ItemList(Base):
         self.index = index
 
     def __repr__(self) -> str:
-        return f"ItemList(item:{{{self.item.name}}}, index:{{{self.index}}}, count:{{{self.count}}})"
+        return f"ItemListItem(item:{{{self.item.name}}}, index:{{{self.index}}}, count:{{{self.count}}})"
 
 class Inventory(Editable):
     __tablename__ = "inventory"
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    items:ItemList = relationship('ItemList', back_populates="inventory")
+    items:ItemListItem = relationship('ItemListItem', back_populates="inventory")
 
     def __init__(self, owner: User, name: str) -> None:
         super().__init__(owner, name)
@@ -328,8 +328,8 @@ class Inventory(Editable):
     def __repr__(self) -> str:
         return f"Inventory(name:{{{self.name}}})"
 
-class InventoryList(Base):
-    __tablename__ = "inventorylist"
+class InventoryListItem(Base):
+    __tablename__ = "inventorylistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -343,7 +343,7 @@ class InventoryList(Base):
         self.inventory = inventory
 
     def __repr__(self) -> str:
-        return f"InventoryList(character:{{{self.character.name}}}, name{{{self.inventory.name}}})"
+        return f"InventoryListItem(character:{{{self.character.name}}}, name{{{self.inventory.name}}})"
 
 class Image(Editable):
     __tablename__ = "image"
@@ -359,8 +359,8 @@ class Image(Editable):
     def __repr__(self) -> str:
         return f"Image(name:{{{self.name}}}, path:{{{self.image_path}}}, url:{{{self.image_url}}})"
 
-class ImageList(Base):
-    __tablename__ = "imagelist"
+class ImageListItem(Base):
+    __tablename__ = "imagelistitem"
 
     id:int = Column(Integer, primary_key=True)
 
@@ -377,7 +377,7 @@ class ImageList(Base):
         self.index = index
     
     def __repr__(self) -> str:
-        return f"ImageList(editable name:{{{self.editable.name}}}, name{{{self.image.name}}}, index:{{{self.index}}})"
+        return f"ImageListItem(editable name:{{{self.editable.name}}}, name{{{self.image.name}}}, index:{{{self.index}}})"
 
 class Description(Base):
     __tablename__ = "description"

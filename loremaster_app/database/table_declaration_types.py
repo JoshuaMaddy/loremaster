@@ -15,27 +15,27 @@ class Guild():
     pass
 class Trait():
     pass
-class TraitList():
+class TraitListItem():
     pass
 class Realtionship():
     pass
-class RelationshipList():
+class RelationshipListItem():
     pass
 class Stat():
     pass
-class StatList():
+class StatListItem():
     pass
 class Item():
     pass
-class ItemList():
+class ItemListItem():
     pass
 class Inventory():
     pass
-class InventoryList():
+class InventoryListItem():
     pass
 class Image():
     pass
-class ImageList():
+class ImageListItem():
     pass
 class Description():
     pass
