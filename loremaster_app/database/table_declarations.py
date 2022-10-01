@@ -18,6 +18,9 @@ class User(Base):
     thumbnail_id:int = Column(Integer, ForeignKey('image.editable_id'))
     thumbnail:Image = relationship('Image', foreign_keys=[thumbnail_id])
 
+    description_id:int = Column(Integer, ForeignKey('description.id'))
+    description:Description = relationship('Description', foreign_keys=[description_id])
+
     admin_status:bool = Column(Boolean, nullable=False)
 
     password:bytes = Column(BINARY, nullable=False)
