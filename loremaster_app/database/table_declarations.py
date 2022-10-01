@@ -143,7 +143,7 @@ class Character(Editable):
 class Familiar(Character):
     __tablename__ = "familiar"
 
-    character_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
+    editable2_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True, autoincrement=True)
 
     character_owner_id:int = Column(Integer, ForeignKey("character.editable_id"))
     character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])

@@ -1,4 +1,3 @@
-from distutils.log import error
 import os
 
 from flask import Flask
@@ -28,5 +27,13 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+
+    # import and register blueprints
+    from .blueprints import navigation, auth
+
+    app.register_blueprint(navigation.bp)
+    app.register_blueprint(auth.bp)
+
+    app.add_url_rule('/', endpoint='index')
 
     return app
