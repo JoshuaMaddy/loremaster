@@ -27,6 +27,8 @@ from loremaster_app.database.table_declarations import *
 from sqlalchemy.orm import Session as Ses
 from sqlalchemy import select
 
+from ..database.regex_dump import *
+
 bp = Blueprint('auth', __name__)
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -91,6 +93,10 @@ def register():
             error = 'First name is required.'
         elif not last_name:
             error = 'Last name is required.'
+        elif not isValidPassword(password):
+            error = 'Invalid password, password must be at least 8 characters, with at least 1 lowercase, uppercase, number, and special character'
+        elif not isValidEmail(email):
+            error = 'Invalid email'
 
         if error is None:
             with Session.begin() as sqlsession:
