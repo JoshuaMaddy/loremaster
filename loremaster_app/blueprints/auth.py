@@ -1,4 +1,3 @@
-from unicodedata import name
 from cryptography.fernet import Fernet
 
 key = b'3G2g0L32hrr1zIiX4Bd369dWdnNzLK-WiSwh-d37LpM='
@@ -14,7 +13,7 @@ def decrypt(bytes_:bytes) -> str:
     return f.decrypt(bytes_).decode('utf-8')
 
 def check_password_hash(stored:bytes, given:str) -> bool:
-    """Determined if a password is correct based on the stored bytes."""
+    """Determined if a password is correct based on the stored bytes and given attempt."""
     return decrypt(stored) == given
 
 # Modified from: https://flask.palletsprojects.com/en/2.2.x/tutorial/views/
@@ -27,6 +26,8 @@ from loremaster_app.database.table_declarations import *
 
 from sqlalchemy.orm import Session as Ses
 from sqlalchemy import select
+
+from ..database.regex_dump import *
 
 bp = Blueprint('auth', __name__)
 
@@ -92,6 +93,10 @@ def register():
             error = 'First name is required.'
         elif not last_name:
             error = 'Last name is required.'
+        elif not isValidPassword(password):
+            error = 'Invalid password, password must be at least 8 characters, with at least 1 lowercase, uppercase, number, and special character'
+        elif not isValidEmail(email):
+            error = 'Invalid email'
 
         if error is None:
             with Session.begin() as sqlsession:
@@ -125,7 +130,7 @@ def load_logged_in_user():
     else:
         with Session.begin() as sqlsession:
             # Get user from DB
-            user = sqlsession.execute(select(User).where(User.id == user_id)).scalar()
+            user:User = sqlsession.execute(select(User).where(User.id == user_id)).scalar()
             
             # If found, expunge info (detach info) so it can be called out of sqlsession context.
             if user:

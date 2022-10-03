@@ -17,6 +17,10 @@ def db_file_present(instance_path:str):
     return os.path.exists(os.path.join(instance_path, db_name))
 
 def create_db_file(instance_path:str):
+    try:
+        os.makedirs(os.path.join(instance_path))
+    except:
+        pass
     with open(os.path.join(instance_path, db_name), 'w') as file:
         file.close();
 
