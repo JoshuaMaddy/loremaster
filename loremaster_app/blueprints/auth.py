@@ -35,10 +35,10 @@ bp = Blueprint('auth', __name__)
 def login():
     if request.method == 'POST':
         # Retrieve information from the form
-        username = request.form['username']
-        password = request.form['password']
+        username:str = request.form['username']
+        password:str = request.form['password']
                 
-        error = None
+        error:str = None
 
         # Open connection to the DB
         with Session.begin() as sqlsession:
@@ -74,13 +74,13 @@ def login():
 def register():
     if request.method == 'POST':
         # Retrieve information from the form
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
+        username:str = request.form['username']
+        password:str = request.form['password']
+        email:str = request.form['email']
+        first_name:str = request.form['first_name']
+        last_name:str = request.form['last_name']
 
-        error = None
+        error:str = None
 
         # If element missing
         if not username:
