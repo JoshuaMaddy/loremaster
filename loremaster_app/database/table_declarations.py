@@ -1,9 +1,30 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 from .table_declaration_types import *
 
 Base = declarative_base()
+
+#Join tables
+editable_editors = Table('editors', Base.metadata,
+    Column('editable_id', ForeignKey('editable.id'), primary_key=True),
+    Column('user_id', ForeignKey('user.id'), primary_key=True))
+
+character_traits = Table('traits', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('trait_id', ForeignKey('trait.id'), primary_key=True))
+
+character_stats = Table('stats', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('stat_id', ForeignKey('stat.id'), primary_key=True))
+
+character_relationships = Table('relationships', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('relationship_id', ForeignKey('relationship.id'), primary_key=True))
+
+character_inventories = Table('inventories', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
 
 class User(Base):
     __tablename__ = "user"
@@ -27,7 +48,9 @@ class User(Base):
 
     owns:list[Editable] = relationship('Editable', back_populates='owner')
 
-    editor_perms:list[Editor] = relationship('Editor', back_populates='editor')
+    editor_perms:list[Editable] = relationship('Editable',
+                        secondary = editable_editors,
+                        back_populates = 'editors')
 
     def __init__(self, username:str, password:bytes=None, first_name:str=None, 
                 last_name:str=None, email:str=None, admin_status:bool=None) -> None:
@@ -51,7 +74,9 @@ class Editable(Base):
     owner_id:int = Column(Integer, ForeignKey("user.id"))
     owner:User = relationship('User', back_populates='owns',)
 
-    editors:list[Editor] = relationship('Editor', back_populates='editable')
+    editors = relationship('User',
+                        secondary = editable_editors,
+                        back_populates = 'editor_perms')
     
     name:str = Column(String, nullable=False)
     description:str = Column(String)
@@ -70,25 +95,11 @@ class Editable(Base):
         self.owner = owner
         self.name = name
 
-        self.editors.append(Editor(self.owner))
+        self.editors.append(self.owner)
 
         super().__init__()
 
     id:int = Column(Integer, primary_key=True)
-
-class Editor(Base):
-    __tablename__ = "editor"
-
-    id:int = Column(Integer, primary_key=True)
-
-    editable_id:int = Column(Integer, ForeignKey("editable.id"))
-    editable:Editable = relationship('Editable', back_populates="editors")
-
-    editor_id:int = Column(Integer, ForeignKey("user.id"))
-    editor:User = relationship('User', back_populates="editor_perms")
-
-    def __init__(self, editor:User) -> None:
-        self.editor = editor
 
 class Location(Editable):
     __tablename__ = "location"
@@ -120,10 +131,10 @@ class Character(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    traits:TraitListItem = relationship("TraitListItem", back_populates="character")
-    stats:StatListItem = relationship("StatListItem", back_populates="character")
-    relationships:RelationshipListItem = relationship("RelationshipListItem", back_populates="character")
-    inventories:InventoryListItem = relationship("InventoryListItem", back_populates="character")
+    traits:list[Trait] = relationship('Trait', secondary = character_traits)
+    stats:list[Stat] = relationship('Stat', secondary = character_stats)
+    relationships:list[Relationship] = relationship('Relationship', secondary = character_relationships)
+    inventories:list[Inventory] = relationship('Inventory', secondary = character_inventories)
 
     location_id:int = Column(Integer, ForeignKey("location.editable_id"))
     location:Location = relationship("Location", foreign_keys=[location_id])
@@ -200,23 +211,6 @@ class Trait(Base):
     def __repr__(self) -> str:
         return f"Trait(name:{{{self.name}}})"
 
-class TraitListItem(Base):
-    __tablename__ = "traitlistitem"
-
-    id:int = Column(Integer, primary_key=True)
-
-    character_id:int = Column(Integer, ForeignKey("character.editable_id"))
-    character:Character = relationship('Character', back_populates="traits")
-
-    trait_id:int = Column(Integer, ForeignKey("trait.id"))
-    trait:Trait = relationship('Trait')
-
-    def __init__(self, trait:Trait) -> None:
-        self.trait = trait
-
-    def __repr__(self) -> str:
-        return f"TraitListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
-
 class Relationship(Base):
     __tablename__ = "relationship"
 
@@ -236,23 +230,6 @@ class Relationship(Base):
     def __repr__(self) -> str:
         return f"Relationship(name:{{{self.name}}})"
 
-class RelationshipListItem(Base):
-    __tablename__ = "relationshiplistitem"
-
-    id:int = Column(Integer, primary_key=True)
-
-    character_id:int = Column(Integer, ForeignKey("character.editable_id"))
-    character:Character = relationship('Character', back_populates="relationships")
-
-    relationship_id:int = Column(Integer, ForeignKey("relationship.id"))
-    relationship:Relationship = relationship('Relationship')
-
-    def __init__(self, relationship:Relationship) -> None:
-        self.relationship = relationship
-    
-    def __repr__(self) -> str:
-        return f"RelationshipListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
-
 class Stat(Base):
     __tablename__ = "stat"
 
@@ -267,23 +244,6 @@ class Stat(Base):
     
     def __repr__(self) -> str:
         return f"Stat(name:{{{self.name}}})"
-
-class StatListItem(Base):
-    __tablename__ = "statlistitem"
-
-    id:int = Column(Integer, primary_key=True)
-
-    character_id:int = Column(Integer, ForeignKey("character.editable_id"))
-    character:Character = relationship('Character', back_populates="stats")
-
-    stat_id:int = Column(Integer, ForeignKey("stat.id"))
-    stat:Stat = relationship('Stat')
-
-    def __init__(self, stat:Stat) -> None:
-        self.stat = stat
-
-    def __repr__(self) -> str:
-        return f"StatListItem(character:{{{self.character.name}}}, name:{{{self.name}}})"
 
 class Item(Editable):
     __tablename__ = "item"
@@ -330,23 +290,6 @@ class Inventory(Editable):
     
     def __repr__(self) -> str:
         return f"Inventory(name:{{{self.name}}})"
-
-class InventoryListItem(Base):
-    __tablename__ = "inventorylistitem"
-
-    id:int = Column(Integer, primary_key=True)
-
-    character_id:int = Column(Integer, ForeignKey("character.editable_id"))
-    character:Character = relationship('Character', back_populates="inventories")
-
-    inventory_id:int = Column(Integer, ForeignKey("inventory.editable_id"))
-    inventory:Inventory = relationship('Inventory')
-
-    def __init__(self, inventory:Inventory) -> None:
-        self.inventory = inventory
-
-    def __repr__(self) -> str:
-        return f"InventoryListItem(character:{{{self.character.name}}}, name{{{self.inventory.name}}})"
 
 class Image(Editable):
     __tablename__ = "image"

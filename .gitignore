@@ -153,3 +153,4 @@ cython_debug/
 
 ./venv
 loremaster.db
+local.ipynb
