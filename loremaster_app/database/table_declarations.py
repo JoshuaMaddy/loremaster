@@ -26,6 +26,10 @@ character_inventories = Table('inventories', Base.metadata,
     Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
     Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
 
+character_familiars = Table('familiars', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('familiar_id', ForeignKey('familiar.editable2_id'), primary_key=True))
+
 class User(Base):
     __tablename__ = "user"
 
@@ -141,6 +145,10 @@ class Character(Editable):
 
     guilds = None
 
+    familiars:list[Familiar] = relationship('Familiar',
+                        secondary = character_familiars,
+                        back_populates = 'character_owners')
+
     __mapper_args__ = {
         'polymorphic_identity':'character',
     }
@@ -158,6 +166,10 @@ class Familiar(Character):
 
     character_owner_id:int = Column(Integer, ForeignKey("character.editable_id"))
     character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])
+
+    character_owners:list[Character] = relationship('Character',
+                        secondary = character_familiars,
+                        back_populates = 'familiars')
 
     __mapper_args__ = {
         'polymorphic_identity':'familiar',
@@ -250,6 +262,10 @@ class Item(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
+    __mapper_args__ = {
+        'polymorphic_identity':'item',
+    }
+
     def __init__(self, owner: User, name: str) -> None:
         super().__init__(owner, name)
 
@@ -285,6 +301,10 @@ class Inventory(Editable):
 
     items:ItemListItem = relationship('ItemListItem', back_populates="inventory")
 
+    __mapper_args__ = {
+        'polymorphic_identity':'inventory',
+    }
+
     def __init__(self, owner: User, name: str) -> None:
         super().__init__(owner, name)
     
@@ -298,6 +318,10 @@ class Image(Editable):
 
     image_url:str = Column(String)
     image_path:str = Column(String)
+
+    __mapper_args__ = {
+        'polymorphic_identity':'image',
+    }
 
     def __init__(self, owner: User, name: str) -> None:
         super().__init__(owner, name)

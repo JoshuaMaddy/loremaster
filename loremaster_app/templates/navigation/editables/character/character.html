@@ -1,0 +1,43 @@
+{% extends 'navigation/editables/editable.html' %}
+
+{% block title%}Character View{% endblock %}
+
+{% block editable %}
+    <p>Name: {{editable.name}}</p>
+    <p>Location: {{editable.location if editable.location else 'No Set Location'}}</p>
+
+    {% if editable.familiars %}
+        <div class="familiars">
+            <p>Familiars:</p>
+            {% for familiar in editable.familiars %}
+                <li>{{familiar.name}}</li>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="traits">
+        <p>Traits:</p>
+        {% for trait in editable.traits %}
+            <li>{{trait}}</li>
+        {% endfor %}
+    </div>
+
+    <div class="stats">
+        <p>Stats:</p>
+        {% for stat in editable.stats %}
+            <li>{{stat}}</li>
+        {% endfor %}
+    </div>
+
+    <div class="relationships">
+        <p>Relationships:</p>
+        {% for relationship in editable.relationships %}
+            <li>{{relationship}}</li>
+        {% endfor %}
+    </div>
+{% endblock%}
+
+{% block edit_name %}
+    {{editable.name}}
+{% endblock%}
+
