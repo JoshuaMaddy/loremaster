@@ -1,5 +1,0 @@
-# requirements.in
-flask
-sqlalchemy
-jupyterlab
-cryptography

@@ -1,3 +1,0 @@
-# To run the flask app locally, open a terminal in this python environment and enter the command below.
-
-flask --app loremaster_app.loremaster run
