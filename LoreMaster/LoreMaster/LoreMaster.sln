@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoreMaster", "LoreMaster\LoreMaster.csproj", "{ACB2815F-B308-43C6-8D90-20ED0B2FBA77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACB2815F-B308-43C6-8D90-20ED0B2FBA77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACB2815F-B308-43C6-8D90-20ED0B2FBA77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACB2815F-B308-43C6-8D90-20ED0B2FBA77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACB2815F-B308-43C6-8D90-20ED0B2FBA77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {603DD15C-2237-47F5-B64F-35E2AA6615B9}
+	EndGlobalSection
+EndGlobal
