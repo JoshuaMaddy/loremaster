@@ -8,7 +8,7 @@ from ..database.table_declarations import *
 from sqlalchemy import select
 from sqlalchemy.orm import Session as Ses
 
-from .auth import login, login_required
+from .auth import login_required
 
 bp = Blueprint('navi', __name__)
 
@@ -41,6 +41,9 @@ def character_page(character_id:int):
 
         # Assume that viewer is not editor
         editor_perms = False
+        # Assume no image
+        image = None
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
@@ -49,12 +52,33 @@ def character_page(character_id:int):
             if character in user.editor_perms:
                 editor_perms = True
 
+        # Find first image
+        if character.images:
+            images = character.images
+            images.sort(key = lambda image : image.index)
+            image = images[0]
+
         # If no character for id (or subclass of familiar), fail silently
         if character is None or character.type == 'familiar':
             return redirect(url_for('navi.index'))
         else:
             # Pass character and editor perms to character page to be rendered
-            return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms)
+            return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image)
+
+@bp.route('/character/edit/<int:character_id>')
+@login_required
+def character_edit(character_id:int):
+     with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        if user and character: 
+            if character in user.editor_perms:
+                return render_template('navigation/editables/character/character_edit.html', character=character)
+        
+        return redirect(url_for('navi.index'))
 
 @bp.route('/familiar/<int:familiar_id>')
 def familiar_page(familiar_id:int):
@@ -79,3 +103,7 @@ def image_page(image_id:int):
 @bp.route('/guild/<int:guild_id>')
 def guild_page(guild_id:int):
     return 'guild page placeholder'
+
+@bp.route('/search')
+def search():
+    return render_template('search.html')

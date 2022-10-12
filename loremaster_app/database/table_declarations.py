@@ -78,7 +78,7 @@ class Editable(Base):
     owner_id:int = Column(Integer, ForeignKey("user.id"))
     owner:User = relationship('User', back_populates='owns',)
 
-    editors = relationship('User',
+    editors:list[User] = relationship('User',
                         secondary = editable_editors,
                         back_populates = 'editor_perms')
     
@@ -323,7 +323,9 @@ class Image(Editable):
         'polymorphic_identity':'image',
     }
 
-    def __init__(self, owner: User, name: str) -> None:
+    def __init__(self, owner: User, name: str, image_path:str = None, image_url:str = None) -> None:
+        self.image_path = image_path
+        self.image_url = image_url
         super().__init__(owner, name)
 
     def __repr__(self) -> str:

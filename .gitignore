@@ -152,5 +152,6 @@ cython_debug/
 #.idea/
 
 ./venv
+node_modules
 loremaster.db
 local.ipynb

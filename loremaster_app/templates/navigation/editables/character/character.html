@@ -4,6 +4,12 @@
 
 {% block editable %}
     <p>Name: {{editable.name}}</p>
+    <p>Description: </p>
+    
+    {% autoescape false %}
+    {{editable.description}}
+    {% endautoescape %}
+
     {% if editable.location %}
         <a href="{{url_for('navi.location_page', location_id=editable.location.editable_id)}}"> Location: {{editable.location.name}}</a>
     {% else %}
@@ -18,6 +24,10 @@
             {% endfor %}
             </p>
         </div>
+    {% endif %}
+
+    {% if image %}
+        <img src="url_for('api.image_retrieve', image_id=image.editable_id)" alt="">
     {% endif %}
     
     <div class="traits">
@@ -60,4 +70,10 @@
 {% block edit_name %}
     {{editable.name}}
 {% endblock%}
+
+{% block script %}
+    <script>
+        document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = editable.editable_id)}}"
+    </script>
+{% endblock %}
 

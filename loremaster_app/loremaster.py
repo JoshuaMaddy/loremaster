@@ -1,13 +1,19 @@
 import os
 
 from flask import Flask
+from pathlib import Path
+
+
+
+UPLOAD_FOLDER = (Path(__file__) / "../instance/images").resolve()
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
-        SECRET_KEY='dev'
+        SECRET_KEY='dev',
+        UPLOAD_FOLDER = UPLOAD_FOLDER
     )
 
     if test_config is None:
@@ -29,10 +35,11 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     # import and register blueprints
-    from .blueprints import navigation, auth
+    from .blueprints import navigation, auth, api
 
     app.register_blueprint(navigation.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(api.bp)
 
     app.add_url_rule('/', endpoint='index')
 

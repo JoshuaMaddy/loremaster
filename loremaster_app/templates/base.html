@@ -1,22 +1,32 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - LoreMaster</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav class="navbar">
-  <h1>LoreMaster</h1>
-  {% if g.user %}
-    <li><span>{{ g.user.name }}</span>
-    <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-  {% else %}
-    <li><a href="{{ url_for('auth.register') }}">Register</a>
-    <li><a href="{{ url_for('auth.login') }}">Log In</a>
-  {% endif %}
-</nav>
-<section class="content">
+
+{% block script_tags %}{% endblock %}
+
+{% block navbar %}
+  <nav class="navbar">
+    <h1>LoreMaster</h1>
+    {% if g.user %}
+      <li><span>{{ g.user.name }}</span>
+      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+      <li><a href="{{ url_for('auth.register') }}">Register</a>
+      <li><a href="{{ url_for('auth.login') }}">Log In</a>
+    {% endif %}
+  </nav>
+{% endblock %}
+
+<div class="content">
   <header class="header">
-    {% block header %}{% endblock %}
+  {% block header %}{% endblock %}
   </header>
+
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
+
   {% block content %}{% endblock %}
-</section>
+</div>
+
+{% block script %}{% endblock %}

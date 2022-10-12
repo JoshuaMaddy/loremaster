@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block script_tags%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+    {% block form %}
+        <form method="post" id="character_form">
+            <label for="name">Name</label>
+            <input name="name" id="name" value="{{character.name}}" placeholder="Your Character Name" required>
+            <label for="description">Description</label>
+            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                    <textarea id="description">Description Text</textarea>
+                </div>
+            </div>
+
+        </form>
+    {% endblock %}
+
+    {% block options %}
+        <button id="confirm">Confirm</button>
+
+        <a href="{{url_for('navi.character_page', character_id = character.editable_id)}}">
+            <button id="discard">Discard</button>
+        </a>
+    {% endblock %}
+
+    <div id="hidden_description" hidden>
+        {% autoescape false %}
+            {{character.description}}
+        {% endautoescape %}
+    </div>
+{% endblock %}
+
+
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+
+            tinymce.init({
+                selector: 'textarea#description',
+                promotion: false,
+                resize: false,
+                height: '100%',
+                plugins: 'emoticons',
+                toolbar: 'undo redo | styleselect | bold italic | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'outdent indent | numlist bullist | emoticons',
+                setup: function (editor) {
+                    editor.on('init', function (e) {
+                      editor.setContent($('#hidden_description')[0].innerHTML);
+                    });
+                }
+            });
+            
+            $('#character_form').on("submit", e => {
+                e.preventDefault(); 
+                submitForm()
+            });
+    
+            $('#confirm').on('click', () => {
+                submitForm()
+            })
+    
+            function submitForm(){
+                var description = tinymce.get("description").getContent();
+    
+                console.log(JSON.stringify(description))
+    
+                var form = new FormData(document.getElementById('character_form'))
+    
+                const options = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body:`{
+                            "character_id":{{character.editable_id}},
+                            "character_name":${JSON.stringify(form.get('name'))},
+                            "character_description":${JSON.stringify(description)}
+                        }`
+                };
+    
+                fetch('/api/character_edit', options).then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }else{
+                        window.location.replace("{{url_for('navi.character_page', character_id = character.editable_id)}}");
+                    }
+                })
+            }
+
+        })
+    </script>
+{% endblock %}

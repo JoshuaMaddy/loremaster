@@ -46,6 +46,8 @@ def init_db(instance_path:str) -> sessionmaker:
     else:
         set_engine(instance_path)
 
+    create_image_folder(instance_path=instance_path)
+
     return create_session(engine)
 
 def get_sessionmaker(instance_path:str) -> sessionmaker:
@@ -54,5 +56,9 @@ def get_sessionmaker(instance_path:str) -> sessionmaker:
 
         return create_session(engine)
     return None
+
+def create_image_folder(instance_path:str) -> None:
+    if not os.path.exists(os.path.join(instance_path, 'images')):
+        os.makedirs(os.path.join(instance_path, 'images'))
 
 Session = init_db((Path(__file__) / "../../instance").resolve())
