@@ -21,5 +21,17 @@ namespace LoreMaster.Controllers
             var sheets = _dbContext.Sheets.ToList();
             return View(sheets);
         }
+
+        public ActionResult New()
+        {
+            return View();
+        }
+
+        public ActionResult Add(CharacterSheet sheet)
+        {
+            _dbContext.Sheets.Add(sheet);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

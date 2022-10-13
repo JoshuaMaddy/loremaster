@@ -218,3 +218,4 @@ C:\Users\nslof\Documents\GitHub\loremaster\LoreMaster\LoreMaster\LoreMaster\obj\
 C:\Users\nslof\Documents\GitHub\loremaster\LoreMaster\LoreMaster\LoreMaster\obj\Debug\LoreMaster.csproj.CopyComplete
 C:\Users\nslof\Documents\GitHub\loremaster\LoreMaster\LoreMaster\LoreMaster\obj\Debug\LoreMaster.dll
 C:\Users\nslof\Documents\GitHub\loremaster\LoreMaster\LoreMaster\LoreMaster\obj\Debug\LoreMaster.pdb
+C:\Users\nslof\Documents\GitHub\loremaster\LoreMaster\LoreMaster\LoreMaster\obj\Debug\LoreMaster.Migrations.AddSheetsTable1.resources

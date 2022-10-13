@@ -8,6 +8,8 @@ namespace LoreMaster.Models
     public class CharacterSheet
     {
         public int Id { get; set; }
+        public bool Public { get; set; }
+        public string Owner { get; set; }
         public string Name { get; set; }
         public string Class { get; set; }
         public int Level { get; set; }

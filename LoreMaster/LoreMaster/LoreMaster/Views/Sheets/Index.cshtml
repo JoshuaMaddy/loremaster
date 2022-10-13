@@ -7,10 +7,16 @@
 }
 <h2>Character Sheets</h2>
 
+<p>
+    @Html.ActionLink("Add Character", "New")
+</p>
 <ul>
     @foreach (var sheet in Model)
     {
+        if (sheet.Public)
+        {
         <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level)</li>
+        }
     }
 </ul>
 
