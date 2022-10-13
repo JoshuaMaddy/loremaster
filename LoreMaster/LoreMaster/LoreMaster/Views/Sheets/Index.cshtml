@@ -1,0 +1,17 @@
+﻿
+@model IEnumerable<LoreMaster.Models.CharacterSheet>
+
+@{
+    ViewBag.Title = "Character Sheets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Character Sheets</h2>
+
+<ul>
+    @foreach (var sheet in Model)
+    {
+        <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level)</li>
+    }
+</ul>
+
+
