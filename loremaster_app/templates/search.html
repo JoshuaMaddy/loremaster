@@ -9,62 +9,44 @@
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script>
   $( function() {
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-
     $( "#tags" ).autocomplete({
-      source: submitForm,
+      source: function( request, response ) {
+        $.ajax({
+          url: '/api/location_search',
+          method:'POST',
+          dataType: 'json',
+          processData: false,
+          contentType: 'application/json',
+          data:JSON.stringify({
+            search_type: "location",
+            query: request.term
+          }),
+          success: function( data ) {
+            response($.map( data, function(result){
+              return {
+                label:result.label,
+                value:result.value,
+              }
+            }));
+          }
+        });
+      },
+      focus: function(event, ui) {
+        event.preventDefault();
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $('#tags').val(ui.item.label);
+        $('#location_id').val(ui.item.value)
+      },
       delay: 400
     });
 
-    //$('#tags').on('input', () => {
-      //  submitForm()
-    //})
+    $('#log').on('click', () =>{
+      console.log($('#location_id').val())
+    });
 
-    function submitForm(){
-        var user_search = $('#tags').val();
-
-        const options = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body:`{
-                    "search_type":"location",
-                    "query":"${user_search}"
-                }`
-        };
-
-        fetch('/api/location_search', options).then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }else{
-                availableTags = response.json()
-            }
-        })
-    }
-
-  } );
+  });
   </script>
 </head>
 <body>
@@ -72,8 +54,12 @@
 <div class="ui-widget">
   <label for="tags">Tags: </label>
   <input id="tags">
+  <input id="location_id" hidden>
 </div>
  
+<button id="log">
+  log
+</button>
  
 </body>
 </html>

@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table
 from sqlalchemy.orm import declarative_base, relationship, backref
 
@@ -211,6 +212,8 @@ class Trait(Base):
 
     name:str = Column(String(50), nullable=False)
 
+    short_description:str = Column(String(50), nullable=True)
+
     description_id:int = Column(Integer, ForeignKey('description.id'))
     description:str = relationship('Description')
 
@@ -233,6 +236,8 @@ class Relationship(Base):
     description_id:int = Column(Integer, ForeignKey('description.id'))
     description:Description = relationship('Description')
 
+    short_description:str = Column(String(50), nullable=True)
+
     thumbnail_id:int = Column(Integer, ForeignKey('image.editable_id'))
     thumbnail:Image = relationship('Image')
 
@@ -247,6 +252,8 @@ class Stat(Base):
 
     id:int = Column(Integer, primary_key=True)
     name:str = Column(String(50), nullable=False)
+
+    short_description:str = Column(String(50), nullable=True)
 
     description_id:int = Column(Integer, ForeignKey('description.id'))
     description:str = relationship('Description')

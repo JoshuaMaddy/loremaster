@@ -86,7 +86,12 @@ def familiar_page(familiar_id:int):
 
 @bp.route('/location/<int:location_id>')
 def location_page(location_id:int):
-    return 'location page placeholder'
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        location:Location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
+
+        return render_template('navigation/editables/location/location_page.html', location=location)
 
 @bp.route('/inventory/<int:inventory_id>')
 def inventory_page(inventory_id:int):

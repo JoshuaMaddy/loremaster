@@ -125,6 +125,9 @@ def character_edit():
 @bp.route('/api/location_search', methods=['POST'])
 @login_required
 def location_search():
+
+    print(request.data)
+
     if request.is_json:
         with Session.begin() as sqlsession:
             sqlsession:Ses
@@ -142,6 +145,8 @@ def location_search():
                     locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%') , Location.editors.contains(user)))).scalars().all()
                     print(locations)
 
-                    location_list = [element.name for element in locations]
+                    location_list = [{'label':element.name, 'value':element.editable_id} for element in locations]
 
-                    return location_list
+                    return jsonify(location_list)
+    return jsonify('not json')
+        
