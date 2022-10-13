@@ -82,19 +82,39 @@ def character_edit(character_id:int):
 
 @bp.route('/familiar/<int:familiar_id>')
 def familiar_page(familiar_id:int):
-    return 'familiar page placeholder'
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+
+        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable_id == familiar_id)).scalar() 
+
+        return render_template('navigation/editables/familiar/familiar_page.html', familiar = familiar)
 
 @bp.route('/location/<int:location_id>')
 def location_page(location_id:int):
-    return 'location page placeholder'
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+
+        location:Location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
+
+        return render_template('navigation/editables/location/location_page.html', location=location)
 
 @bp.route('/inventory/<int:inventory_id>')
 def inventory_page(inventory_id:int):
-    return 'inventory page placeholder'
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+
+        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.editable_id == inventory_id)).scalar()
+
+        return render_template('navigation/editables/inventory/inventory_page.html', inventory = inventory )
 
 @bp.route('/item/<int:item_id>')
 def item_page(item_id:int):
-    return 'item page placeholder'
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+
+        item:Item = sqlsession.execute(select(Item).where(Item.editable_id == item_id)).scalar()
+
+        return render_template('navigation/editables/inventory/item/item.html', item = item )
 
 @bp.route('/image/<int:image_id>')
 def image_page(image_id:int):
@@ -102,7 +122,12 @@ def image_page(image_id:int):
 
 @bp.route('/guild/<int:guild_id>')
 def guild_page(guild_id:int):
-    return 'guild page placeholder'
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+
+        guild:Guild = sqlsession.execute(select(Guild).where(Guild.editable_id == guild_id)).scalar()
+
+        return render_template('navigation/editables/guild/guild_page.html', guild = guild )
 
 @bp.route('/search')
 def search():
