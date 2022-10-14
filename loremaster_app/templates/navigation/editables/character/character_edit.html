@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Character Edit{% endblock %}
+
 {% block script_tags%}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -13,9 +15,11 @@
     {% block form %}
         <form method="post" id="character_form">
 
+
             <!-- Name -->
             <label for="name">Name</label>
             <input name="name" id="name" value="{{character.name}}" placeholder="Your Character Name" required>
+            <input name="character_id" id="character_id" type="text" value="{{character.editable_id}}" hidden>
             
             <div id="iamge_selection">
                 <label for="images">Images</label>
@@ -71,7 +75,7 @@
                 <label for="stats">Stats</label>
                 {% for stat in character.stats %}
                 <div class="stat">
-                    <input type="text" name="single_stat" class="single_stat" value="{{stat.name if stat.name else ''}}" placeholder="Trait">
+                    <input type="text" name="single_stat" class="single_stat" value="{{stat.name if stat.name else ''}}" placeholder="Stat">
                     <input type="text" name="single_stat_desc" class="single_stat_desc" value="{{stat.short_description if stat.short_description else ''}}" placeholder="Short Description">
                     <button type="button" class="remove_stat">-</button>
                 </div>
@@ -88,12 +92,16 @@
                 <button type="button" id="add_stat">Add Stat</button>
             </div>
 
+            <hr>
+            
             <!-- Relationship Selection -->
             <div id="relationship_selection">
                 <label for="relationships">Relationships</label>
                 {% for relationship in character.relationships %}
                 <div class="relationship">
                     <input type="text" name="single_relationship" class="single_relationship" value="{{relationship.name if relationship.name else ''}}" placeholder="Relationship">
+                    <input type="text" name="relationship_character" class="relationship_character" value="{{relationship.character.name if relationship.character else ''}}" placeholder="Character">
+                    <input type="text" name="relationship_character_id" class="relationship_character_id" value="{{relationship.character.editable_id if relationship.character else ''}}" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" value="{{relationship.short_description if relationship.short_description else ''}}" placeholder="Short Description">
                     <button type="button" class="remove_relationship">-</button>
                 </div>
@@ -102,6 +110,8 @@
                 {% if not character.relationships %}
                 <div class="relationship">
                     <input type="text" name="single_relationship" class="single_relationship" placeholder="Relationship">
+                    <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
+                    <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
                     <button type="button" class="remove_relationship">-</button>
                 </div>
@@ -110,12 +120,15 @@
                 <button type="button" id="add_relationship">Add Relationships</button>
             </div>
 
+            <hr>
+
             <!-- Familiar Selection -->
             <div id="familiar_selection">
                 <label for="familiar">Familiar</label>
                 {% for familiar in character.familiars %}
                 <div class="familiar">
                     <input type="text" name="single_familiar" class="single_familiar" value="{{familiar.name if familiar.name else ''}}" placeholder="Familiar">
+                    <input name="familiar_id" id="familiar_id" type="text" value="{{familiar.editable2_id}}" hidden>
                     <button type="button" class="remove_familiar">-</button>
                 </div>
                 {% endfor %}
@@ -123,12 +136,15 @@
                 {% if not character.familiars %}
                 <div class="familiar">
                     <input type="text" name="single_familiar" class="single_familiar" placeholder="Familiar">
+                    <input name="familiar_id" id="familiar_id" type="text" hidden>
                     <button type="button" class="remove_familiar">-</button>
                 </div>
                 {% endif %}
 
                 <button type="button" id="add_familiar">Add Familiar</button>
             </div>
+
+            <hr>
 
             <!-- Inventory Selection -->
             <div id="inventory_selection">
@@ -150,12 +166,15 @@
                 <button type="button" id="add_inventory">Add Inventory</button>
             </div>
 
+            <hr>
+
             <!-- Editor Selection -->
             <div id="editor_selection">
                 <label for="editor">Editor</label>
                 {% for editor in character.editors %}
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
                     <button type="button" class="remove_editor">-</button>
                 </div>
                 {% endfor %}
@@ -163,6 +182,7 @@
                 {% if not character.editors %}
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" hidden>
                     <button type="button" class="remove_editor">-</button>
                 </div>
                 {% endif %}
@@ -171,6 +191,10 @@
             </div>
 
         </form>
+
+        <button id="log">
+            log
+        </button>
     {% endblock %}
 
     {% block options %}
@@ -202,14 +226,17 @@
                                 <button type="button" class="remove_stat">-</button>
                             </div>`
 
-        var relationship_snippet = `<div class="relationships">
+        var relationship_snippet = `<div class="relationship">
                                         <input type="text" name="single_relationship" class="single_relationship" placeholder="Relationship">
+                                        <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
+                                        <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
                                         <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
                                         <button type="button" class="remove_relationship">-</button>
                                     </div>`
         
-        var familiar_snippet = `<div class="familiars">
+        var familiar_snippet = `<div class="familiar">
                                     <input type="text" name="single_familiar" class="single_familiar" placeholder="Familiar">
+                                    <input name="familiar_id" id="familiar_id" type="text" hidden>
                                     <button type="button" class="remove_familiar">-</button>
                                 </div>`
         
@@ -218,8 +245,9 @@
                                     <button type="button" class="remove_inventory">-</button>
                                 </div>`
 
-        var editor_snippet = `<div class="editors">
+        var editor_snippet = `<div class="editor">
                                 <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
+                                <input type="text" name="editor_id" id="editor_id" hidden>
                                 <button type="button" class="remove_editor">-</button>
                             </div>`
 
@@ -289,6 +317,35 @@
                 }
             })
 
+            class CharacterDescription{
+                character;
+                images;
+                description;
+                location_id;
+                traits;
+                stats;
+                relationships;
+                familiar_ids;
+                inventories;
+                editor_ids;
+                constructor(character=null, images=null, description=null, traits=null, stats=null,
+                            relationships=null, familiar_ids=null, inventories=null, editor_ids=null, location_id=null){
+                    this.character = character;
+                    this.images = images;
+                    this.description = description;
+                    this.traits = traits;
+                    this.stats = stats;
+                    this.relationships = relationships;
+                    this.familiar_ids = familiar_ids;
+                    this.editor_ids = editor_ids;
+                    this.location_id = location;
+                }
+            }
+
+            $('#log').on('click', function(evt) {
+                console.log(JSON.stringify(create_character_data()))
+            })
+
             $(document).on('click', '.remove_trait,.remove_stat,.remove_familiar,.remove_relationship,.remove_inventory,.remove_editor', function(evt) {
                 $(this).parent().remove()
             })
@@ -301,22 +358,76 @@
             $('#confirm').on('click', () => {
                 submitForm()
             })
+
+            function create_character_data(){
+                var form = new FormData(document.getElementById('character_form'))
+
+                let trait_names = form.getAll('single_trait')
+                let trait_desc = form.getAll('single_trait_desc')
+
+                let traits = []
+
+                for (let i = 0; i < trait_names.length; i++){
+                    traits.push({'trait_name':trait_names[i], 'trait_description':trait_desc[i]})
+                }
+
+                let stat_names = form.getAll('single_stat')
+                let stat_desc = form.getAll('single_stat_desc')
+
+                let stats = []
+
+                for (let i = 0; i < stat_names.length; i++){
+                    stats.push({'stat_name':stat_names[i], 'stat_description':stat_desc[i]})
+                }
+
+                let relationship_names = form.getAll('single_relationship')
+                let character_ids = form.getAll('relationship_character_id')
+                let relationship_desc = form.getAll('single_relationship_desc')
+
+                let relationships = []
+
+                for (let i = 0; i < relationship_names.length; i++){
+                    relationships.push({'relationship_name':relationship_names[i], 'character_id':parseInt(character_ids[i]), 'relationship_desc':relationship_desc[i]})
+                }
+
+                let characterDescription = new CharacterDescription();
+                characterDescription.character = {'name':form.get('name'), 'id':parseInt(form.get('character_id'))};
+                characterDescription.description = tinymce.get("description").getContent();
+
+                characterDescription.editor_ids = form.getAll('editor_id').map((element) =>{
+                    return parseInt(element);
+                })
+
+                if(form.get('single_trait')){
+                    characterDescription.traits = traits;
+                }
+                if(form.get('single_stat')){
+                    characterDescription.stats = stats;
+                }
+                if(form.get('single_relationship')){
+                    characterDescription.relationships = relationships;
+                }
+
+                characterDescription.familiar_ids = form.getAll('familiar_id').map((element) =>{
+                    return parseInt(element);
+                })
+
+                if(form.get('location')){
+                    characterDescription.location_id = parseInt(form.get('location_id'));
+                }
+
+                return characterDescription
+            }
     
             function submitForm(){
                 var description = tinymce.get("description").getContent();
-    
-                console.log(JSON.stringify(description))
-    
+        
                 var form = new FormData(document.getElementById('character_form'))
     
                 const options = {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body:`{
-                            "character_id":{{character.editable_id}},
-                            "character_name":${JSON.stringify(form.get('name'))},
-                            "character_description":${JSON.stringify(description)}
-                        }`
+                    body:JSON.stringify(create_character_data())
                 };
     
                 fetch('/api/character_edit', options).then((response) => {
@@ -327,39 +438,139 @@
                     }
                 })
             }
-
-            $("#location_input").autocomplete({
-                source: function( request, response ) {
-                  $.ajax({
-                    url: '/api/location_search',
-                    method:'POST',
-                    dataType: 'json',
-                    processData: false,
-                    contentType: 'application/json',
-                    data:JSON.stringify({
-                      search_type: "location",
-                      query: request.term
-                    }),
-                    success: function( data ) {
-                      response($.map( data, function(result){
-                        return {
-                          label:result.label,
-                          value:result.value,
+            $(document).on('click', '#location_input, .single_familiar, .single_editor, .relationship_character', function(evt) {
+                $("#location_input").autocomplete({
+                    source: function( request, response ) {
+                      $.ajax({
+                        url: '/api/search',
+                        method:'POST',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: 'application/json',
+                        data:JSON.stringify({
+                          search_type: "location",
+                          query: request.term
+                        }),
+                        success: function( data ) {
+                          response($.map( data, function(result){
+                            return {
+                              label:result.label,
+                              value:result.value,
+                            }
+                          }));
                         }
-                      }));
-                    }
-                  });
-                },
-                focus: function(event, ui) {
-                  event.preventDefault();
-                },
-                select: function(event, ui) {
-                  event.preventDefault();
-                  $('#location_input').val(ui.item.label);
-                  $('#location_id').val(ui.item.value);
-                },
-                delay: 400
-              });
+                      });
+                    },
+                    focus: function(event, ui) {
+                      event.preventDefault();
+                    },
+                    select: function(event, ui) {
+                      event.preventDefault();
+                      $('#location_input').val(ui.item.label);
+                      $('#location_id').val(ui.item.value);
+                    },
+                    delay: 200
+                });
+    
+                $(".single_familiar").autocomplete({
+                    source: function( request, response ) {
+                      $.ajax({
+                        url: '/api/search',
+                        method:'POST',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: 'application/json',
+                        data:JSON.stringify({
+                          search_type: "familiar",
+                          query: request.term
+                        }),
+                        success: function( data ) {
+                          response($.map( data, function(result){
+                            return {
+                              label:result.label,
+                              value:result.value,
+                            }
+                          }));
+                        }
+                      });
+                    },
+                    focus: function(event, ui) {
+                      event.preventDefault();
+                    },
+                    select: function(event, ui) {
+                      event.preventDefault();
+                      $(this).val(ui.item.label);
+                      $(this).siblings().first().val(ui.item.value);
+                    },
+                    delay: 200
+                });
+
+                $(".single_editor").autocomplete({
+                    source: function( request, response ) {
+                      $.ajax({
+                        url: '/api/search',
+                        method:'POST',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: 'application/json',
+                        data:JSON.stringify({
+                          search_type: "user",
+                          query: request.term
+                        }),
+                        success: function( data ) {
+                          response($.map( data, function(result){
+                            return {
+                              label:result.label,
+                              value:result.value,
+                            }
+                          }));
+                        }
+                      });
+                    },
+                    focus: function(event, ui) {
+                      event.preventDefault();
+                    },
+                    select: function(event, ui) {
+                      event.preventDefault();
+                      $(this).val(ui.item.label);
+                      $(this).siblings().first().val(ui.item.value);
+                    },
+                    delay: 200
+                });
+
+                $(".relationship_character").autocomplete({
+                    source: function( request, response ) {
+                      $.ajax({
+                        url: '/api/search',
+                        method:'POST',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: 'application/json',
+                        data:JSON.stringify({
+                          search_type: "character",
+                          query: request.term
+                        }),
+                        success: function( data ) {
+                          response($.map( data, function(result){
+                            return {
+                              label:result.label,
+                              value:result.value,
+                            }
+                          }));
+                        }
+                      });
+                    },
+                    focus: function(event, ui) {
+                      event.preventDefault();
+                    },
+                    select: function(event, ui) {
+                      event.preventDefault();
+                      $(this).val(ui.item.label);
+                      $(this).siblings('.relationship_character_id').first().val(ui.item.value);
+                    },
+                    delay: 200
+                });
+            })
         })
     </script>
 {% endblock %}

@@ -85,7 +85,7 @@ def familiar_page(familiar_id:int):
     with Session.begin() as sqlsession: 
         sqlsession:Ses
 
-        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable_id == familiar_id)).scalar() 
+        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar() 
 
         return render_template('navigation/editables/familiar/familiar_page.html', familiar = familiar)
 

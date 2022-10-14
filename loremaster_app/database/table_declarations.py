@@ -136,8 +136,8 @@ class Character(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    traits:list[Trait] = relationship('Trait', secondary = character_traits)
-    stats:list[Stat] = relationship('Stat', secondary = character_stats)
+    traits:list[Trait] = relationship('Trait', secondary = character_traits, single_parent = True, cascade="all, delete-orphan")
+    stats:list[Stat] = relationship('Stat', secondary = character_stats, single_parent = True, cascade="all, delete-orphan")
     relationships:list[Relationship] = relationship('Relationship', secondary = character_relationships)
     inventories:list[Inventory] = relationship('Inventory', secondary = character_inventories)
 
@@ -214,14 +214,12 @@ class Trait(Base):
 
     short_description:str = Column(String(50), nullable=True)
 
-    description_id:int = Column(Integer, ForeignKey('description.id'))
-    description:str = relationship('Description')
-
     thumbnail_id:int = Column(Integer, ForeignKey('image.editable_id'))
     thumbnail:Image = relationship('Image')
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, short_description:str=None) -> None:
         self.name = name
+        self.short_description = short_description
 
     def __repr__(self) -> str:
         return f"Trait(name:{{{self.name}}})"
@@ -233,16 +231,17 @@ class Relationship(Base):
 
     name:str = Column(String(50), nullable=False)
 
-    description_id:int = Column(Integer, ForeignKey('description.id'))
-    description:Description = relationship('Description')
-
     short_description:str = Column(String(50), nullable=True)
 
     thumbnail_id:int = Column(Integer, ForeignKey('image.editable_id'))
     thumbnail:Image = relationship('Image')
 
-    def __init__(self, name: str) -> None:
+    character_id:int = Column(Integer, ForeignKey('character.editable_id'))
+    character:Character = relationship('Character')
+
+    def __init__(self, name: str, short_description:str=None) -> None:
         self.name = name
+        self.short_description = short_description
 
     def __repr__(self) -> str:
         return f"Relationship(name:{{{self.name}}})"
@@ -255,11 +254,9 @@ class Stat(Base):
 
     short_description:str = Column(String(50), nullable=True)
 
-    description_id:int = Column(Integer, ForeignKey('description.id'))
-    description:str = relationship('Description')
-
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, short_description:str=None) -> None:
         self.name = name
+        self.short_description = short_description
     
     def __repr__(self) -> str:
         return f"Stat(name:{{{self.name}}})"
