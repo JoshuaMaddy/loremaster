@@ -13,9 +13,9 @@
 <ul>
     @foreach (var sheet in Model)
     {
-        if (sheet.Public)
+        if (sheet.Public || sheet.Owner == System.Web.HttpContext.Current.User.Identity.Name)
         {
-        <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level)</li>
+    <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level) @Html.ActionLink("Edit", "Edit", new { id = sheet.Id })</li>
         }
     }
 </ul>

@@ -248,6 +248,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Sheets\Index.cshtml" />
     <Content Include="Views\Sheets\New.cshtml" />
+    <Content Include="Views\Sheets\_SheetForm.cshtml" />
+    <Content Include="Views\Sheets\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

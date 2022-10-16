@@ -29,7 +29,31 @@ namespace LoreMaster.Controllers
 
         public ActionResult Add(CharacterSheet sheet)
         {
+            //sheet.Owner = System.Web.HttpContext.Current.User.Identity.Name;
             _dbContext.Sheets.Add(sheet);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var sheet = _dbContext.Sheets.SingleOrDefault(v => v.Id == id);
+            if (sheet == null)
+                return HttpNotFound();
+            return View(sheet);
+        }
+
+        [HttpPost]
+        public ActionResult Update(CharacterSheet sheet)
+        {
+            var videoInDb = _dbContext.Sheets.SingleOrDefault(v => v.Id == sheet.Id);
+            if (videoInDb == null)
+                return HttpNotFound();
+            videoInDb.Name = sheet.Name;
+            videoInDb.Class = sheet.Class;
+            videoInDb.Level = sheet.Level;
+            videoInDb.Race = sheet.Race;
+            videoInDb.Public = sheet.Public;
             _dbContext.SaveChanges();
             return RedirectToAction("Index");
         }

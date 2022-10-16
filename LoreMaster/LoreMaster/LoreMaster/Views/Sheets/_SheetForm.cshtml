@@ -1,0 +1,24 @@
+﻿@model LoreMaster.Models.CharacterSheet
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Class)
+    @Html.TextBoxFor(m => m.Class, new { @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Level)
+    @Html.TextBoxFor(m => m.Level, new { type = "number", min = "0", max = "20", step = "1", @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Race)
+    @Html.TextBoxFor(m => m.Race, new { @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Public)
+    @Html.CheckBoxFor(m => m.Public, new { @class = "form-control" })
+</div> 
+@Html.HiddenFor(m => m.Id)
+<input type="submit" class="btn btn-primary" value="Save" />

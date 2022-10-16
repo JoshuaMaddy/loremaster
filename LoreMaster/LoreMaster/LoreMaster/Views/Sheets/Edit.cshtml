@@ -1,0 +1,14 @@
+﻿@model LoreMaster.Models.CharacterSheet
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm("Update", "Sheets", FormMethod.Post, new { @class = "form" }))
+{
+    Html.RenderPartial("_SheetForm");
+}
+
