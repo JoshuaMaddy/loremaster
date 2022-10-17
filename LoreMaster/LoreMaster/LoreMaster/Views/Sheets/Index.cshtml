@@ -13,9 +13,13 @@
 <ul>
     @foreach (var sheet in Model)
     {
-        if (sheet.Public || sheet.Owner == System.Web.HttpContext.Current.User.Identity.Name)
+        if (sheet.Owner == System.Web.HttpContext.Current.User.Identity.Name)
         {
-    <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level) @Html.ActionLink("Edit", "Edit", new { id = sheet.Id })</li>
+    <li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level) Character belongs to you. @Html.ActionLink("Edit", "Edit", new { id = sheet.Id }) @Html.ActionLink("Delete", "Delete", new { id = sheet.Id })</li>
+        }
+        else if (sheet.Public)
+        {
+<li>@sheet.Name (@sheet.Race, @sheet.Class @sheet.Level) Owned by: @sheet.Owner</li>
         }
     }
 </ul>

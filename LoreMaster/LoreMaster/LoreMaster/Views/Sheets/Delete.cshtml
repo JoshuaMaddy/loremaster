@@ -1,0 +1,19 @@
+﻿@model LoreMaster.Models.CharacterSheet
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Delete</h2>
+<p>
+    Are you sure you would like to delete this character?
+</p>
+<ul>
+    <li>Character: @Model.Name (@Model.Race, @Model.Class @Model.Level)</li>
+</ul>
+
+@using (Html.BeginForm("DoDelete", "Sheets", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.Id)
+    <input type="submit" class="btn btn-danger" value="Yes, Delete it!" />
+    @Html.ActionLink("No, back to characters", "Index")
+}

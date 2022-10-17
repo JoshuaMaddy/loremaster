@@ -43,6 +43,25 @@ namespace LoreMaster.Controllers
             return View(sheet);
         }
 
+        public ActionResult Delete(int id)
+        {
+            var sheet = _dbContext.Sheets.SingleOrDefault(v => v.Id == id);
+            if (sheet == null)
+                return HttpNotFound();
+            return View(sheet);
+        }
+
+        [HttpPost]
+        public ActionResult DoDelete(int id)
+        {
+            var character = _dbContext.Sheets.SingleOrDefault(v => v.Id == id);
+            if (character == null)
+                return HttpNotFound();
+            _dbContext.Sheets.Remove(character);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public ActionResult Update(CharacterSheet sheet)
         {
