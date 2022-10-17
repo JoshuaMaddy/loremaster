@@ -153,5 +153,7 @@ cython_debug/
 
 ./venv
 node_modules
+LoreMaster
 loremaster.db
 local.ipynb
+*.bak
