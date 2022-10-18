@@ -1,0 +1,23 @@
+For task 4, we created a simple ASP.NET web application.
+
+This demo version of "Loremaster" contains the following details:
+- Login system that redirects users who aren't logged in.
+- Database that contains user information.
+- The ability to create, edit, and delete character sheets.
+- The ability to make your character either publically viewable or hidden from browsing.
+
+The main feature is the "characters" page, which displays all public characters, as well
+as any characters owned by the login information. Information is accessed from the database
+to display details about the character, such as their class, race, level, and owner.
+
+If you are the owner of a character, you can edit or delete it, causing the details to be 
+updated in the database, and these changes will be visible to everyone if it is public.
+
+The version of "Loremaster" developed for this task is somewhat simplistic. This is due
+to our actual development environment being made in python. In the python version, we have
+more advanced features, such as a search bar, ability to upload images, etc. For the ASP.NET
+version, we just included the core login and character creation features, since the release
+is going to be with python, so any features developed in ASP.NET would only be for task 4
+and would not contribute to the final project.
+
+Please let us know if you have any questions or difficulties loading the application.

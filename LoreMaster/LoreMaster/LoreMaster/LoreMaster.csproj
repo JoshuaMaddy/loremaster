@@ -251,6 +251,7 @@
     <Content Include="Views\Sheets\_SheetForm.cshtml" />
     <Content Include="Views\Sheets\Edit.cshtml" />
     <Content Include="Views\Sheets\Delete.cshtml" />
+    <Content Include="Views\Sheets\SheetView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
