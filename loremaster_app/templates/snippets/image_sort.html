@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Sortable - Display as grid</title>
+    
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+
+            dialog = $("#image_selection").dialog({
+                autoOpen: false,
+                height: (window.innerHeight/10)*8,
+                width: (window.innerWidth/10)*8,
+                modal: true,
+                open: function(event, ui){
+                    $.ajax({
+                        url: '/api/user_image_grid',
+                        method:'GET',
+                    }).done(function(data){
+                        $('#image_selection').html(data)
+                    })
+                },
+                buttons: {
+                    "Close": function () {
+                        dialog.dialog("close");
+                    }
+                },
+                close: function () {
+                    $('#sortable').children().remove()
+
+                    $('.image_grid').children().each(function (index) {
+                        if($(this).data('selected')){
+                            $(this).children()[0].removeAttribute('style')
+                            $('#sortable').append($(this).children()[0])
+                        }
+                    });
+                }
+            });
+
+
+            $(document).on('click', '.image_div > img', function (evt) {
+                if ($(this).css('opacity') == 0.8) {
+                    $(this).css('opacity', 1);
+                    $(this).parent().data('selected', false);
+                } else {
+                    $(this).css('opacity', 0.8);
+                    $(this).parent().data('selected', true);
+                }
+            });
+
+            $('#select_images').on('click', function (evt) {
+                dialog.dialog('open')
+            });
+
+            $('#image_ids').on('click', function(evt){
+                console.log($( "#sortable" ).sortable( "toArray", { attribute: "data-editable_id" }))
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <ul id="sortable">
+    </ul>
+
+    <div id="image_selection">
+    </div>
+
+    <button id="select_images">
+        Select Images
+    </button>
+    <button id="image_ids">
+        Console order
+    </button>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Image Edit{% endblock %}
+
+{% block links%}
+<!-- TinyMCE links -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery/UI links -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='image_edit.css')}}">
+<script type="text/javascript" src="{{url_for('static', filename='image_edit.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+    {% if image %}
+    <div id="image_page" data-image_url="{{url_for('navi.image_page', image_id = image.editable_id)}}"></div>
+    {% endif %}
+
+    {% block form %}
+        <form method="post" id="image_form">
+
+            <div>
+                <div id="image_preview">
+                    {% if image %}
+                    <img src="{{url_for('api.image_retrieve', image_id=image.editable_id)}}" alt="">
+                    {% endif %}
+                </div>
+                
+                <label for="choose-file">Choose File</label>
+                <input type="file" accept="image/*" id="choose-file" name="choose-file" />
+            </div>
+
+            <!-- Name -->
+            <label for="name">Name</label>
+            <input name="name" id="name" value="{{image.name if image else ''}}" placeholder="Your Image Name" required>
+            <input name="image_id" id="image_id" type="text" value="{{image.id if image else ''}}" hidden>
+            
+            <hr>
+
+            <!-- Description -->
+            <p>Description</p>
+            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                    <textarea id="description">Description Text</textarea>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Editor Selection -->
+            <div id="editor_selection">
+                <label for="editor">Editor</label>
+                {% for editor in image.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endfor %}
+
+                {% if not image.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endif %}
+
+                <button type="button" id="add_editor">Add Editor</button>
+            </div>
+
+        </form>
+    {% endblock %}
+
+    {% block options %}
+        <button id="confirm" type="button">Confirm</button>
+
+        <a href="{{url_for('navi.create')}}">
+            <button id="discard">Discard</button>
+        </a>
+    {% endblock %}
+
+    <div id="hidden_description" hidden>
+        {% autoescape false %}
+            {{image.description if image else 'Description Text Here'}}
+        {% endautoescape %}
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

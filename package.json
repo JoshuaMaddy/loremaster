@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "@types/jquery": "^3.5.14",
+    "@types/jqueryui": "^1.12.16",
     "jquery": "^3.6.1",
+    "jqueryui": "^1.11.1",
     "tinymce": "^6.2.0"
   }
 }

@@ -2,68 +2,77 @@
 
 {% block title%}Character View{% endblock %}
 
+{% block links %}
+<!-- jQuery Link -->
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block editable %}
-    <p>Name: {{editable.name}}</p>
-    <p>Description: </p>
+    <!-- Character Container -->
+    <div class="character_container">
+        <p>Name: {{editable.name}}</p>
+
+        {% if image %}
+        <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+        {% endif %}
     
-    {% autoescape false %}
-    {{editable.description}}
-    {% endautoescape %}
-
-    {% if editable.location %}
-        <a href="{{url_for('navi.location_page', location_id=editable.location.editable_id)}}"> Location: {{editable.location.name}}</a>
-    {% else %}
-        <p> Location: No Set Location </p>
-    {% endif %}
-
-    {% if editable.familiars %}
-        <div class="familiars">
-            <p>Familiars:
-            {% for familiar in editable.familiars %}
-                <a href="{{url_for('navi.familiar_page', familiar_id=familiar.editable2_id)}}"> Familiar: {{familiar.name}}</a>,
-            {% endfor %}
+        <p>Description: </p>
+        
+        {% autoescape false %}
+        {{editable.description}}
+        {% endautoescape %}
+    
+        {% if editable.location %}
+            <a href="{{url_for('navi.location_page', location_id=editable.location.editable_id)}}"> Location: {{editable.location.name}}</a>
+        {% else %}
+            <p> Location: No Set Location </p>
+        {% endif %}
+    
+        {% if editable.familiars %}
+            <div class="familiars">
+                <p>Familiars:
+                {% for familiar in editable.familiars %}
+                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.editable2_id)}}"> Familiar: {{familiar.name}}</a>,
+                {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        
+        <div class="traits">
+            <p>Traits:
+            {% if editable.traits %}
+                {% for trait in editable.traits %}
+                    {{trait}},
+                {% endfor %}
+            {% else %}
+                No given Traits.
+            {% endif %}
             </p>
         </div>
-    {% endif %}
-
-    {% if image %}
-        <img src="url_for('api.image_retrieve', image_id=image.editable_id)" alt="">
-    {% endif %}
     
-    <div class="traits">
-        <p>Traits:
-        {% if editable.traits %}
-            {% for trait in editable.traits %}
-                {{trait}},
-            {% endfor %}
-        {% else %}
-            No given Traits.
-        {% endif %}
-        </p>
-    </div>
-
-    <div class="stats">
-        <p>Stats:
-            {% if editable.stats %}
-                {% for stat in editable.stats %}
-                    {{stat}},
-                {% endfor %}
-            {% else %}
-                No given Stats.
-            {% endif %}
-        </p>
-    </div>
-
-    <div class="relationships">
-        <p>Relationships:
-            {% if editable.relationships %}
-                {% for relationship in editable.relationships %}
-                    {{relationship}},
-                {% endfor %}
-            {% else %}
-                No given Relationships.
-            {% endif %}
-        </p>
+        <div class="stats">
+            <p>Stats:
+                {% if editable.stats %}
+                    {% for stat in editable.stats %}
+                        {{stat}},
+                    {% endfor %}
+                {% else %}
+                    No given Stats.
+                {% endif %}
+            </p>
+        </div>
+    
+        <div class="relationships">
+            <p>Relationships:
+                {% if editable.relationships %}
+                    {% for relationship in editable.relationships %}
+                        {{relationship}},
+                    {% endfor %}
+                {% else %}
+                    No given Relationships.
+                {% endif %}
+            </p>
+        </div>
     </div>
 {% endblock%}
 
@@ -73,7 +82,24 @@
 
 {% block script %}
     <script>
-        document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = editable.editable_id)}}"
+        $(function () {
+            document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = editable.editable_id)}}"
+
+            $('#delete').on('click', function(){
+                $.ajax({
+                    url: '/api/delete_editable',
+                    method: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json',
+                    data:JSON.stringify({
+                        editable_id: "{{editable.id}}"
+                    })
+                }).always(function (data) {
+                    window.location.replace(`{{url_for('navi.index')}}`);
+                });
+            });
+        });
     </script>
 {% endblock %}
 

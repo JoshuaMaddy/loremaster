@@ -1,0 +1,50 @@
+#sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 1em;
+    width: 100%;
+}
+
+#sortable img {
+    margin: 3px 3px 3px 0;
+    padding: 1px;
+    float: left;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    font-size: 4em;
+    text-align: center;
+}
+
+#image_list{
+    display: flex;
+    justify-content: center;
+}
+
+div.image_grid {
+    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(min-content, 20%));
+    grid-auto-rows: 1fr;
+    gap: 1em;
+}
+
+div.image_div {
+    display: flex;
+    background-color: rgb(51, 196, 228);
+    border-radius: 0.5em;
+}
+
+div.image_div>img {
+    grid-area: image;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0.5em;
+}
+
+div.image_div>p {
+    padding: 0px;
+    margin: 0px;
+    grid-area: select;
+}

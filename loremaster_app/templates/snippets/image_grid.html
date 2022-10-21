@@ -1,7 +1,7 @@
 <div class="image_grid">
     {% for image in images %}
-        <div class="image">
-            <img src="{{url_for('api.image_retrieve', image_id=image.editable_id)}}" style="width: 100px; height: 100px;" alt="">
-        </div>
+    <div class="image_div" data-selected="false">
+        <img src="{{url_for('api.image_retrieve', image_id=image.editable_id)}}" data-editable_id="{{image.editable_id}}" alt="">
+    </div>
     {% endfor %}
 </div>

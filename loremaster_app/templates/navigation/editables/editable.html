@@ -3,6 +3,10 @@
 {% block content %}
 
     {% block editable %}
+
+    {% block data %}
+    {% endblock %}
+
     {% endblock %}
 
     {% if editor_perms %}
@@ -15,11 +19,9 @@
                 </button>
             </a>
 
-            <a id="delete_ref" href="">
-                <button id="edit">
-                    Delete {{editable.name}}
-                </button>
-            </a>
+            <button id="delete">
+                Delete {{editable.name}}
+            </button>
         </div>
     {% endif %}
 {% endblock %}

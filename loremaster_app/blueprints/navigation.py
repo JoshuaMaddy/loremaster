@@ -1,7 +1,6 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, send_file, jsonify
+    Blueprint, g, redirect, render_template, url_for
 )
-from flask import session as fsession
 from ..database.init_db import Session
 from ..database.table_declarations import *
 
@@ -31,6 +30,10 @@ def user_page(user_id:int):
             # Render user page by passing in user
             return render_template('navigation/user_page.html', user=user)
 
+@bp.route('/create/')
+def create():
+    return render_template('navigation/editables/create_editable.html')
+
 @bp.route('/character/<int:character_id>')
 def character_page(character_id:int):
     with Session.begin() as sqlsession:
@@ -38,6 +41,10 @@ def character_page(character_id:int):
 
         # Try to retrieve character from DB session
         character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+
+        # If no character for id (or subclass of familiar), fail silently
+        if character is None or character.type == 'familiar':
+            return redirect(url_for('navi.index'))
 
         # Assume that viewer is not editor
         editor_perms = False
@@ -58,12 +65,8 @@ def character_page(character_id:int):
             images.sort(key = lambda image : image.index)
             image = images[0]
 
-        # If no character for id (or subclass of familiar), fail silently
-        if character is None or character.type == 'familiar':
-            return redirect(url_for('navi.index'))
-        else:
-            # Pass character and editor perms to character page to be rendered
-            return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image)
+        # Pass character and editor perms to character page to be rendered
+        return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image)
 
 @bp.route('/character/edit/<int:character_id>')
 @login_required
@@ -79,6 +82,61 @@ def character_edit(character_id:int):
                 return render_template('navigation/editables/character/character_edit.html', character=character)
         
         return redirect(url_for('navi.index'))
+
+@bp.route('/image/<int:image_id>')
+def image_page(image_id:int):
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        # Assume that viewer is not editor
+        editor_perms = False
+        # Assume no image
+        image = None
+
+        # Try to retrieve image from DB session
+        image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+
+        # If no image for id (or subclass of familiar), fail silently
+        if not image:
+            return redirect(url_for('navi.index'))
+
+        # If logged in
+        if g.user:
+            # Retrieve up to date user info
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            # If image is owned/can be edited by the viewer
+            if image in user.editor_perms:
+                editor_perms = True
+
+        # Pass image and editor perms to image page to be rendered
+        return render_template('navigation/editables/image/image.html', editable=image, editor_perms=editor_perms)
+
+@bp.route('/image/edit/<int:image_id>')
+@login_required
+def image_edit(image_id:int):
+     with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        if user and image: 
+            if image in user.editor_perms:
+                return render_template('navigation/editables/image/image_edit.html', image=image)
+        
+        return redirect(url_for('navi.index'))
+
+
+@bp.route('/character/create/')
+@login_required
+def character_creation():
+        return render_template('navigation/editables/character/character_creation.html', character=None)
+
+@bp.route('/image/create/')
+@login_required
+def image_creation():
+        return render_template('navigation/editables/image/image_creation.html', image=None)
+
 
 @bp.route('/familiar/<int:familiar_id>')
 def familiar_page(familiar_id:int):
@@ -115,10 +173,6 @@ def item_page(item_id:int):
         item:Item = sqlsession.execute(select(Item).where(Item.editable_id == item_id)).scalar()
 
         return render_template('navigation/editables/inventory/item/item.html', item = item )
-
-@bp.route('/image/<int:image_id>')
-def image_page(image_id:int):
-    return 'image page placeholder'
 
 @bp.route('/guild/<int:guild_id>')
 def guild_page(guild_id:int):

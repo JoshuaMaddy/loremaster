@@ -2,13 +2,14 @@
 <title>{% block title %}{% endblock %} - LoreMaster</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-{% block script_tags %}{% endblock %}
+{% block links %}{% endblock %}
 
 {% block navbar %}
   <nav class="navbar">
     <h1><a href="{{url_for('navi.index')}}">LoreMaster</a></h1>
     {% if g.user %}
       <li><span><a href="{{url_for('navi.user_page', user_id=g.user.id)}}">{{ g.user.name }}</a></span>
+      <li><span><a href="{{url_for('navi.create')}}">Create</a></span>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
       <li><a href="{{ url_for('auth.register') }}">Register</a>

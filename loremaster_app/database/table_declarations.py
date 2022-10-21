@@ -1,6 +1,7 @@
-from contextlib import nullcontext
-from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table, select
 from sqlalchemy.orm import declarative_base, relationship, backref
+
+from sqlalchemy.orm import Session as Ses
 
 from .table_declaration_types import *
 
@@ -10,6 +11,10 @@ Base = declarative_base()
 editable_editors = Table('editors', Base.metadata,
     Column('editable_id', ForeignKey('editable.id'), primary_key=True),
     Column('user_id', ForeignKey('user.id'), primary_key=True))
+
+editable_images = Table('imagelist', Base.metadata,
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('imagelistitem_id', ForeignKey('imagelistitem.id'), primary_key=True))
 
 character_traits = Table('traits', Base.metadata,
     Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
@@ -30,6 +35,8 @@ character_inventories = Table('inventories', Base.metadata,
 character_familiars = Table('familiars', Base.metadata,
     Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
     Column('familiar_id', ForeignKey('familiar.editable2_id'), primary_key=True))
+
+
 
 class User(Base):
     __tablename__ = "user"
@@ -77,7 +84,7 @@ class Editable(Base):
     id:int = Column(Integer, primary_key=True)
 
     owner_id:int = Column(Integer, ForeignKey("user.id"))
-    owner:User = relationship('User', back_populates='owns',)
+    owner:User = relationship('User', back_populates='owns')
 
     editors:list[User] = relationship('User',
                         secondary = editable_editors,
@@ -85,6 +92,7 @@ class Editable(Base):
     
     name:str = Column(String, nullable=False)
     description:str = Column(String)
+
 
     images:list[ImageListItem] = relationship('ImageListItem', back_populates='editable')
 
@@ -105,6 +113,14 @@ class Editable(Base):
         super().__init__()
 
     id:int = Column(Integer, primary_key=True)
+
+    def set_editors(self, sqlsession:Ses, editor_ids:list[int]) -> None:
+        if editor_ids:
+            for editor_id in editor_ids:
+                editor:User = sqlsession.execute(select(User).where(User.id == editor_id)).scalar()
+
+                if editor and not editor in self.editors:
+                    self.editors.append(editor)
 
 class Location(Editable):
     __tablename__ = "location"
@@ -159,6 +175,46 @@ class Character(Editable):
 
     def __repr__(self) -> str:
         return f"Character{{name:{self.name}, id:{self.editable_id}}}"
+
+    def set_images(self, sqlsession:Ses, image_ids:list[int]) -> None:
+        for index in range(len(image_ids)):
+            image = sqlsession.execute(select(Image).where(Image.editable_id == image_ids[index])).scalar()
+            if image:
+                imageListItem:ImageListItem = ImageListItem(editable=self, image=image, index=index)
+                self.images.append(imageListItem)
+
+    def set_stats(self, stats:list[dict]) -> None:
+        for stat in stats:
+            new_stat:Stat = Stat(name=stat.get('stat_name'), short_description=stat.get('stat_description'))
+            self.stats.append(new_stat)
+
+    def set_traits(self, traits:list[dict]) -> None:
+        for trait in traits:
+            new_trait:Trait = Trait(name=trait.get('trait_name'), short_description=trait.get('trait_description'))
+            self.traits.append(new_trait)
+
+    def set_relationships(self, sqlsession:Ses, user:User, relationships:list[dict]) -> None:
+        for relationship in relationships:
+            name:str = relationship.get('relationship_name')
+            character_id:int = relationship.get('character_id')
+            description:str = relationship.get('relationship_desc')
+
+            if character_id != None:
+                second_character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+                
+                if second_character in user.editor_perms:
+                    new_relationship:Relationship = Relationship(name=name, short_description=description)
+                    new_relationship.character = second_character
+
+                    self.relationships.append(new_relationship)
+
+    def set_familiars(self, sqlsession:Ses, user:User, familiar_ids:list[int]) -> None:
+        for familiar_id in familiar_ids:
+            familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar()
+
+            if familiar and not familiar in self.familiars and familiar in user.editor_perms:
+                self.familiars.append(familiar)
+
 
 class Familiar(Character):
     __tablename__ = "familiar"
@@ -341,19 +397,21 @@ class ImageListItem(Base):
     id:int = Column(Integer, primary_key=True)
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"))
-    editable:Editable = relationship('Editable', back_populates="images", foreign_keys=[editable_id])
-
-    image_id:int = Column(Integer, ForeignKey("image.editable_id"))
+    editable:Editable = relationship('Editable', back_populates='images', foreign_keys=[editable_id])
+    
+    image_id:int = Column(Integer, ForeignKey('image.editable_id'))
     image:Image = relationship('Image', foreign_keys=[image_id])
 
     index = Column(Integer, nullable=False)
 
-    def __init__(self, image:Image, index:int=-1) -> None:
+    def __init__(self, editable:Editable, image:Image, index:int=-1) -> None:
+        self.editable = editable
         self.image = image
+        self.image_id = image.editable_id
         self.index = index
     
     def __repr__(self) -> str:
-        return f"ImageListItem(editable name:{{{self.editable.name}}}, name{{{self.image.name}}}, index:{{{self.index}}})"
+        return f"ImageListItem(image_id:{{{self.image_id}}}, index:{{{self.index}}})"
 
 class Description(Base):
     __tablename__ = "description"

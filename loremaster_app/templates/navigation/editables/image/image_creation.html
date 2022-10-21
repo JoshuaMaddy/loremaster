@@ -1,0 +1,9 @@
+{% extends 'navigation/editables/image/image_edit.html' %}
+
+{% block options %}
+    <button id="create" type="button">Create</button>
+
+    <a href="{{url_for('navi.create')}}">
+        <button id="discard">Discard</button>
+    </a>
+{% endblock %}

@@ -3,8 +3,6 @@ import os
 from flask import Flask
 from pathlib import Path
 
-
-
 UPLOAD_FOLDER = (Path(__file__) / "../instance/images").resolve()
 
 def create_app(test_config=None):
@@ -35,7 +33,8 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     # import and register blueprints
-    from .blueprints import navigation, auth, api
+    from .blueprints import navigation, auth
+    from .blueprints.api import api
 
     app.register_blueprint(navigation.bp)
     app.register_blueprint(auth.bp)

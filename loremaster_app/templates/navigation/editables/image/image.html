@@ -1,0 +1,50 @@
+{% extends 'navigation/editables/editable.html' %}
+
+{% block title%}Image View{% endblock %}
+
+{% block links %}
+<!-- jQuery Link -->
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block editable %}
+    <!-- Image Container -->
+    <div class="image_container">
+        <p>Name: {{editable.name}}</p>
+
+        <img src="{{url_for('api.image_retrieve', image_id=editable.editable_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+    
+        <p>Description: </p>
+        {% autoescape false %}
+        {{editable.description}}
+        {% endautoescape %}
+    
+    </div>
+{% endblock%}
+
+{% block edit_name %}
+    {{editable.name}}
+{% endblock%}
+
+{% block script %}
+    <script>
+        $(function () {
+            document.getElementById('edit_ref').href = "{{url_for('navi.image_edit', image_id = editable.editable_id)}}"
+
+            $('#delete').on('click', function(){
+                $.ajax({
+                    url: '/api/delete_editable',
+                    method: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json',
+                    data:JSON.stringify({
+                        editable_id: "{{editable.id}}"
+                    })
+                }).always(function (data) {
+                    window.location.replace(`{{url_for('navi.index')}}`);
+                });
+            });
+        });
+    </script>
+{% endblock %}
