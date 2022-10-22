@@ -122,6 +122,13 @@ class Editable(Base):
                 if editor and not editor in self.editors:
                     self.editors.append(editor)
 
+    def set_images(self, sqlsession:Ses, image_ids:list[int]) -> None:
+        for index in range(len(image_ids)):
+            image = sqlsession.execute(select(Image).where(Image.editable_id == image_ids[index])).scalar()
+            if image:
+                imageListItem:ImageListItem = ImageListItem(editable=self, image=image, index=index)
+                self.images.append(imageListItem)
+
 class Location(Editable):
     __tablename__ = "location"
 
@@ -129,10 +136,8 @@ class Location(Editable):
 
     parent_id:int = Column(Integer, ForeignKey(editable_id))
 
-    parent:list[Location]
     children:list[Location] = relationship(
         "Location",
-        cascade="all, delete-orphan",
         backref=backref("parent", remote_side=editable_id),
         foreign_keys=[parent_id]
     )
@@ -146,6 +151,17 @@ class Location(Editable):
 
     def __repr__(self) -> str:
         return f"Location{{name:{self.name}, id:{self.editable_id}}}"
+
+    def set_parent(self, sqlsession:Ses, parent_location_id:int) -> None:
+        parent_location = sqlsession.execute(select(Location).where(Location.editable_id == parent_location_id)).scalar()
+        if parent_location:
+            self.parent = parent_location
+
+    def set_children(self, sqlsession:Ses, children_location_ids:list[int]) -> None:
+        for location_id in children_location_ids:
+            child_location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
+            if child_location:
+                self.children.append(child_location)
 
 class Character(Editable):
     __tablename__ = "character"
@@ -175,13 +191,6 @@ class Character(Editable):
 
     def __repr__(self) -> str:
         return f"Character{{name:{self.name}, id:{self.editable_id}}}"
-
-    def set_images(self, sqlsession:Ses, image_ids:list[int]) -> None:
-        for index in range(len(image_ids)):
-            image = sqlsession.execute(select(Image).where(Image.editable_id == image_ids[index])).scalar()
-            if image:
-                imageListItem:ImageListItem = ImageListItem(editable=self, image=image, index=index)
-                self.images.append(imageListItem)
 
     def set_stats(self, stats:list[dict]) -> None:
         for stat in stats:

@@ -1,5 +1,4 @@
 // Snippets for character creation
-
 var trait_snippet = `<div class="trait">
 <input type="text" name="single_trait" class="single_trait" placeholder="Trait">
 <input type="text" name="single_trait_desc" class="single_trait_desc" placeholder="Short Description">
@@ -210,7 +209,7 @@ $(function () {
         })
     }
 
-    // If button with ID log  clicked, console out the form data as a JSON object
+    // If button with ID log clicked, console out the form data as a JSON object
     $('#log').on('click', function (evt) {
         console.log(JSON.stringify(createCharacterData()))
     })

@@ -26,7 +26,6 @@ def create():
                 image_ids:list[int] = character_info.get('image_ids')
                 
                 user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
-                character:Character = None
 
                 if user:
                     character:Character = Character(owner=user, name=name)

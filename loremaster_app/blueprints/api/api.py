@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
 
-from . import image, character
+from . import image, character, location
 
 bp = Blueprint('api', __name__)
 
@@ -43,6 +43,16 @@ def image_create():
 @login_required
 def image_edit():
     return image.edit()
+
+@bp.route('/api/location_create', methods=['POST'])
+@login_required
+def location_create():
+    return location.create()
+
+@bp.route('/api/location_edit', methods=['POST'])
+@login_required
+def location_edit():
+    return location.edit()
 
 @bp.route('/api/search', methods=['POST'])
 @login_required

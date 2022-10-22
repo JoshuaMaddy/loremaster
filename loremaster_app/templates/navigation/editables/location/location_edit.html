@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Location Edit{% endblock %}
+
+{% block links%}
+<!-- TinyMCE links -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery/UI links -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
+<script type="text/javascript" src="{{url_for('static', filename='location_edit.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+    {% if location %}
+    <div id="location_page" data-location_url="{{url_for('navi.location_page', location_id = location.editable_id)}}"></div>
+    {% endif %}
+
+    {% block form %}
+        <form method="post" id="location_form">
+
+            <!-- Name -->
+            <label for="name">Name</label>
+            <input name="name" id="name" value="{{location.name if location else ''}}" placeholder="Location Name" required>
+            <input name="location_id" id="location_id" type="text" value="{{location.editable_id if location else ''}}" hidden>
+            
+            <!-- Images -->
+            <div id="image_container">
+                <label for="images">Images</label>
+                <div id="image_list">
+                    <ul id="sortable">
+                        {% for image in location.images %}
+                            <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" data-editable_id="{{image.image_id}}" alt="">
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="image_selection">
+                </div>
+
+                <button id="select_images" type="button">
+                    Select Images
+                </button>
+            </div>
+
+            <hr>
+
+            <!-- Description -->
+            <p>Description</p>
+            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                    <textarea id="description">Description Text</textarea>
+                </div>
+            </div>
+
+            <!-- Location Parent -->
+            <div id="parent_location_selection">
+                <label for="location">Parent Location</label>
+                <input type="text" name="parent_location" id="parent_location" value="{{location.parent.name if location.parent else ''}}">
+                <input type="text" name="parent_location_id" id="parent_location_id" value="{{location.parent.editable_id if location.parent else ''}}" hidden>
+            </div>
+
+            <hr>
+
+            <!-- Location Children -->
+            <div id="children_location_selection">
+                <label for="location">Children Locations</label>
+                
+                {% for location in location.children %}
+                <div class="child_location">
+                    <input type="text" name="single_location" class="single_location" value="{{location.name if location.name else ''}}" placeholder="Location">
+                    <input type="text" name="single_location_id" id="single_location_id" value="{{location.editable_id}}" hidden>
+                    <button type="button" class="remove_location">-</button>
+                </div>
+                {% endfor %}
+
+                {% if not location.children %}
+                <div class="child_location">
+                    <input type="text" name="single_location" class="single_location" placeholder="Location">
+                    <input type="text" name="single_location_id" id="single_location_id" value="" hidden>
+                    <button type="button" class="remove_location">-</button>
+                </div>
+                {% endif %}
+
+                <button type="button" id="add_location">Add Location</button>
+            </div>
+
+            <hr>
+
+            <!-- Editor Selection -->
+            <div id="editor_selection">
+                <label for="editor">Editor</label>
+                {% for editor in location.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endfor %}
+
+                {% if not location.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endif %}
+
+                <button type="button" id="add_editor">Add Editor</button>
+            </div>
+
+        </form>
+    {% endblock %}
+
+    {% block options %}
+        <button id="confirm" type="button">Confirm</button>
+
+        <a href="{{url_for('navi.create')}}">
+            <button id="discard">Discard</button>
+        </a>
+    {% endblock %}
+
+    <div id="hidden_description" hidden>
+        {% autoescape false %}
+            {{location.description if location else 'Description Text Here'}}
+        {% endautoescape %}
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

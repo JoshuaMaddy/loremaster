@@ -96,10 +96,7 @@ def create():
                     return redirect
                 
                 # Create a list of given editor values from form data.
-                editor_ids:list[int] = None
-                for editor_id in request.form.getlist('editor_id'):
-                    if editor_id.isalpha():
-                        editor_ids.append(int(editor_id))
+                editor_ids:list[int] = request.form.getlist('editor_id', type=int)
 
                 # Set a description from form data.
                 description:str = request.form.get('description')
@@ -175,18 +172,15 @@ def edit():
                 flash('No name for image')
                 return redirect
 
-            if request.form.get('image_id') != '' and request.form.get('image_id').isnumeric():
-                image_id:int = int(request.form.get('image_id'))
-            else:
+            image_id:int = request.form.get('image_id', default=None, type=int)
+
+            if not image_id:
                 flash('Image ID error')
                 return redirect
 
             image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
             
-            editor_ids:list[int] = None
-            for editor_id in request.form.getlist('editor_id'):
-                if editor_id.isalpha():
-                    editor_ids.append(int(editor_id))
+            editor_ids:list[int] = request.form.getlist('editor_id', type=int)
 
             description:str = request.form.get('description')
 
