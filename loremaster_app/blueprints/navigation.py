@@ -141,9 +141,48 @@ def familiar_page(familiar_id:int):
     with Session.begin() as sqlsession: 
         sqlsession:Ses
 
+        # Assume that viewer is not editor
+        editor_perms = False
+        # Assume no image
+        image = None
+
+        # Try to retrieve familiar from DB session
         familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar() 
 
-        return render_template('navigation/editables/familiar/familiar_page.html', familiar = familiar)
+        # If no image for id (or subclass of familiar), fail silently
+        if not familiar:
+            return redirect(url_for('navi.index'))
+
+        # If logged in
+        if g.user:
+            # Retrieve up to date user info
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            # If image is owned/can be edited by the viewer
+            if familiar in user.editor_perms:
+                editor_perms = True
+
+        # Find first image
+        if familiar.images:
+            images = familiar.images
+            images.sort(key = lambda image : image.index)
+            image = images[0]
+
+        return render_template('navigation/editables/familiar/familiar.html', editable=familiar, editor_perms=editor_perms, image=image)
+
+@bp.route('/familiar/edit/<int:familiar_id>')
+@login_required
+def familiar_edit(familiar_id:int):
+     with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        if user and familiar: 
+            if familiar in user.editor_perms:
+                return render_template('navigation/editables/familiar/familiar_edit.html', familiar=familiar)
+        
+        return redirect(url_for('navi.index'))
 
 @bp.route('/location/<int:location_id>')
 def location_page(location_id:int):

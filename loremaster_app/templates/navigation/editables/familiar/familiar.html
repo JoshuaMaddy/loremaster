@@ -10,7 +10,7 @@
 {% block editable %}
     <!-- Character Container -->
     <div class="character_container">
-        <p>Name: {{familiar.name}}</p>
+        <p>Name: {{editable.name}}</p>
 
         {% if image %}
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
@@ -19,29 +19,31 @@
         <p>Description: </p>
         
         {% autoescape false %}
-        {{familiar.description}}
+        {{editable.description}}
         {% endautoescape %}
     
-        {% if familiar.location %}
+        {% if editable.location %}
             <a href="{{url_for('navi.location_page', location_id=editable.location.editable_id)}}"> Location: {{editable.location.name}}</a>
         {% else %}
             <p> Location: No Set Location </p>
         {% endif %}
     
-        {% if familiar.familiars %}
+        {% if editable.familiars %}
             <div class="familiars">
                 <p>Familiars:
-                {% for familiar in familiar.familiars %}
-                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.editable2_id)}}"> Familiar: {{familiar.name}}</a>,
+                {% for familiar in editable.familiars %}
+                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.editable2_id)}}"> Familiar: {{editable.name}}</a>,
                 {% endfor %}
                 </p>
             </div>
         {% endif %}
+
         <br>
+
         <div class="traits">
             <p>Traits: <br>
-            {% if familiar.traits %}
-                {% for trait in familiar.traits %}
+            {% if editable.traits %}
+                {% for trait in editable.traits %}
                     {{trait.name}}:  {{trait.short_description}} <br>
                 {% endfor %}
             {% else %}
@@ -53,8 +55,8 @@
     
         <div class="stats">
             <p>Stats:<br>
-                {% if familiar.stats %}
-                    {% for stat in familiar.stats %}
+                {% if editable.stats %}
+                    {% for stat in editabale.stats %}
                     {{stat.name}}:  {{stat.short_description}} <br>
                     {% endfor %}
                 {% else %}
@@ -66,8 +68,8 @@
     
         <div class="relationships">
             <p>Relationships:
-                {% if familiar.relationships %}
-                    {% for relationship in familiar.relationships %}
+                {% if editable.relationships %}
+                    {% for relationship in editable.relationships %}
                         {{relationship}},
                     {% endfor %}
                 {% else %}
@@ -79,13 +81,13 @@
 {% endblock%}
 
 {% block edit_name %}
-    {{familiar.name}}
+    {{editabale.name}}
 {% endblock%}
 
 {% block script %}
     <script>
         $(function () {
-            document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = familiar.editable2_id)}}"
+            document.getElementById('edit_ref').href = "{{url_for('navi.familiar_edit', familiar_id = editable.editable2_id)}}"
 
             $('#delete').on('click', function(){
                 $.ajax({
@@ -95,7 +97,7 @@
                     processData: false,
                     contentType: 'application/json',
                     data:JSON.stringify({
-                        editable2_id: "{{familiar.id}}"
+                        editable_id: "{{editable.id}}"
                     })
                 }).always(function (data) {
                     window.location.replace(`{{url_for('navi.index')}}`);
