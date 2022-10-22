@@ -37,30 +37,32 @@
                 </p>
             </div>
         {% endif %}
-        
+        <br>
         <div class="traits">
-            <p>Traits:
+            <p>Traits: <br>
             {% if editable.traits %}
                 {% for trait in editable.traits %}
-                    {{trait}},
+                    {{trait.name}}:  {{trait.short_description}} <br>
                 {% endfor %}
             {% else %}
                 No given Traits.
             {% endif %}
             </p>
         </div>
+        <br>
     
         <div class="stats">
-            <p>Stats:
+            <p>Stats:<br>
                 {% if editable.stats %}
                     {% for stat in editable.stats %}
-                        {{stat}},
+                    {{stat.name}}:  {{stat.short_description}} <br>
                     {% endfor %}
                 {% else %}
                     No given Stats.
                 {% endif %}
             </p>
         </div>
+        <br>
     
         <div class="relationships">
             <p>Relationships:
