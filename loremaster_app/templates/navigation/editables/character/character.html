@@ -95,7 +95,7 @@
                     processData: false,
                     contentType: 'application/json',
                     data:JSON.stringify({
-                        editable_id: "{{editable.id}}"
+                        id: "{{editable.id}}"
                     })
                 }).always(function (data) {
                     window.location.replace(`{{url_for('navi.index')}}`);
