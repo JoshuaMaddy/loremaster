@@ -20,7 +20,7 @@
 {% block content %}
 
     {% if location %}
-    <div id="location_page" data-location_url="{{url_for('navi.location_page', location_id = location.editable_id)}}"></div>
+    <div id="location_page" data-location_url="{{url_for('navi.location_page', location_id = location.id)}}"></div>
     {% endif %}
 
     {% block form %}
@@ -29,15 +29,15 @@
             <!-- Name -->
             <label for="name">Name</label>
             <input name="name" id="name" value="{{location.name if location else ''}}" placeholder="Location Name" required>
-            <input name="location_id" id="location_id" type="text" value="{{location.editable_id if location else ''}}" hidden>
+            <input name="location_id" id="location_id" type="text" value="{{location.id if location else ''}}" hidden>
             
             <!-- Images -->
             <div id="image_container">
                 <label for="images">Images</label>
                 <div id="image_list">
                     <ul id="sortable">
-                        {% for image in location.images %}
-                            <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" data-editable_id="{{image.image_id}}" alt="">
+                        {% for imageLI in location.images %}
+                            <img src="{{url_for('api.image_retrieve', image_id=imageLI.image_id)}}" data-editable_id="{{imageLI.image_id}}" alt="">
                         {% endfor %}
                     </ul>
                 </div>
@@ -66,7 +66,7 @@
             <div id="parent_location_selection">
                 <label for="location">Parent Location</label>
                 <input type="text" name="parent_location" id="parent_location" value="{{location.parent.name if location.parent else ''}}">
-                <input type="text" name="parent_location_id" id="parent_location_id" value="{{location.parent.editable_id if location.parent else ''}}" hidden>
+                <input type="text" name="parent_location_id" id="parent_location_id" value="{{location.parent.id if location.parent else ''}}" hidden>
             </div>
 
             <hr>
@@ -78,7 +78,7 @@
                 {% for location in location.children %}
                 <div class="child_location">
                     <input type="text" name="single_location" class="single_location" value="{{location.name if location.name else ''}}" placeholder="Location">
-                    <input type="text" name="single_location_id" id="single_location_id" value="{{location.editable_id}}" hidden>
+                    <input type="text" name="single_location_id" id="single_location_id" value="{{location.id}}" hidden>
                     <button type="button" class="remove_location">-</button>
                 </div>
                 {% endfor %}

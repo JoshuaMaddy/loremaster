@@ -23,7 +23,7 @@
         {% endautoescape %}
     
         {% if editable.location %}
-            <a href="{{url_for('navi.location_page', location_id=editable.location.editable_id)}}"> Location: {{editable.location.name}}</a>
+            <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}"> Location: {{editable.location.name}}</a>
         {% else %}
             <p> Location: No Set Location </p>
         {% endif %}
@@ -32,7 +32,7 @@
             <div class="familiars">
                 <p>Familiars:
                 {% for familiar in editable.familiars %}
-                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.editable2_id)}}"> Familiar: {{familiar.name}}</a>,
+                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.id)}}"> Familiar: {{familiar.name}}</a>,
                 {% endfor %}
                 </p>
             </div>
@@ -85,7 +85,7 @@
 {% block script %}
     <script>
         $(function () {
-            document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = editable.editable_id)}}"
+            document.getElementById('edit_ref').href = "{{url_for('navi.character_edit', character_id = editable.id)}}"
 
             $('#delete').on('click', function(){
                 $.ajax({

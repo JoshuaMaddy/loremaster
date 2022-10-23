@@ -40,7 +40,7 @@ def character_page(character_id:int):
         sqlsession:Ses
 
         # Try to retrieve character from DB session
-        character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+        character:Character = sqlsession.execute(select(Character).where(Character.id == character_id)).scalar()
 
         # If no character for id (or subclass of familiar), fail silently
         if character is None or character.type == 'familiar':
@@ -79,7 +79,7 @@ def character_edit(character_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+        character:Character = sqlsession.execute(select(Character).where(Character.id == character_id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
         if user and character: 
@@ -99,7 +99,7 @@ def image_page(image_id:int):
         image = None
 
         # Try to retrieve image from DB session
-        image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+        image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
 
         # If no image for id (or subclass of familiar), fail silently
         if not image:
@@ -127,7 +127,7 @@ def image_edit(image_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+        image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
         if user and image: 
@@ -147,7 +147,7 @@ def familiar_page(familiar_id:int):
         image = None
 
         # Try to retrieve familiar from DB session
-        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar() 
+        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar() 
 
         # If no image for id (or subclass of familiar), fail silently
         if not familiar:
@@ -175,7 +175,7 @@ def familiar_edit(familiar_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar()
+        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
         if user and familiar: 
@@ -195,7 +195,7 @@ def location_page(location_id:int):
         image = None
 
         # Try to retrieve image from DB session
-        location:Location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
+        location:Location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
 
         # If no image for id (or subclass of familiar), fail silently
         if not location:
@@ -229,7 +229,7 @@ def location_edit(location_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        location:Location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
+        location:Location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
         if user and location: 
@@ -243,7 +243,7 @@ def inventory_page(inventory_id:int):
     with Session.begin() as sqlsession: 
         sqlsession:Ses
 
-        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.editable_id == inventory_id)).scalar()
+        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == inventory_id)).scalar()
 
         return render_template('navigation/editables/inventory/inventory_page.html', inventory = inventory )
 
@@ -252,7 +252,7 @@ def item_page(item_id:int):
     with Session.begin() as sqlsession: 
         sqlsession:Ses
 
-        item:Item = sqlsession.execute(select(Item).where(Item.editable_id == item_id)).scalar()
+        item:Item = sqlsession.execute(select(Item).where(Item.id == item_id)).scalar()
 
         return render_template('navigation/editables/inventory/item/item.html', item = item )
 
@@ -261,7 +261,7 @@ def guild_page(guild_id:int):
     with Session.begin() as sqlsession: 
         sqlsession:Ses
 
-        guild:Guild = sqlsession.execute(select(Guild).where(Guild.editable_id == guild_id)).scalar()
+        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
 
         return render_template('navigation/editables/guild/guild_page.html', guild = guild )
 

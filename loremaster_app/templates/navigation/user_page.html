@@ -3,19 +3,19 @@
 {% macro list_editables(iterator) -%}
     {% for element in iterator %}
         {% if element.type == 'character' %}
-            <li><a href="{{url_for('navi.character_page', character_id=element.editable_id)}}">Character: {{element.name}}</a>
+            <li><a href="{{url_for('navi.character_page', character_id=element.id)}}">Character: {{element.name}}</a>
         {% elif element.type == 'familiar' %}
-            <li><a href="{{url_for('navi.familiar_page', familiar_id=element.editable2_id)}}">Familiar: {{element.name}}</a>
+            <li><a href="{{url_for('navi.familiar_page', familiar_id=element.id)}}">Familiar: {{element.name}}</a>
         {% elif element.type == 'location' %}
-            <li><a href="{{url_for('navi.location_page', location_id=element.editable_id)}}">Location: {{element.name}}</a>
+            <li><a href="{{url_for('navi.location_page', location_id=element.id)}}">Location: {{element.name}}</a>
         {% elif element.type == 'guild' %}
-            <li><a href="{{url_for('navi.guild_page', guild_id=element.editable_id)}}">Guild: {{element.name}}</a>
+            <li><a href="{{url_for('navi.guild_page', guild_id=element.id)}}">Guild: {{element.name}}</a>
         {% elif element.type == 'inventory' %}
-            <li><a href="{{url_for('navi.inventory_page', inventory_id=element.editable_id)}}">Inventory: {{element.name}}</a>
+            <li><a href="{{url_for('navi.inventory_page', inventory_id=element.id)}}">Inventory: {{element.name}}</a>
         {% elif element.type == 'image' %}
             <li>
-                <a href="{{url_for('navi.image_page', image_id=element.editable_id)}}">
-                    <img src="{{url_for('api.image_retrieve', image_id=element.editable_id)}}" style="width: 100px; height: 100px; object-fit:cover;" alt="">
+                <a href="{{url_for('navi.image_page', image_id=element.id)}}">
+                    <img src="{{url_for('api.image_retrieve', image_id=element.id)}}" style="width: 100px; height: 100px; object-fit:cover;" alt="">
                 </a>
         {% else %}
             <li><p>{{ element }}</p>

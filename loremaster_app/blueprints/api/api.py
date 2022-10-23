@@ -109,14 +109,14 @@ def delete_editable():
             sqlsession:Ses
 
             delete_info:dict = request.json
-            editable_id = delete_info.get('editable_id')
+            id = delete_info.get('id')
 
-            editable:Editable = sqlsession.execute(select(Editable).where(Editable.id == editable_id)).scalar()
+            editable:Editable = sqlsession.execute(select(Editable).where(Editable.id == id)).scalar()
 
             if editable:
                 if editable.type == 'image':
 
-                    imageListItems:list[ImageListItem] = sqlsession.execute(select(ImageListItem).where(ImageListItem.image_id == editable.editable_id)).scalars().all()
+                    imageListItems:list[ImageListItem] = sqlsession.execute(select(ImageListItem).where(ImageListItem.image_id == editable.id)).scalars().all()
 
                     for imageListItem in imageListItems:
                         sqlsession.delete(imageListItem)

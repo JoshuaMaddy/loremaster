@@ -27,7 +27,7 @@ def retrieve(image_id:int) -> Response:
         sqlsession:Ses
 
         # Select image object from DB based on image's id.
-        image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+        image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
 
         if image:
             if os.path.exists(image.image_path):
@@ -116,15 +116,15 @@ def create():
                 sqlsession.flush()
 
                 # Return the url as a JSON object, directs to page for newly created image.
-                return(jsonify({'url':url_for('navi.image_page', image_id=image.editable_id)}))
+                return(jsonify({'url':url_for('navi.image_page', image_id=image.id)}))
 
-            # See corresponding if
-            flash('Incorrect file type.')
+            else:
+                flash('Incorrect file type.')
+                return redirect
+
+        else:
+            flash('User not found in DB.')
             return redirect
-
-        # See corresponding if
-        flash('User not found in DB.')
-        return redirect
 
 def edit():
     """Edits an image from a POST request with the given form data:
@@ -136,7 +136,14 @@ def edit():
     """
 
     # This is a similar format to image_creation, reference it for comments.
-    redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.image_edit', image_id=int(request.form.get('image_id')))})
+
+    redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.index')})
+
+    if request.form.get('image_id', default=None, type=int):
+        redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.image_edit', image_id=request.form.get('image_id', default=None, type=int))})
+    else:
+        flash('No image ID in form submission')
+        return redirect
 
     if 'choose-file' not in request.files:
         flash('No file part')
@@ -178,7 +185,7 @@ def edit():
                 flash('Image ID error')
                 return redirect
 
-            image:Image = sqlsession.execute(select(Image).where(Image.editable_id == image_id)).scalar()
+            image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
             
             editor_ids:list[int] = request.form.getlist('editor_id', type=int)
 
@@ -199,7 +206,8 @@ def edit():
 
             sqlsession.flush()
 
-            return(jsonify({'url':url_for('navi.image_page', image_id=image.editable_id)}))
+            return(jsonify({'url':url_for('navi.image_page', image_id=image.id)}))
 
-        flash('User not found in DB.')
-        return redirect
+        else:
+            flash('User not found in DB.')
+            return redirect

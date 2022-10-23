@@ -20,7 +20,7 @@
 {% block content %}
 
     {% if image %}
-    <div id="image_page" data-image_url="{{url_for('navi.image_page', image_id = image.editable_id)}}"></div>
+    <div id="image_page" data-image_url="{{url_for('navi.image_page', image_id = image.id)}}"></div>
     {% endif %}
 
     {% block form %}
@@ -29,7 +29,7 @@
             <div>
                 <div id="image_preview">
                     {% if image %}
-                    <img src="{{url_for('api.image_retrieve', image_id=image.editable_id)}}" alt="">
+                    <img src="{{url_for('api.image_retrieve', image_id=image.id)}}" alt="">
                     {% endif %}
                 </div>
                 

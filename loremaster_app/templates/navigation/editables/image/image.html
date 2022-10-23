@@ -12,7 +12,7 @@
     <div class="image_container">
         <p>Name: {{editable.name}}</p>
 
-        <img src="{{url_for('api.image_retrieve', image_id=editable.editable_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+        <img src="{{url_for('api.image_retrieve', image_id=editable.id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
     
         <p>Description: </p>
         {% autoescape false %}
@@ -29,7 +29,7 @@
 {% block script %}
     <script>
         $(function () {
-            document.getElementById('edit_ref').href = "{{url_for('navi.image_edit', image_id = editable.editable_id)}}"
+            document.getElementById('edit_ref').href = "{{url_for('navi.image_edit', image_id = editable.id)}}"
 
             $('#delete').on('click', function(){
                 $.ajax({

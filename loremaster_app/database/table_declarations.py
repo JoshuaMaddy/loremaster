@@ -13,27 +13,27 @@ editable_editors = Table('editors', Base.metadata,
     Column('user_id', ForeignKey('user.id'), primary_key=True))
 
 editable_images = Table('imagelist', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('imagelistitem_id', ForeignKey('imagelistitem.id'), primary_key=True))
 
 character_traits = Table('traits', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('trait_id', ForeignKey('trait.id'), primary_key=True))
 
 character_stats = Table('stats', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('stat_id', ForeignKey('stat.id'), primary_key=True))
 
 character_relationships = Table('relationships', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('relationship_id', ForeignKey('relationship.id'), primary_key=True))
 
 character_inventories = Table('inventories', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
 
 character_familiars = Table('familiars', Base.metadata,
-    Column('character_id', ForeignKey('character.editable_id'), primary_key=True),
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('familiar_id', ForeignKey('familiar.editable2_id'), primary_key=True))
 
 
@@ -93,8 +93,7 @@ class Editable(Base):
     name:str = Column(String, nullable=False)
     description:str = Column(String)
 
-
-    images:list[ImageListItem] = relationship('ImageListItem', back_populates='editable')
+    images:list[ImageListItem] = relationship('ImageListItem', secondary = editable_images, single_parent = True, cascade="all, delete-orphan")
 
     type:str = Column(String(15))
 
@@ -126,7 +125,7 @@ class Editable(Base):
         for index in range(len(image_ids)):
             image = sqlsession.execute(select(Image).where(Image.editable_id == image_ids[index])).scalar()
             if image:
-                imageListItem:ImageListItem = ImageListItem(editable=self, image=image, index=index)
+                imageListItem:ImageListItem = ImageListItem(image=image, index=index)
                 self.images.append(imageListItem)
 
 class Location(Editable):
@@ -408,15 +407,13 @@ class ImageListItem(Base):
     editable_id:int = Column(Integer, ForeignKey("editable.id"))
     editable:Editable = relationship('Editable', back_populates='images', foreign_keys=[editable_id])
     
-    image_id:int = Column(Integer, ForeignKey('image.editable_id'))
+    image_id:int = Column(Integer, ForeignKey('editable.id'))
     image:Image = relationship('Image', foreign_keys=[image_id])
 
     index = Column(Integer, nullable=False)
 
-    def __init__(self, editable:Editable, image:Image, index:int=-1) -> None:
-        self.editable = editable
+    def __init__(self, image:Image, index:int=-1) -> None:
         self.image = image
-        self.image_id = image.editable_id
         self.index = index
     
     def __repr__(self) -> str:

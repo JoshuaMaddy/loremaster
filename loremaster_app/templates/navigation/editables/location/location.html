@@ -44,7 +44,7 @@
 {% block script %}
     <script>
         $(function () {
-            document.getElementById('edit_ref').href = "{{url_for('navi.location_edit', location_id = editable.editable_id)}}"
+            document.getElementById('edit_ref').href = "{{url_for('navi.location_edit', location_id = editable.id)}}"
 
             $('#delete').on('click', function(){
                 $.ajax({

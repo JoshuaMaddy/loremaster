@@ -20,7 +20,7 @@
 {% block content %}
 
     {% if character %}
-    <div id="character_page" data-character_url="{{url_for('navi.character_page', character_id = character.editable_id)}}"></div>
+    <div id="character_page" data-character_url="{{url_for('navi.character_page', character_id = character.id)}}"></div>
     {% endif %}
 
     {% block form %}
@@ -29,7 +29,7 @@
             <!-- Name -->
             <label for="name">Name</label>
             <input name="name" id="name" value="{{character.name if character else ''}}" placeholder="Your Character Name" required>
-            <input name="character_id" id="character_id" type="text" value="{{character.editable_id if character else ''}}" hidden>
+            <input name="character_id" id="character_id" type="text" value="{{character.id if character else ''}}" hidden>
             
             <div id="image_container">
                 <label for="images">Images</label>
@@ -65,7 +65,7 @@
             <div id="location_selection">
                 <label for="location">Location</label>
                 <input type="text" name="location" id="location_input" value="{{character.location.name if character.location else ''}}">
-                <input type="text" name="location_id" id="location_id" value="{{character.location.editable_id if character.location else ''}}" hidden>
+                <input type="text" name="location_id" id="location_id" value="{{character.location.id if character.location else ''}}" hidden>
             </div>
 
             <hr>
@@ -126,7 +126,7 @@
                 <div class="relationship">
                     <input type="text" name="single_relationship" class="single_relationship" value="{{relationship.name if relationship.name else ''}}" placeholder="Relationship">
                     <input type="text" name="relationship_character" class="relationship_character" value="{{relationship.character.name if relationship.character else ''}}" placeholder="Character">
-                    <input type="text" name="relationship_character_id" class="relationship_character_id" value="{{relationship.character.editable_id if relationship.character else ''}}" hidden>
+                    <input type="text" name="relationship_character_id" class="relationship_character_id" value="{{relationship.character.id if relationship.character else ''}}" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" value="{{relationship.short_description if relationship.short_description else ''}}" placeholder="Short Description">
                     <button type="button" class="remove_relationship">-</button>
                 </div>
@@ -153,7 +153,7 @@
                 {% for familiar in character.familiars %}
                 <div class="familiar">
                     <input type="text" name="single_familiar" class="single_familiar" value="{{familiar.name if familiar.name else ''}}" placeholder="Familiar">
-                    <input name="familiar_id" id="familiar_id" type="text" value="{{familiar.editable2_id}}" hidden>
+                    <input name="familiar_id" id="familiar_id" type="text" value="{{familiar.id}}" hidden>
                     <button type="button" class="remove_familiar">-</button>
                 </div>
                 {% endfor %}

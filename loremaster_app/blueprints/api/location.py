@@ -29,7 +29,6 @@ def create():
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
         if user:
-
             # Retrieve user given name of image from form data.
             name:str = request.form.get('name', default=None, type=str)
 
@@ -46,34 +45,30 @@ def create():
 
             image_ids:list[int] = request.form.getlist('image_id', type=int)
 
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            location:Location = Location(owner=user, name=name)
 
-            if user:
-                    location:Location = Location(owner=user, name=name)
+            location.description = description
 
-                    location.description = description
-
-                    if parent_location_id:
-                        location.set_parent(sqlsession=sqlsession, parent_location_id=parent_location_id)
-                    
-                    if children_location_ids:
-                        location.set_children(sqlsession=sqlsession, children_location_ids=children_location_ids)
-                    
-                    if image_ids:
-                        location.set_images(sqlsession=sqlsession, image_ids=image_ids)
-                    
-                    if editor_ids:
-                        location.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+            if parent_location_id:
+                location.set_parent(sqlsession=sqlsession, parent_location_id=parent_location_id)
+            
+            if children_location_ids:
+                location.set_children(sqlsession=sqlsession, children_location_ids=children_location_ids)
+            
+            if image_ids:
+                location.set_images(sqlsession=sqlsession, image_ids=image_ids)
+            
+            if editor_ids:
+                location.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
 
             sqlsession.add(location)
             sqlsession.flush()
 
             # Return the url as a JSON object, directs to page for newly created image.
-            return(jsonify({'url':url_for('navi.location_page', location_id=location.editable_id)}))
-
-        # See corresponding if
-        flash('User not found in DB.')
-        return redirect
+            return(jsonify({'url':url_for('navi.location_page', location_id=location.id)}))
+        else:
+            flash('User not found in DB.')
+            return redirect
 
 def edit():
     """Edits a location from a POST request with the given form data:
@@ -110,32 +105,42 @@ def edit():
         image_ids:list[int] = request.form.getlist('image_id', type=int)
 
 
-        location:Location = sqlsession.execute(select(Location).where(Location.editable_id == id)).scalar()
+        location:Location = sqlsession.execute(select(Location).where(Location.id == id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
-        if user and location and location in user.editor_perms: 
-            location.name = name
-            location.description = description
+        if user:
+            if location:
+                if location in user.editor_perms: 
+                    location.name = name
+                    location.description = description
 
-            location.parent = None
-            location.children = []
-            location.images = []
+                    location.parent = None
+                    location.children = []
+                    location.images = []
 
-            location.editors = []
-            location.editors.append(user)
+                    location.editors = []
+                    location.editors.append(user)
 
-            if parent_location_id:
-                location.set_parent(sqlsession=sqlsession, parent_location_id=parent_location_id)
-            
-            if children_location_ids:
-                location.set_children(sqlsession=sqlsession, children_location_ids=children_location_ids)
-            
-            if image_ids:
-                location.set_images(sqlsession=sqlsession, image_ids=image_ids)
-            
-            if editor_ids:
-                location.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+                    if parent_location_id:
+                        location.set_parent(sqlsession=sqlsession, parent_location_id=parent_location_id)
+                    
+                    if children_location_ids:
+                        location.set_children(sqlsession=sqlsession, children_location_ids=children_location_ids)
+                    
+                    if image_ids:
+                        location.set_images(sqlsession=sqlsession, image_ids=image_ids)
+                    
+                    if editor_ids:
+                        location.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
 
-        # See corresponding if
-        flash('User not found in DB.')
-        return redirect
+                    return(jsonify({'url':url_for('navi.location_page', location_id=location.id)}))
+
+                else:
+                    flash('Location not in editor permissions.')
+                    return redirect
+            else:
+                flash('Location not found in DB.')
+                return redirect
+        else:
+            flash('User not found in DB.')
+            return redirect
