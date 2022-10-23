@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table, select
+from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table, select, ForeignKeyConstraint
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 from sqlalchemy.orm import Session as Ses
@@ -32,10 +32,25 @@ character_inventories = Table('inventories', Base.metadata,
     Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
 
-character_familiars = Table('familiars', Base.metadata,
-    Column('character_id', ForeignKey('editable.id'), primary_key=True),
-    Column('familiar_id', ForeignKey('familiar.editable2_id'), primary_key=True))
+familiar_traits = Table('f_traits', Base.metadata,
+    Column('familiar_id', ForeignKey('editable.id'), primary_key=True),
+    Column('trait_id', ForeignKey('trait.id'), primary_key=True))
 
+familiar_stats = Table('f_stats', Base.metadata,
+    Column('familiar_id', ForeignKey('editable.id'), primary_key=True),
+    Column('stat_id', ForeignKey('stat.id'), primary_key=True))
+
+familiar_relationships = Table('f_relationships', Base.metadata,
+    Column('familiar_id', ForeignKey('editable.id'), primary_key=True),
+    Column('relationship_id', ForeignKey('relationship.id'), primary_key=True))
+
+familiar_inventories = Table('f_inventories', Base.metadata,
+    Column('familiar_id', ForeignKey('editable.id'), primary_key=True),
+    Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
+
+character_familairs = Table('familiars', Base.metadata,
+    Column('character_id', ForeignKey('editable.id'), primary_key=True),
+    Column('familiar_id', ForeignKey('familiar.editable_id'), primary_key=True))
 
 
 class User(Base):
@@ -178,8 +193,8 @@ class Character(Editable):
     guilds = None
 
     familiars:list[Familiar] = relationship('Familiar',
-                        secondary = character_familiars,
-                        back_populates = 'character_owners')
+        secondary = character_familairs,
+        back_populates = 'owners')
 
     __mapper_args__ = {
         'polymorphic_identity':'character',
@@ -224,17 +239,27 @@ class Character(Editable):
                 self.familiars.append(familiar)
 
 
-class Familiar(Character):
+class Familiar(Editable):
     __tablename__ = "familiar"
 
-    editable2_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True, autoincrement=True)
+    editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
+
+    traits:list[Trait] = relationship('Trait', secondary = familiar_traits, single_parent = True, cascade="all, delete-orphan")
+    stats:list[Stat] = relationship('Stat', secondary = familiar_stats, single_parent = True, cascade="all, delete-orphan")
+    relationships:list[Relationship] = relationship('Relationship', secondary = familiar_relationships)
+    inventories:list[Inventory] = relationship('Inventory', secondary = familiar_inventories)
+
+    location_id:int = Column(Integer, ForeignKey("location.editable_id"))
+    location:Location = relationship("Location", foreign_keys=[location_id])
+
+    guilds = None
 
     character_owner_id:int = Column(Integer, ForeignKey("character.editable_id"))
     character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])
 
-    character_owners:list[Character] = relationship('Character',
-                        secondary = character_familiars,
-                        back_populates = 'familiars')
+    owners = relationship('Character',
+        secondary = character_familairs,
+        back_populates = 'familiars')
 
     __mapper_args__ = {
         'polymorphic_identity':'familiar',
