@@ -1,8 +1,5 @@
-from email.policy import default
-import os
-
 from flask import (
-    g, request, url_for, jsonify, flash, current_app
+    g, request, url_for, jsonify, flash
 )
 from ...database.init_db import Session
 from ...database.table_declarations import *
@@ -16,8 +13,8 @@ def create():
         ('single_location', ''), ('single_location_id', ''), ('single_editor', ''), ('editor_id', ''), ('description', '')])
 
     Returns:
-        Redirect: redirect JSON to the create page so as to flash error
-        Json: Json that directs to the newly created location page
+        Redirect: redirect JSON to the create page so as to flash error.
+        Json: Json that directs to the newly created location page.
     """
 
     # Redirect JSON for flashing errors, will be used in fetch's response section
@@ -33,7 +30,7 @@ def create():
             name:str = request.form.get('name', default=None, type=str)
 
             if not name:
-                flash('No name for location')
+                flash('No name for location.')
                 return redirect
 
             description:str = request.form.get('description', default=None, type=str)
@@ -76,8 +73,8 @@ def edit():
         ('single_location', ''), ('single_location_id', ''), ('single_editor', ''), ('editor_id', ''), ('description', '')])
 
     Returns:
-        Redirect: redirect JSON to the create page so as to flash error
-        Json: Json that directs to the edited location page
+        Redirect: redirect JSON to the create page so as to flash error.
+        Json: Json that directs to the edited location page.
     """
 
     id:int = request.form.get('location_id', default=None, type=int)
@@ -92,7 +89,7 @@ def edit():
         name:str = request.form.get('name', default=None, type=str)
 
         if not name:
-            flash('No name for location')
+            flash('No name for location.')
             return redirect
 
         description:str = request.form.get('description', default=None, type=str)

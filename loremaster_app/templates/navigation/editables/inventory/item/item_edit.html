@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Item Edit{% endblock %}
+
+{% block links%}
+<!-- TinyMCE links -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery/UI links -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
+<script type="text/javascript" src="{{url_for('static', filename='item_edit.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+    {% if item %}
+    <div id="item_page" data-item_url="{{url_for('navi.item_page', item_id = item.id)}}"></div>
+    {% endif %}
+
+    {% block form %}
+        <form method="post" id="item_form">
+
+            <!-- Name -->
+            <label for="name">Name</label>
+            <input name="name" id="name" value="{{item.name if item else ''}}" placeholder="Your Item Name" required>
+            <input name="item_id" id="item_id" type="text" value="{{item.id if item else ''}}" hidden>
+            
+            <div id="image_container">
+                <label for="images">Images</label>
+                <div id="image_list">
+                    <ul id="sortable">
+                        {% for image in item.images %}
+                            <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" data-editable_id="{{image.image_id}}" alt="">
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="image_selection">
+                </div>
+
+                <button id="select_images" type="button">
+                    Select Images
+                </button>
+            </div>
+
+            <hr>
+
+            <!-- Description -->
+            <p>Description</p>
+            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                    <textarea id="description">Description Text</textarea>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Editor Selection -->
+            <div id="editor_selection">
+                <label for="editor">Editor</label>
+                {% for editor in item.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endfor %}
+
+                {% if not item.editors %}
+                <div class="editor">
+                    <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
+                    <input type="text" name="editor_id" id="editor_id" hidden>
+                    <button type="button" class="remove_editor">-</button>
+                </div>
+                {% endif %}
+
+                <button type="button" id="add_editor">Add Editor</button>
+            </div>
+
+        </form>
+    {% endblock %}
+
+    {% block options %}
+        <button id="confirm" type="button">Confirm</button>
+
+        <a href="{{url_for('navi.create')}}">
+            <button id="discard">Discard</button>
+        </a>
+    {% endblock %}
+
+    <div id="hidden_description" hidden>
+        {% autoescape false %}
+            {{item.description if item else 'Description Text Here'}}
+        {% endautoescape %}
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

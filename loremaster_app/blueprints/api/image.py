@@ -52,8 +52,8 @@ def create():
         ImmutableMultiDict([('name', ''), ('image_id', ''), ('single_editor', ''),
             ('editor_id', ''), ('description', '')])
     Returns:
-        Redirect: redirect JSON to the create page so as to flash error
-        Json: Json that directs to the newly created image page
+        Redirect: redirect JSON to the create page so as to flash error.
+        Json: Json that directs to the newly created image page.
     """
 
     # Redirect JSON for flashing errors, will be used in fetch's response section
@@ -131,8 +131,8 @@ def edit():
         ImmutableMultiDict([('name', ''), ('image_id', ''), ('single_editor', ''),
             ('editor_id', ''), ('description', '')])
     Returns:
-        Redirect: redirect JSON to the create page so as to flash error
-        Json: Json that directs to the updated image page
+        Redirect: redirect JSON to the create page so as to flash error.
+        Json: Json that directs to the updated image page.
     """
 
     # This is a similar format to image_creation, reference it for comments.

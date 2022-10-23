@@ -249,12 +249,57 @@ def inventory_page(inventory_id:int):
 
 @bp.route('/item/<int:item_id>')
 def item_page(item_id:int):
-    with Session.begin() as sqlsession: 
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        # Assume that viewer is not editor
+        editor_perms = False
+        # Assume no image
+        image = None
+
+        # Try to retrieve image from DB session
+        item:Item = sqlsession.execute(select(Item).where(Item.id == item_id)).scalar()
+
+        # If no image for id (or subclass of familiar), fail silently
+        if not item:
+            return redirect(url_for('navi.index'))
+
+        # If logged in
+        if g.user:
+            # Retrieve up to date user info
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            # If image is owned/can be edited by the viewer
+            if item in user.editor_perms:
+                editor_perms = True
+
+        # Find first image
+        if item.images:
+            images = item.images
+            images.sort(key = lambda image : image.index)
+            image = images[0]
+
+        # Pass image and editor perms to image page to be rendered
+        return render_template('navigation/editables/inventory/item/item.html', editable=item, image=image, editor_perms=editor_perms)
+
+@bp.route('/item/create/')
+@login_required
+def item_creation():
+        return render_template('navigation/editables/inventory/item/item_creation.html', item=None)
+
+@bp.route('/item/edit/<int:item_id>')
+@login_required
+def item_edit(item_id:int):
+     with Session.begin() as sqlsession:
         sqlsession:Ses
 
         item:Item = sqlsession.execute(select(Item).where(Item.id == item_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
-        return render_template('navigation/editables/inventory/item/item.html', item = item )
+        if user and item: 
+            if item in user.editor_perms:
+                return render_template('navigation/editables/inventory/item/item_edit.html', item=item)
+        
+        return redirect(url_for('navi.index'))
 
 @bp.route('/guild/<int:guild_id>')
 def guild_page(guild_id:int):

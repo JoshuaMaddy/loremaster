@@ -5,12 +5,6 @@ var editor_snippet = `<div class="editor">
 <button type="button" class="remove_editor">-</button>
 </div>`
 
-var location_snippet = `<div class="child_location">
-<input type="text" name="single_location" class="single_location" placeholder="Location">
-<input type="text" name="single_location_id" id="single_location_id" value="" hidden>
-<button type="button" class="remove_location">-</button>
-</div>`
-
 $(function () {
 
     // Create description editor
@@ -38,16 +32,8 @@ $(function () {
         }
     })
 
-    $('#add_location').on('click', function (evt) {
-        if ($(this).siblings('.child_location').length > 0) {
-            $(this).siblings('.child_location').last().after(location_snippet)
-        } else {
-            $(this).before(location_snippet)
-        }
-    })
-
     // When a 'remove X' is clicked, remove it from the DOM
-    $(document).on('click', '.remove_editor, .remove_location', function (evt) {
+    $(document).on('click', '.remove_editor', function (evt) {
         $(this).parent().remove()
     })
 
@@ -68,44 +54,44 @@ $(function () {
 
     function submitForm(){
         // Bit of a hack, a div with ID of character_page defines if this is an edit, or a creaction.
-        if($('#location_page').length > 0){
-            submitLocationEdit();
-            console.log(createLocationData())
+        if($('#item_page').length > 0){
+            submitItemEdit();
+            console.log(createItemData())
         }else{
-            submitLocationCreation();
-            console.log(createLocationData())
+            submitItemCreation();
+            console.log(createItemData())
         }
     }
 
     // Edits a character through the /api/character_edit
-    function submitLocationEdit() {
+    function submitItemEdit() {
         // Header options
         const options = {
             method: 'POST',
-            body: createLocationData()
+            body: createItemData()
         };
 
         // API call
-        fetch('/api/location_edit', options).then((response) => {
+        fetch('/api/item_edit', options).then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             } else {
                 // Redirect to character page on success
-                window.location.replace($('#location_page').data('location_url'));
+                window.location.replace($('#item_page').data('item_url'));
             }
         })
     }
 
     // Creates a character through the /api/character_create
-    function submitLocationCreation() {
+    function submitItemCreation() {
         // Header options
         const options = {
             method: 'POST',
-            body: createLocationData()
+            body: createItemData()
         };
 
         // API call
-        fetch('/api/location_create', options).then((response) => {
+        fetch('/api/item_create', options).then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             } else {
@@ -119,12 +105,12 @@ $(function () {
 
     // If button with ID log clicked, console out the form data as a JSON object
     $('#log').on('click', function (evt) {
-        console.log(JSON.stringify(createLocationData()))
+        console.log(JSON.stringify(createItemData()))
     })
 
-    function createLocationData() {
+    function createItemData() {
         // Retrieve form data to be parsed
-        var form = new FormData(document.getElementById('location_form'))
+        var form = new FormData(document.getElementById('item_form'))
 
         // Creates an array of integers from all #sortable objects, referencing a data field on each labeled 'editable_id'
         $("#sortable").sortable("toArray", { attribute: "data-editable_id" }).forEach((num) => {
@@ -137,78 +123,10 @@ $(function () {
     }
 
     // Bit of a hack, when any input that needs autocomplete is clicked, refresh autocomplete fields. Needed because fields come/go by user choice
-    $(document).on('click', '#parent_location, .single_location, .single_editor', function (evt) {
+    $(document).on('click', '.single_editor', function (evt) {
 
         // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
-        $("#parent_location").autocomplete({
-            source: function (request, response) {
-                // Ajax is similar to fetch, tailored for jQuery objects
-                $.ajax({
-                    url: '/api/search',
-                    method: 'POST',
-                    dataType: 'json',
-                    processData: false,
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        search_type: "location",
-                        query: request.term
-                    }),
-                    success: function (data) {
-                        response($.map(data, function (result) {
-                            return {
-                                label: result.label,
-                                value: result.value,
-                            }
-                        }));
-                    }
-                });
-            },
-            focus: function (event, ui) {
-                event.preventDefault();
-            },
-            select: function (event, ui) {
-                event.preventDefault();
-                $('#parent_location').val(ui.item.label);
-                $('#parent_location_id').val(ui.item.value);
-            },
-            delay: 200
-        });
-
-        $(".single_location").autocomplete({
-            source: function (request, response) {
-                // Ajax is similar to fetch, tailored for jQuery objects
-                $.ajax({
-                    url: '/api/search',
-                    method: 'POST',
-                    dataType: 'json',
-                    processData: false,
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        search_type: "location",
-                        query: request.term
-                    }),
-                    success: function (data) {
-                        response($.map(data, function (result) {
-                            return {
-                                label: result.label,
-                                value: result.value,
-                            }
-                        }));
-                    }
-                });
-            },
-            focus: function (event, ui) {
-                event.preventDefault();
-            },
-            select: function (event, ui) {
-                event.preventDefault();
-                $('.single_location').val(ui.item.label);
-                $('#single_location_id').val(ui.item.value);
-            },
-            delay: 200
-        });
-
         $(".single_editor").autocomplete({
             source: function (request, response) {
                 $.ajax({

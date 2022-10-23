@@ -12,6 +12,8 @@
             <li><a href="{{url_for('navi.guild_page', guild_id=element.id)}}">Guild: {{element.name}}</a>
         {% elif element.type == 'inventory' %}
             <li><a href="{{url_for('navi.inventory_page', inventory_id=element.id)}}">Inventory: {{element.name}}</a>
+        {% elif element.type == 'item' %}
+            <li><a href="{{url_for('navi.item_page', item_id=element.id)}}">Item: {{element.name}}</a>
         {% elif element.type == 'image' %}
             <li>
                 <a href="{{url_for('navi.image_page', image_id=element.id)}}">
@@ -22,6 +24,8 @@
         {% endif %}
     {% endfor %}
 {% endmacro -%}
+
+{% block title %} {{user.name}}'s User Page{% endblock %}
 
 {% block content %}
     <h1>User Name: {{ user.name }}</h1>
