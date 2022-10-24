@@ -1,0 +1,21 @@
+.content{
+    display: grid;
+    grid-template-areas: 
+        "Header"
+        "Character"
+        "Edit-Options" ;
+}
+
+.header{
+    grid-area: Header;
+}
+
+.character_container{
+    grid-area: Character;
+    justify-self: center;
+}
+
+.edit_options{
+    grid-area: Edit-Options;
+    justify-self: center;
+}

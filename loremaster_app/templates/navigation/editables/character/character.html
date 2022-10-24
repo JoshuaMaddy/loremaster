@@ -5,12 +5,14 @@
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='character.css')}}">
+
 {% endblock %}
 
 {% block editable %}
     <!-- Character Container -->
     <div class="character_container">
-        <p>Name: {{editable.name}}</p>
+        <p id="name">Name: {{editable.name}}</p>
 
         {% if image %}
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
@@ -52,15 +54,16 @@
         <br>
     
         <div class="stats">
-            <p>Stats:<br>
-                {% if editable.stats %}
-                    {% for stat in editable.stats %}
-                    {{stat.name}}:  {{stat.short_description}} <br>
-                    {% endfor %}
-                {% else %}
-                    No given Stats.
-                {% endif %}
-            </p>
+            <p id="stats">Stats:</p>
+            {% if editable.stats %}
+                {% for stat in editable.stats %}
+                <p class="stat_desc">{{stat.name}}:  {{stat.short_description}}</p> 
+                <br>
+                {% endfor %}
+            {% else %}
+                No given Stats.
+            {% endif %}
+        
         </div>
         <br>
     
