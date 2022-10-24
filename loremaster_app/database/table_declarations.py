@@ -48,7 +48,7 @@ familiar_inventories = Table('f_inventories', Base.metadata,
     Column('familiar_id', ForeignKey('editable.id'), primary_key=True),
     Column('inventory_id', ForeignKey('inventory.editable_id'), primary_key=True))
 
-character_familairs = Table('familiars', Base.metadata,
+character_familiars = Table('familiars', Base.metadata,
     Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('familiar_id', ForeignKey('familiar.editable_id'), primary_key=True))
 
@@ -193,7 +193,7 @@ class Character(Editable):
     guilds = None
 
     familiars:list[Familiar] = relationship('Familiar',
-        secondary = character_familairs,
+        secondary = character_familiars,
         back_populates = 'owners')
 
     __mapper_args__ = {
@@ -233,9 +233,9 @@ class Character(Editable):
 
     def set_familiars(self, sqlsession:Ses, user:User, familiar_ids:list[int]) -> None:
         for familiar_id in familiar_ids:
-            familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.editable2_id == familiar_id)).scalar()
+            familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar()
 
-            if familiar and not familiar in self.familiars and familiar in user.editor_perms:
+            if familiar and familiar in user.editor_perms:
                 self.familiars.append(familiar)
 
 
@@ -258,7 +258,7 @@ class Familiar(Editable):
     character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])
 
     owners = relationship('Character',
-        secondary = character_familairs,
+        secondary = character_familiars,
         back_populates = 'familiars')
 
     __mapper_args__ = {
@@ -270,6 +270,37 @@ class Familiar(Editable):
 
     def __repr__(self) -> str:
         return f"Familiar{{name:{self.name}, id:{self.editable_id}}}"
+
+    def set_stats(self, stats:list[dict]) -> None:
+        for stat in stats:
+            new_stat:Stat = Stat(name=stat.get('stat_name'), short_description=stat.get('stat_description'))
+            self.stats.append(new_stat)
+
+    def set_traits(self, traits:list[dict]) -> None:
+        for trait in traits:
+            new_trait:Trait = Trait(name=trait.get('trait_name'), short_description=trait.get('trait_description'))
+            self.traits.append(new_trait)
+
+    def set_relationships(self, sqlsession:Ses, user:User, relationships:list[dict]) -> None:
+        for relationship in relationships:
+            name:str = relationship.get('relationship_name')
+            character_id:int = relationship.get('character_id')
+            description:str = relationship.get('relationship_desc')
+
+            if character_id != None:
+                second_character:Character = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
+                
+                if second_character in user.editor_perms:
+                    new_relationship:Relationship = Relationship(name=name, short_description=description)
+                    new_relationship.character = second_character
+
+                    self.relationships.append(new_relationship)
+
+    def set_owner(self, sqlsession:Ses, user:User, owner_id:int) -> None:
+        character:Character = sqlsession.execute(select(Character).where(Familiar.editable_id == owner_id)).scalar()
+
+        if character and not character in self.familiars and character in user.editor_perms:
+            self.owner_id = character
 
 class Guild(Editable):
     __tablename__ = "guild"

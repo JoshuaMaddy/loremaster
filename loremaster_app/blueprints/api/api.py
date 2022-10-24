@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
 
-from . import image, character, location, item
+from . import image, character, familiar, location, item
 
 bp = Blueprint('api', __name__)
 
@@ -33,6 +33,11 @@ def character_create():
 @login_required
 def character_edit():
     return character.edit()
+
+@bp.route('/api/familiar_edit', methods=['POST'])
+@login_required
+def familiar_edit():
+    return familiar.edit()
 
 @bp.route('/api/image_create', methods=['POST'])
 @login_required
