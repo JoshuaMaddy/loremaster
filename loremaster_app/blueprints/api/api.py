@@ -90,21 +90,21 @@ def search():
                 if search_type == 'location':
                     locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%') , Location.editors.contains(user)))).scalars().all()
 
-                    location_list = [{'label':location.name, 'value':location.editable_id} for location in locations]
+                    location_list = [{'label':location.name, 'value':location.id} for location in locations]
 
                     return jsonify(location_list)
 
                 if search_type == 'character':
                     characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()
 
-                    characters_list = [{'label':character.name, 'value':character.editable_id} for character in characters]
+                    characters_list = [{'label':character.name, 'value':character.id} for character in characters]
 
                     return jsonify(characters_list)
                 
                 if search_type == 'familiar':
                     familiars = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%') , Familiar.editors.contains(user)))).scalars().all()
 
-                    familiars_list = [{'label':familiar.name, 'value':familiar.editable2_id} for familiar in familiars]
+                    familiars_list = [{'label':familiar.name, 'value':familiar.id} for familiar in familiars]
 
                     return jsonify(familiars_list)
 
