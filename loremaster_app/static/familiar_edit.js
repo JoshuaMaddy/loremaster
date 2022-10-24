@@ -281,9 +281,9 @@ $(function () {
             familiarDescription.relationships = relationships;
         }
 
-        familiarDescription.familiar_ids = form.getAll('familiar_id').map((element) => {
+        /*familiarDescription.familiar_ids = form.getAll('familiar_id').map((element) => {
             return parseInt(element);
-        })
+        })*/
 
         if (form.get('location')) {
             familiarDescription.location_id = parseInt(form.get('location_id'));

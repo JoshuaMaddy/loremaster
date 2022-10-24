@@ -8,8 +8,10 @@
 {% endblock %}
 
 {% block editable %}
+    {% if editable.visibility == Visibility.public %}
     <!-- Character Container -->
     <div class="character_container">
+        <p>Visibility: {{editable.visibility}}</p>
         <p>Name: {{editable.name}}</p>
 
         {% if image %}
@@ -76,6 +78,7 @@
             </p>
         </div>
     </div>
+    {% endif %}
 {% endblock%}
 
 {% block edit_name %}
