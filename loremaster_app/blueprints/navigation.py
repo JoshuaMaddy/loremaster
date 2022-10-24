@@ -84,7 +84,7 @@ def character_edit(character_id:int):
 
         if user and character: 
             if character in user.editor_perms:
-                return render_template('navigation/editables/character/character_edit.html', character=character)
+                return render_template('navigation/editables/character/character_edit.html', character=character, Visibility=Visibilites)
         
         return redirect(url_for('navi.index'))
 
@@ -313,3 +313,11 @@ def guild_page(guild_id:int):
 @bp.route('/search')
 def search():
     return render_template('search.html')
+
+@bp.route('/browse')
+def browse():
+    with Session.begin() as sqlsession: 
+        sqlsession:Ses
+        characters:list[Character] = sqlsession.execute(select(Character).where(Editable.visibility == Visibilites.public)).scalars()
+
+        return render_template('navigation/browse.html', characters=characters)

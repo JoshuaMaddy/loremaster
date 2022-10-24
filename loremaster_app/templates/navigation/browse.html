@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% macro list_editables(iterator) -%}
+    {% for element in iterator %}
+        {% if element.type == 'character' %}
+            <li><a href="{{url_for('navi.character_page', character_id=element.id)}}">Character: {{element.name}}</a>
+        {% endif %}
+    {% endfor %}
+{% endmacro -%}
+
+
+{% block content %}
+<div class="public_characters">
+    <p>Public Characters</p>
+    {{ list_editables(characters) }}
+</div>
+{% endblock %}
