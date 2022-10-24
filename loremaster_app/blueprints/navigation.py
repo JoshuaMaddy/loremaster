@@ -66,7 +66,7 @@ def character_page(character_id:int):
             image = images[0]
 
         # Pass character and editor perms to character page to be rendered
-        return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image)
+        return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image, Visibility=Visibilites)
 
 @bp.route('/character/create/')
 @login_required
