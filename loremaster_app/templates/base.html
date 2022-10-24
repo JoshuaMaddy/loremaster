@@ -10,6 +10,7 @@
     {% if g.user %}
       <li><span><a href="{{url_for('navi.user_page', user_id=g.user.id)}}">{{ g.user.name }}</a></span>
       <li><span><a href="{{url_for('navi.create')}}">Create</a></span>
+        <li><span><a href="{{url_for('navi.browse')}}">Browse</a></span>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
       <li><a href="{{ url_for('auth.register') }}">Register</a>

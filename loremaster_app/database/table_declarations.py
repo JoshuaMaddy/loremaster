@@ -1,4 +1,6 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, BINARY, Boolean, Float, Table, select, ForeignKeyConstraint
+from turtle import pu
+import enum
+from sqlalchemy import Column, ForeignKey, Integer, Enum, String, BINARY, Boolean, Float, Table, select, ForeignKeyConstraint
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 from sqlalchemy.orm import Session as Ses
@@ -52,6 +54,12 @@ character_familiars = Table('familiars', Base.metadata,
     Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('familiar_id', ForeignKey('familiar.editable_id'), primary_key=True))
 
+class Visibilites(enum.Enum):
+    public = 1
+    guild = 2
+    private = 3
+
+
 
 class User(Base):
     __tablename__ = "user"
@@ -97,6 +105,8 @@ class Editable(Base):
     __tablename__ = "editable"
 
     id:int = Column(Integer, primary_key=True)
+
+    visibility:Visibilites = Column(Enum(Visibilites))
 
     owner_id:int = Column(Integer, ForeignKey("user.id"))
     owner:User = relationship('User', back_populates='owns')
