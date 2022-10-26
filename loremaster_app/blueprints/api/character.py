@@ -74,7 +74,6 @@ def edit():
 
     redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.index')})
 
-    print("edit")
 
     if request.is_json:
         with Session.begin() as sqlsession:

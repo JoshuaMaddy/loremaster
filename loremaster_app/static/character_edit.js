@@ -291,7 +291,7 @@ $(function () {
         }
 
         if (form.get('visibility')) {
-            characterDescription.visibility = parseInt(form.get('visibility_dropdown'));
+            characterDescription.visibility = form.get('visibility');
             console.log(form.get('visibility'))
         }
 

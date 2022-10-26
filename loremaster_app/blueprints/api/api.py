@@ -32,7 +32,6 @@ def character_create():
 @bp.route('/api/character_edit', methods=['POST'])
 @login_required
 def character_edit():
-    print("loading edit")
     return character.edit()
 
 @bp.route('/api/familiar_edit', methods=['POST'])
