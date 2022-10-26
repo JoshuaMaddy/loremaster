@@ -222,7 +222,7 @@
                 <div class="visibile">
                     <select name="visibility" id="visibility_dropdown">
                         {% for vis in Visibility %}
-                            <option value="{{ vis }}">{{ Visibility[vis] }}</option>
+                            <option value="{{ vis.value }}">{{ vis.name }}</option>
                         {% endfor %}
                     </select>
                 </div>

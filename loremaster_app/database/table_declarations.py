@@ -157,7 +157,7 @@ class Editable(Base):
         if not visibility == None: #if passed with a visibility value directly set that
             self.visibility = visibility
         elif int(vis_int) > -1: #else retrieve it by index
-            self.visibility = Visibilites(int(vis_int)+1)
+            self.visibility = Visibilites(int(vis_int))
 
 class Location(Editable):
     __tablename__ = "location"
