@@ -153,6 +153,12 @@ class Editable(Base):
                 imageListItem:ImageListItem = ImageListItem(image=image, index=index)
                 self.images.append(imageListItem)
 
+    def set_visibility(self, sqlsession:Ses, visibility:Visibilites = None, vis_int:int = -1) -> None:
+        if not visibility == None: #if passed with a visibility value directly set that
+            self.visibility = visibility
+        elif vis_int > -1: #else retrieve it by index
+            self.visibility = Visibilites(vis_int)
+
 class Location(Editable):
     __tablename__ = "location"
 

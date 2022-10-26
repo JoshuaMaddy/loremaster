@@ -49,7 +49,7 @@ class CharacterDescription {
     inventories;
     editor_ids;
     constructor(character = null, image_ids = null, description = null, traits = null, stats = null,
-        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null) {
+        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null, visibility = null) {
         this.character = character;
         this.image_ids = image_ids;
         this.description = description;
@@ -59,6 +59,7 @@ class CharacterDescription {
         this.familiar_ids = familiar_ids;
         this.editor_ids = editor_ids;
         this.location_id = location;
+        this.visibility = visibility;
     }
 }
 
@@ -287,6 +288,11 @@ $(function () {
 
         if (form.get('location')) {
             characterDescription.location_id = parseInt(form.get('location_id'));
+        }
+
+        if (form.get('visibility')) {
+            characterDescription.visibility = parseInt(form.get('visibility_dropdown'));
+            console.log(form.get('visibility'))
         }
 
         return characterDescription

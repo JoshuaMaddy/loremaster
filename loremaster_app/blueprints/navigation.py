@@ -82,9 +82,14 @@ def character_edit(character_id:int):
         character:Character = sqlsession.execute(select(Character).where(Character.id == character_id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
+        dict = {}
+        key = len(Visibilites)
+        for i in range(key):
+            dict[i] = str(Visibilites(i+1)).replace("Visibilites.","")
+
         if user and character: 
             if character in user.editor_perms:
-                return render_template('navigation/editables/character/character_edit.html', character=character, Visibility=Visibilites)
+                return render_template('navigation/editables/character/character_edit.html', character=character, Visibility=dict)
         
         return redirect(url_for('navi.index'))
 

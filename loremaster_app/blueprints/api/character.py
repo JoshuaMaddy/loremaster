@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session as Ses
 
 def create():
 
+    print("create")
+
     redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.character_creation')})
 
     if request.is_json:
@@ -72,6 +74,8 @@ def edit():
 
     redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.index')})
 
+    print("edit")
+
     if request.is_json:
         with Session.begin() as sqlsession:
             sqlsession:Ses
@@ -89,6 +93,7 @@ def edit():
                 familiar_ids:list[dict] = character_info.get('familiar_ids')
                 editor_ids:list[dict] = character_info.get('editor_ids')
                 image_ids:list[int] = character_info.get('image_ids')
+                vis_int:int = character_info.get('visibility')
 
                 if id:
                     redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.character_edit', character_id=id)})
@@ -131,6 +136,9 @@ def edit():
 
                             if editor_ids:
                                 character.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                            if vis_int:
+                                character.set_visibility(sqlsession=sqlsession, vis_int=vis_int)
 
                             return(jsonify({'url':url_for('navi.character_page', character_id=character.id)}))
 

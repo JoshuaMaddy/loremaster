@@ -217,16 +217,16 @@
 
             <hr>
 
-        <div id="visibility_selection">
-            <label for="visibile">Visibility</label>
-            <div class="visibile">
-                <select name="visibility" id="visibility_dropdown">
-                    {% for vis in Visibility %}
-                        <option value="{{ vis }}">{{ vis }}</option>
-                    {% endfor %}
-                </select>
+            <div id="visibility_selection">
+                <label for="visibile">Visibility</label>
+                <div class="visibile">
+                    <select name="visibility" id="visibility_dropdown">
+                        {% for vis in Visibility %}
+                            <option value="{{ vis }}">{{ Visibility[vis] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-        </div>
 
         </form>
     {% endblock %}
