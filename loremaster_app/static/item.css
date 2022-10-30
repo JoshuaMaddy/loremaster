@@ -1,7 +1,29 @@
+.content{
+    display: grid;
+    grid-template-areas: 
+        "Header"
+        "Item"
+        "Edit-Options" ;
+}
 html, body{ 
     background-color: #cfc3ab;
+    
+}
+
+nav.navbar{ 
+    background-color: #c4b799;
+    font-family: papyrus, fantasy;
 }
 
 .item_container{ 
-    
+    grid-area: Item;
+    justify-self: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+}
+
+.edit_options{ 
+    grid-area: Edit-Options;
+    font-family: Arial, Helvetica, sans-serif;
+
 }

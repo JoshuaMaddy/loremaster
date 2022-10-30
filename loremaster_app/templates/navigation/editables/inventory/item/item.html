@@ -11,7 +11,7 @@
 {% block editable %}
     <!-- Item Container -->
     <div class="item_container">
-        <p>Name: {{editable.name}}</p>
+        <p>{{editable.name}}</p>
         <br>
 
         {% if image %}
@@ -21,7 +21,7 @@
         {% endif %}
         
         
-        <p>Description: </p>
+        <p></p>
         {% autoescape false %}
         {{editable.description}}
         {% endautoescape %}

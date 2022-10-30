@@ -1,0 +1,11 @@
+html, body{ 
+    background-color: #cfc3ab;
+    
+}
+nav.navbar{ 
+    background-color: #c4b799;
+    font-family: papyrus, fantasy;
+}
+.content{
+    font-family: Arial, Helvetica, sans-serif;
+}
