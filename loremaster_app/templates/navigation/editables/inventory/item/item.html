@@ -5,22 +5,27 @@
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='item.css')}}">
 {% endblock %}
 
 {% block editable %}
     <!-- Item Container -->
     <div class="item_container">
         <p>Name: {{editable.name}}</p>
+        <br>
 
         {% if image %}
+        
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+        
         {% endif %}
-    
+        
+        
         <p>Description: </p>
         {% autoescape false %}
         {{editable.description}}
         {% endautoescape %}
-
+        <br>
     </div>
 {% endblock%}
 
