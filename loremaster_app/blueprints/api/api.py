@@ -1,13 +1,13 @@
 import os
 
 from flask import (
-    Blueprint, g, request, jsonify, render_template
+    Blueprint, g, redirect, request, jsonify, render_template, url_for
 )
 
 from ...database.init_db import Session
 from ...database.table_declarations import *
 
-from sqlalchemy import select, and_
+from sqlalchemy import or_, select, and_
 from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
@@ -166,7 +166,7 @@ def list_query():
                             if not tag:
                                 tag = 'name'
                             if (tag == 'name'):
-                                characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
-                                #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , (Character.visibility == Visibilites.public or Character.editors.contains(user), Character.type != 'familiar'))).scalars().all())
-                                return render_template('navigation/browse.html', characters=characters)
+                                #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
+                                characters = sqlsession.execute(select(Character).where(Character.name.ilike('%'+query+'%'))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
             return render_template('navigation/browse.html')
