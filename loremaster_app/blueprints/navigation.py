@@ -71,7 +71,7 @@ def character_page(character_id:int):
 @bp.route('/character/create/')
 @login_required
 def character_creation():
-        return render_template('navigation/editables/character/character_creation.html', character=None)
+        return render_template('navigation/editables/character/character_creation.html', character=None, Visibility=Visibilites)
 
 @bp.route('/character/edit/<int:character_id>')
 @login_required

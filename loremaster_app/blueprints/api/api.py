@@ -1,7 +1,7 @@
 import os
 
 from flask import (
-    Blueprint, g, request, jsonify
+    Blueprint, g, request, jsonify, render_template
 )
 
 from ...database.init_db import Session
@@ -144,3 +144,25 @@ def delete_editable():
                 return('probably good')
             
     return('probably bad')
+
+@bp.route('/api/list_query', methods=['POST'])
+@login_required
+def list_query():
+    sqlsession:Ses
+
+    search_info:dict = request.json
+    search_type = search_info.get('search_type')
+    if search_type:
+                query = search_info.get('query')
+                tag = search_info.get('tag')
+
+                if not query:
+                    query = ''
+
+                user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+                if search_type == 'location':
+                    if not tag:
+                        tag = 'name'
+                    if (tag == 'name'):
+                        characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , (Character.visibility == Visibilites.public or Character.editors.contains(user), Character.type != 'familiar'))).scalars().all())
+                        return render_template('navigation/browse.html', characters=characters)
