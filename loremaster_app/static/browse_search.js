@@ -1,8 +1,6 @@
 
 $(document).on('click', '#tags',  function (evt){
 
-        console.log("clicked")
-
             // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
         $("#tags").autocomplete({
@@ -41,32 +39,61 @@ $(document).on('click', '#tags',  function (evt){
 
 });
 
-$('#log').on('click', function (evt) {
+$(document).on('click', '#search',  function (evt){
     // Send form as modified
     console.log("submitting")
-    submitForm()
-})
+    submitCharacterCreation()
+});
 
 function submitForm(){
     var form = new FormData(document.getElementById('search_form'))
-    const options = {
-        url: '/api/search',
+    
+    $.ajax({
+        url: '/api/list_query',
         method: 'POST',
         dataType: 'json',
         processData: false,
         contentType: 'application/json',
         data: JSON.stringify({
             search_type: "character",
-            tag: "name",
-            query: form.get(tags)
+            query: form.get("tags"),
+            tag: "name"
+        }),
+        success: function (data) {
+            console.log("success")
+            response($.map(data, function (result) {
+                console.log(result)
+                return {
+                    label: result.label,
+                    value: result.value,
+                }
+            }));
+        }
+    });
+}
+
+// Creates a character through the /api/character_create
+function submitCharacterCreation() {
+    // Header options
+    var form = new FormData(document.getElementById('search_form'))
+    const options = {
+        method: 'POST',
+        dataType: 'json',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            search_type: "character",
+            query: form.get("tags"),
+            tag: "name"
         }),
     };
 
+    // API call
     fetch('/api/list_query', options).then((response) => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         } else {
             // Redirect to character page on success
+            console.log(response.json)
             response.json().then((data) => {
                 window.location.replace(data.url);
             })

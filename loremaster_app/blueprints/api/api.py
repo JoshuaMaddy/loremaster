@@ -148,21 +148,25 @@ def delete_editable():
 @bp.route('/api/list_query', methods=['POST'])
 @login_required
 def list_query():
-    sqlsession:Ses
+    if request.is_json:
+        with Session.begin() as sqlsession:
+            sqlsession:Ses
 
-    search_info:dict = request.json
-    search_type = search_info.get('search_type')
-    if search_type:
-                query = search_info.get('query')
-                tag = search_info.get('tag')
+            search_info:dict = request.json
+            search_type = search_info.get('search_type')
+            if search_type:
+                        query = search_info.get('query')
+                        tag = search_info.get('tag')
 
-                if not query:
-                    query = ''
+                        if not query:
+                            query = ''
 
-                user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
-                if search_type == 'location':
-                    if not tag:
-                        tag = 'name'
-                    if (tag == 'name'):
-                        characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , (Character.visibility == Visibilites.public or Character.editors.contains(user), Character.type != 'familiar'))).scalars().all())
-                        return render_template('navigation/browse.html', characters=characters)
+                        user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+                        if search_type == 'character':
+                            if not tag:
+                                tag = 'name'
+                            if (tag == 'name'):
+                                characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
+                                #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , (Character.visibility == Visibilites.public or Character.editors.contains(user), Character.type != 'familiar'))).scalars().all())
+                                return render_template('navigation/browse.html', characters=characters)
+            return render_template('navigation/browse.html')
