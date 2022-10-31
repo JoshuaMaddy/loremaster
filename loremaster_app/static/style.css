@@ -3,10 +3,21 @@
     margin: 0;
 }
 
+html, body{ 
+    background-color: #cfc3ab;
+    
+}
+
+.content{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .navbar{
     height: 10vh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    background-color: #c4b799;
+    font-family: papyrus, fantasy;
 }

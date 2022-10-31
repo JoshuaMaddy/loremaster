@@ -11,6 +11,7 @@
     <!-- Image Container -->
     <div class="image_container">
         <p>Name: {{editable.name}}</p>
+        {{ super() }}
 
         <img src="{{url_for('api.image_retrieve', image_id=editable.id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
     

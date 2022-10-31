@@ -4,15 +4,8 @@
 
     {% block editable %}
 
-    {% block data %}
-    {% endblock %}
-
-    {% endblock %}
-
     {% if editor_perms %}
         <div class="edit_options">
-            <hr>
-            <p>Editor Options</p>
             <a id="edit_ref" href="">
                 <button id="edit">
                     Edit {{editable.name}}
@@ -24,4 +17,9 @@
             </button>
         </div>
     {% endif %}
+
+    {% block data %}
+    {% endblock %}
+
+    {% endblock %}
 {% endblock %}

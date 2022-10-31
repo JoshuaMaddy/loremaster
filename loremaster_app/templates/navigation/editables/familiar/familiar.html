@@ -11,6 +11,7 @@
     <!-- Character Container -->
     <div class="character_container">
         <p>Name: {{editable.name}}</p>
+        {{ super() }}
 
         {% if image %}
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
