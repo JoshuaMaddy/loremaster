@@ -11,7 +11,7 @@
 {% block editable %}
     <!-- Item Container -->
     <div class="item_container">
-        <p>{{editable.name}}</p>
+        <p><span style="font-weight: bold; text-decoration: underline;" > {{editable.name}} </span></p>
         <br>
 
         {% if image %}
@@ -23,6 +23,7 @@
         
         <p></p>
         {% autoescape false %}
+        <br>
         {{editable.description}}
         {% endautoescape %}
         <br>

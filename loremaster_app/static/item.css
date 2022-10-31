@@ -21,11 +21,16 @@ nav.navbar{
     font-family: Arial, Helvetica, sans-serif;
     font-style: oblique;
     font-size: x-large;
+    
+
 }
 
 .edit_options{ 
     grid-area: Edit-Options;
     font-family: Arial, Helvetica, sans-serif;
+    position: fixed;
+    left: 0px; bottom: 0px; 
+    
     
 
 }
