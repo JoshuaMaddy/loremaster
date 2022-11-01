@@ -1,0 +1,29 @@
+.user_container{
+    display: grid;
+    grid-template-areas: 
+            "user_name user_name"
+            "user_owns user_edit_perm";
+    
+}
+
+.user_info{
+    grid-area: user_name;
+    justify-self: center;
+    padding: 1em 0 1em 0;
+}
+
+.owns{
+    grid-area: user_owns;
+}
+
+.editor_perms{
+    grid-area: user_edit_perm;
+}
+
+.owns > li,.owns > p, .editor_perms > li, .editor_perms > p{
+    padding-left: 1em;
+}
+
+hr{
+    padding: 1em 0 1em 0;
+}

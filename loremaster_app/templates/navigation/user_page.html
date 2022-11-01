@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block links%} <link rel="stylesheet" href="{{url_for('static', filename='user_page.css')}}"> {%endblock%}
+
 {% macro list_editables(iterator) -%}
     {% for element in iterator %}
         {% if element.type == 'character' %}
@@ -28,21 +30,24 @@
 {% block title %} {{user.name}}'s User Page{% endblock %}
 
 {% block content %}
-    <h1>User Name: {{ user.name }}</h1>
-    <p>Email: {{ user.email }}</p>
+    <div class="user_container">
+        <div class="user_info">
+            <h1>User Name: {{ user.name }}</h1>
+            <p>Email: {{ user.email }}</p>
+        </div>
 
-    <hr>
+        <div class="owns">
+            <hr>
+            <p>Owns</p>
+            {{ list_editables(user.owns) }}
+        </div>
 
-    <div class="owns">
-        <p>Owns</p>
-        {{ list_editables(user.owns) }}
+
+        <div class="editor_perms">
+            <hr>
+            <p>Editor Perms</p>
+            {{ list_editables(user.editor_perms) }}
+        </div>
     </div>
 
-    <hr>
-
-    <div class="editor_perms">
-        <p>Editor Perms</p>
-        {{ list_editables(user.editor_perms) }}
-    </div>
-<link rel="stylesheet" href="{{url_for('static', filename='user_page.css')}}">
 {% endblock %}
