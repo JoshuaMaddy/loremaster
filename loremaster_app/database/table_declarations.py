@@ -451,12 +451,12 @@ class Inventory(Editable):
     def __repr__(self) -> str:
         return f"Inventory(name:{{{self.name}}})"
 
-    def set_items(self, sqlsession:Ses, item_ids:list[int]) -> None:
+    def set_items(self, sqlsession:Ses, item_ids:list[int], item_counts:list[int]) -> None:
         self.items = []
         for index in range(len(item_ids)):
             item:Item = sqlsession.execute(select(Item).where(Item.id == item_ids[index])).scalars().first()
             if item:
-                new_itemLI:ItemListItem = ItemListItem(item=item, count=1, index=index) 
+                new_itemLI:ItemListItem = ItemListItem(item=item, count=item_counts[index], index=index) 
 
                 self.items.append(new_itemLI)
 

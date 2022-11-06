@@ -13,7 +13,8 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <!-- Internal stying links -->
-<link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='inventory.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='inventory_edit.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='inventory_edit.js')}}"></script>
 {% endblock %}
 
@@ -36,7 +37,14 @@
                 <div id="item_list">
                     <ul id="sortable">
                         {% for itemLI in inventory.items %}
-                            <img src="{{url_for('api.image_retrieve', image_id=itemLI.item.images[0].image_id)}}" data-editable_id="{{itemLI.id}}" alt="">
+                        <div class="item" data-editable_id="{{itemLI.item_id}}">
+                            <img src="{{url_for('api.image_retrieve', image_id=itemLI.item.images[0].image_id)}}" alt="">
+                            <div class="counter">
+                                <button type="button" class="plus_one">+1</button>
+                                <input class="value" type="text" value="{{itemLI.count if itemLI.count else '1'}}">
+                                <button type="button" class="minus_one">-1</button>
+                            </div>
+                        </div>
                         {% endfor %}
                     </ul>
                 </div>
@@ -51,13 +59,15 @@
 
             <hr>
 
-            <!-- Description -->
-            <p>Description</p>
-            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
-                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
-                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
-                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
-                    <textarea id="description">Description Text</textarea>
+            <div id="description">
+                <!-- Description -->
+                <p>Description</p>
+                <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                    <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                    -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                    -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                        <textarea id="description">Description Text</textarea>
+                    </div>
                 </div>
             </div>
 

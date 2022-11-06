@@ -5,6 +5,17 @@ var editor_snippet = `<div class="editor">
 <button type="button" class="remove_editor">-</button>
 </div>`
 
+var item_snippet = `
+<div class="item">
+    <img src="" alt="">
+    <div class="counter">
+        <button type="button" class="plus_one">+1</button>
+        <input class="value" type="text" value="0">
+        <button type="button" class="minus_one">-1</button>
+    </div>
+</div>
+`
+
 $(function () {
 
     // Create description editor
@@ -35,6 +46,16 @@ $(function () {
     // When a 'remove X' is clicked, remove it from the DOM
     $(document).on('click', '.remove_editor', function (evt) {
         $(this).parent().remove()
+    })
+
+    $(document).on('click', '.plus_one, .minus_one', function (evt) {
+        var current_val = parseFloat($(this).siblings('.value').val());
+        if($(this).hasClass('plus_one')){
+            current_val += 1;
+        }else{
+            current_val -= 1;
+        }
+        $(this).siblings('.value').val(current_val);
     })
 
     // If the user submits form with enter key
@@ -111,8 +132,12 @@ $(function () {
         var form = new FormData(document.getElementById('inventory_form'))
 
         // Creates an array of integers from all #sortable objects, referencing a data field on each labeled 'editable_id'
-        $("#sortable").sortable("toArray", { attribute: "data-editable_id" }).forEach((num) => {
-            form.append('item_id', num)
+        $("#sortable").sortable().find('.item').each(function(){
+            form.append('item_id', $(this).data('editable_id'))
+        })
+
+        $("#sortable").sortable().find('.value').each(function(){
+            form.append('item_count', $(this).val())
         })
 
 		form.append('description', tinymce.get("description").getContent())
@@ -184,8 +209,17 @@ $(function () {
 
                 $('.image_grid').children().each(function (index) {
                     if ($(this).data('selected')) {
-                        $(this).children()[0].removeAttribute('style');
-                        $('#sortable').append($(this).children()[0]);
+                        var html = $.parseHTML(item_snippet);
+                        var snippet = $('#sortable').append(html);
+
+                        var image_src = $(this).children().attr('src');
+                        var item_id = $(this).children().data('editable_id');
+                        
+                        //ungodly selection
+                        snippet.children().last().children('img').attr('src', image_src)
+                        snippet.children().last().data('editable_id', item_id)
+
+                        $('#sortable').append(snippet);
                     }
                 });
 

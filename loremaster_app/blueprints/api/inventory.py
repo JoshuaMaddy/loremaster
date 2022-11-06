@@ -38,14 +38,15 @@ def create():
             editor_ids:list[int] = request.form.getlist('editor_id', type=int)
 
             item_ids:list[int] = request.form.getlist('item_id', type=int)
+            item_counts:list[int] = request.form.getlist('item_count', type=float)
 
             inventory:Inventory = Inventory(owner=user, name=name)
 
             inventory.description = description
 
             if item_ids:
-                inventory.set_items(sqlsession=sqlsession, item_ids=item_ids)
-            
+                inventory.set_items(sqlsession=sqlsession, item_ids=item_ids, item_counts=item_counts)
+
             if editor_ids:
                 inventory.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
 
@@ -61,12 +62,14 @@ def create():
 def edit():
     """Edits a location from a POST request with the given form data:
     ImmutableMultiDict([('name', ''), ('inventory_id', ''), ('single_editor', ''), ('editor_id', ''), 
-        ('item_id', ''), ('description', '')])
+        ('item_id', ''), ('item_count', ''), ('description', '')])
 
     Returns:
         Redirect: redirect JSON to the create page so as to flash error.
         Json: Json that directs to the edited item page.
     """
+
+    print(request.form)
 
     id:int = request.form.get('inventory_id', default=None, type=int)
 
@@ -93,6 +96,10 @@ def edit():
             editor_ids:list[int] = request.form.getlist('editor_id', type=int)
 
             item_ids:list[int] = request.form.getlist('item_id', type=int)
+            item_counts:list[int] = request.form.getlist('item_count', type=float)
+
+            print(item_ids)
+            print(item_counts)
 
             inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == id)).scalar()
 
@@ -106,10 +113,8 @@ def edit():
                     inventory.editors = []
                     inventory.editors.append(user)
 
-                    print(item_ids)
-
                     if item_ids:
-                        inventory.set_items(sqlsession=sqlsession, item_ids=item_ids)
+                        inventory.set_items(sqlsession=sqlsession, item_ids=item_ids, item_counts=item_counts)
                     
                     if editor_ids:
                         inventory.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
