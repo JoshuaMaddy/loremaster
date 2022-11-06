@@ -1,0 +1,59 @@
+{% extends 'navigation/editables/editable.html' %}
+
+{% block title%}Inventory View{% endblock %}
+
+{% block links %}
+<!-- jQuery Link -->
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='inventory.css')}}">
+{% endblock %}
+
+{% block editable %}
+    <!-- Inventory Container -->
+    <div class="inventory_container">
+        <p><span style="font-weight: bold; text-decoration: underline;" > {{editable.name}} </span></p>
+        {{ super() }}
+        <br>
+        
+        <div id="inventory_items">
+            <div id="item">
+                {% for itemLI in editable.items %}
+                    <img src="{{url_for('api.image_retrieve', image_id=itemLI.item.images[0].image_id)}}" data-editable_id="{{itemLI.id}}" alt="" style="width: 100px; height: 100px;">
+                {% endfor %}
+            </div>
+        </div>
+
+        {% autoescape false %}
+            {{editable.description}}
+        {% endautoescape %}
+        <br>
+    </div>
+{% endblock%}
+
+{% block edit_name %}
+    {{editable.name}}
+{% endblock%}
+
+{% block script %}
+    <script>
+        $(function () {
+            document.getElementById('edit_ref').href = "{{url_for('navi.inventory_edit', inventory_id = editable.id)}}"
+
+            $('#delete').on('click', function(){
+                $.ajax({
+                    url: '/api/delete_editable',
+                    method: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json',
+                    data:JSON.stringify({
+                        id: "{{editable.id}}"
+                    })
+                }).always(function (data) {
+                    window.location.replace(`{{url_for('navi.index')}}`);
+                });
+            });
+        });
+    </script>
+{% endblock %}
+

@@ -1,3 +1,5 @@
+from ast import In
+from operator import inv
 from flask import (
     Blueprint, g, redirect, render_template, url_for
 )
@@ -240,12 +242,50 @@ def location_edit(location_id:int):
 
 @bp.route('/inventory/<int:inventory_id>')
 def inventory_page(inventory_id:int):
-    with Session.begin() as sqlsession: 
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        # Assume that viewer is not editor
+        editor_perms = False
+        # Assume no image
+
+        # Try to retrieve image from DB session
+        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == inventory_id)).scalar()
+
+        # If no image for id (or subclass of familiar), fail silently
+        if not inventory:
+            return redirect(url_for('navi.index'))
+
+        # If logged in
+        if g.user:
+            # Retrieve up to date user info
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            # If image is owned/can be edited by the viewer
+            if inventory in user.editor_perms:
+                editor_perms = True
+
+        # Pass image and editor perms to image page to be rendered
+        return render_template('navigation/editables/inventory/inventory.html', editable=inventory, editor_perms=editor_perms)
+
+@bp.route('/inventory/create/')
+@login_required
+def inventory_creation():
+        return render_template('navigation/editables/inventory/inventory_creation.html', inventory=None)
+
+@bp.route('/inventory/edit/<int:inventory_id>')
+@login_required
+def inventory_edit(inventory_id:int):
+     with Session.begin() as sqlsession:
         sqlsession:Ses
 
         inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == inventory_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
-        return render_template('navigation/editables/inventory/inventory_page.html', inventory = inventory )
+        if user and inventory: 
+            if inventory in user.editor_perms:
+                return render_template('navigation/editables/inventory/inventory_edit.html', inventory=inventory)
+        
+        return redirect(url_for('navi.index'))
 
 @bp.route('/item/<int:item_id>')
 def item_page(item_id:int):

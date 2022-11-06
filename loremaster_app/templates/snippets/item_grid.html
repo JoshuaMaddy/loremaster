@@ -1,0 +1,8 @@
+<div class="image_grid">
+    {% for item in items %}
+    <div class="image_div" data-selected="false">
+        <img src="{{url_for('api.image_retrieve', image_id=item.images[0].image_id)}}" data-editable_id="{{item.id}}" alt="">
+        <p>{{item.name}}</p>
+    </div>
+    {% endfor %}
+</div>

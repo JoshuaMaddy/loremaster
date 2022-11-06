@@ -1,3 +1,4 @@
+from operator import inv
 import os
 
 from flask import (
@@ -12,7 +13,7 @@ from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
 
-from . import image, character, familiar, location, item
+from . import image, character, familiar, location, item, inventory
 
 bp = Blueprint('api', __name__)
 
@@ -23,6 +24,10 @@ def image_retrieve(image_id:int):
 @bp.route('/api/user_image_grid', methods=['GET'])
 def user_image_grid():
     return image.user_grid()
+
+@bp.route('/api/user_item_grid', methods=['GET'])
+def user_item_grid():
+    return item.user_grid()
 
 @bp.route('/api/character_create', methods=['POST'])
 @login_required
@@ -69,6 +74,16 @@ def item_create():
 def item_edit():
     return item.edit()
 
+@bp.route('/api/inventory_create', methods=['POST'])
+@login_required
+def inventory_create():
+    return inventory.create()
+
+@bp.route('/api/inventory_edit', methods=['POST'])
+@login_required
+def inventory_edit():
+    return inventory.edit()
+
 @bp.route('/api/search', methods=['POST'])
 @login_required
 def search():
@@ -95,7 +110,7 @@ def search():
                     return jsonify(location_list)
 
                 if search_type == 'character':
-                    characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()
+                    characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user)))).scalars().all()
 
                     characters_list = [{'label':character.name, 'value':character.id} for character in characters]
 

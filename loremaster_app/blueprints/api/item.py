@@ -1,11 +1,22 @@
 from flask import (
-    g, request, url_for, jsonify, flash
+    g, request, url_for, jsonify, flash, render_template
 )
 from ...database.init_db import Session
 from ...database.table_declarations import *
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session as Ses
+
+def user_grid():
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        if user:
+            items:list[Item] = sqlsession.execute(select(Item).where(Item.editors.contains(user))).scalars().all()
+
+            return render_template('snippets/item_grid.html', items=items)
 
 def create():
     """Creates an item from a POST request with the given form data:

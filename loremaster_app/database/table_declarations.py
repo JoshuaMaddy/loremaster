@@ -204,7 +204,7 @@ class Character(Editable):
     inventories:list[Inventory] = relationship('Inventory', secondary = character_inventories)
 
     location_id:int = Column(Integer, ForeignKey("location.editable_id"))
-    location:Location = relationship("Location", foreign_keys=[location_id])
+    location:Location = relationship("Location", foreign_keys=[location_id], lazy='joined')
 
     guilds = None
 
@@ -439,17 +439,26 @@ class Inventory(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    items:ItemListItem = relationship('ItemListItem', back_populates="inventory")
+    items:list[ItemListItem] = relationship('ItemListItem', back_populates="inventory")
 
     __mapper_args__ = {
         'polymorphic_identity':'inventory',
     }
 
-    def __init__(self, owner: User, name: str) -> None:
+    def __init__(self, owner:User, name:str) -> None:
         super().__init__(owner, name)
     
     def __repr__(self) -> str:
         return f"Inventory(name:{{{self.name}}})"
+
+    def set_items(self, sqlsession:Ses, item_ids:list[int]) -> None:
+        self.items = []
+        for index in range(len(item_ids)):
+            item:Item = sqlsession.execute(select(Item).where(Item.id == item_ids[index])).scalars().first()
+            if item:
+                new_itemLI:ItemListItem = ItemListItem(item=item, count=1, index=index) 
+
+                self.items.append(new_itemLI)
 
 class Image(Editable):
     __tablename__ = "image"
