@@ -3,6 +3,7 @@ $(document).on('click', '#tags',  function (evt){
 
             // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
+        var form = new FormData(document.getElementById('search_form'))
         $("#tags").autocomplete({
             source: function (request, response) {
                 // Ajax is similar to fetch, tailored for jQuery objects
@@ -13,7 +14,7 @@ $(document).on('click', '#tags',  function (evt){
                     processData: false,
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        search_type: "character",
+                        search_type: form.get('tagtype'),
                         query: request.term
                     }),
                     success: function (data) {
@@ -57,7 +58,7 @@ function submitForm(){
         data: JSON.stringify({
             search_type: "character",
             query: form.get("tags"),
-            tag: "name"
+            tag: form.get('tagtype')
         }) 
     })
     

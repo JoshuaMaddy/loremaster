@@ -179,9 +179,20 @@ def list_query():
                         user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
                         if search_type == 'character':
                             if not tag:
-                                tag = 'name'
-                            if (tag == 'name'):
+                                tag = 'character'
+                            if (tag == 'character'):
                                 #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
-                                characters = sqlsession.execute(select(Character).where(Character.name.ilike('%'+query+'%'))).scalars().all()
+                                characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
                                 return render_template('snippets/browse.html', characters=characters)
+                            if (tag == 'location'):
+                                #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
+                                characters:Character = sqlsession.execute(select(Character).join(Location, Character.location_id == Location.editable_id).where(and_(Location.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
+                                #characters = sqlsession.execute(select(Character).where(Location.name.ilike('%'+query+'%'))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
+                            if (tag == 'user'):
+                                #characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user), Character.type != 'familiar'))).scalars().all()    
+                                characters:Character = sqlsession.execute(select(Character).join(User, Character.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
+                                #characters = sqlsession.execute(select(Character).where(Character.owner.name.ilike('%'+query+'%'))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
+
             return render_template('navigation/browse.html')

@@ -29,6 +29,17 @@
     <input id="tags" name="tags">
     <input id="name_id" hidden>
   </div>
+  <div id="tag_selection">
+    <label for="tagtype">Search By:</label>
+    <div class="tagtype">
+        <select name="tagtype" id="tagtype_dropdown">
+            <option value="character">Name</option>
+            <option value="location">Location</option>
+            <option value="user">Owner</option>
+        </select>
+    </div>
+</div>
+
   </form>
   
   {% endblock %}
@@ -42,7 +53,7 @@
   
 <body>
 <div class="public_characters">
-    <p>Public Characters</p>
+    <p>Characters</p>
     {{ list_editables(characters) }}
 </div>
 {% endblock %}
