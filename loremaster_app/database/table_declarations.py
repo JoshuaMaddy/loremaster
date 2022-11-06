@@ -100,6 +100,13 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f"User(name:{self.name}, id:{self.id})"
+
+    def list_of_type(self, polymorphic_type:str, list_of_editbales:list[Editable]) -> list[Editable]:
+        editable_type:list[Editable] = []
+        for editable in list_of_editbales:
+            if editable.type == polymorphic_type:
+                editable_type.append(editable)
+        return editable_type
     
 class Editable(Base):
     __tablename__ = "editable"

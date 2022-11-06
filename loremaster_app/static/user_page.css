@@ -10,6 +10,22 @@
     grid-area: user_name;
     justify-self: center;
     padding: 1em 0 1em 0;
+    width: 100%;
+}
+
+.user_info > *{
+    margin-left: 2rem;
+}
+.user_info > hr{
+    margin-left: 0;
+}
+
+li{
+    list-style-type: none;
+}
+
+.owns, .editor_perms{
+    margin-left: 2em;
 }
 
 .owns{
@@ -20,10 +36,10 @@
     grid-area: user_edit_perm;
 }
 
-.owns > li,.owns > p, .editor_perms > li, .editor_perms > p{
+.owns > li, .editor_perms > li{
     padding-left: 1em;
 }
 
 hr{
-    padding: 1em 0 1em 0;
+    margin: 0 0 1em 0;
 }
