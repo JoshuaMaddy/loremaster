@@ -5,15 +5,18 @@
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='image.css')}}">
 {% endblock %}
 
 {% block editable %}
     <!-- Image Container -->
     <div class="image_container">
-        <p>Name: {{editable.name}}</p>
+        <div id="header">
+        <h1>Name: {{editable.name}}</h1>
         {{ super() }}
-
-        <img src="{{url_for('api.image_retrieve', image_id=editable.id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+        </div>
+        <div id="image">
+        <img src="{{url_for('api.image_retrieve', image_id=editable.id)}}" alt="">
     
         <p>Description: </p>
         {% autoescape false %}
@@ -21,6 +24,7 @@
         {% endautoescape %}
     
     </div>
+</div>
 {% endblock%}
 
 {% block edit_name %}
