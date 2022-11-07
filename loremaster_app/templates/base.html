@@ -1,28 +1,35 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - LoreMaster</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+<script src="https://kit.fontawesome.com/25ac1c39b2.js" crossorigin="anonymous"></script>
 {% block links %}{% endblock %}
 
 {% block navbar %}
   <nav class="navbar">
-    <h1><a href="{{url_for('navi.index')}}">LoreMaster</a></h1>
+    <div id="logo">
+      <h1><a href="{{url_for('navi.index')}}">LoreMaster</a></h1>
+    </div>
+
+    <div id="navigation_options">
     {% if g.user %}
-      <li><span><a href="{{url_for('navi.user_page', user_id=g.user.id)}}">{{ g.user.name }}</a></span>
-      <li><span><a href="{{url_for('navi.create')}}">Create</a></span>
-        <li><span><a href="{{url_for('navi.browse')}}">Browse</a></span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
+      <a href="{{url_for('navi.create')}}">Create</a>
     {% endif %}
+      <a href="{{url_for('navi.browse')}}">Browse</a>
+    </div>
+
+    <div id="user_options">
+      {% if g.user %}
+        <a href="{{url_for('navi.user_page', user_id=g.user.id)}}">{{ g.user.name }}</a>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}">Register</a>
+        <a href="{{ url_for('auth.login') }}">Log In</a>
+      {% endif %}
+    </div>
   </nav>
 {% endblock %}
 
 <div class="content">
-  <header class="header">
-  {% block header %}{% endblock %}
-  </header>
 
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>

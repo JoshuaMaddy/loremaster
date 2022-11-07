@@ -15,6 +15,11 @@ bp = Blueprint('navi', __name__)
 
 @bp.route('/')
 def index():
+    if g.user:
+        with Session.begin() as sqlsession:
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            return render_template('homepage.html', user=user)
+
     return render_template('homepage.html')
 
 @bp.route('/user/<int:user_id>')

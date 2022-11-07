@@ -11,23 +11,24 @@
 {% block editable %}
     <!-- Item Container -->
     <div class="item_container">
-        <p><span style="font-weight: bold; text-decoration: underline;" > {{editable.name}} </span></p>
-        {{ super() }}
-        <br>
+        <div id="header">
+            <h1>{{editable.name}}</h1>
+            {{ super() }}
+        </div>
 
-        {% if image %}
+        <div id="item">
+            {% if image %}
         
-        <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 400px; width: 400px; object-fit: cover;" alt="">
-        
-        {% endif %}
-        
-        
-        <p></p>
-        {% autoescape false %}
-        <br>
-        {{editable.description}}
-        {% endautoescape %}
-        <br>
+            <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="">
+            
+            {% endif %}
+            
+            <h2>Description</h2>
+            {% autoescape false %}
+            {{editable.description}}
+            {% endautoescape %}
+            <br>
+        </div>
     </div>
 {% endblock%}
 

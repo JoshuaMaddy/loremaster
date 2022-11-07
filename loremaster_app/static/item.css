@@ -1,12 +1,42 @@
 .content{
+    display: flex;
+    justify-content: center;
+}
+
+.item_container{
+    width: min-content;
     display: grid;
     grid-template-areas: 
         "Header"
-        "Item"
-        "Edit-Options" ;
+        "Item";
+}
+#header{ 
+    grid-area: Header;
+    font-family: Arial, Helvetica, sans-serif;
+    align-content: baseline;
+    margin: 0 0 1rem 0;
 }
 
-.item_container{ 
+#header > h1{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#header > .edit_options{
+    margin: 0.5em 0 0 0;
+}
+
+#header > .edit_options button{
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+#item{ 
     grid-area: Item;
     justify-self: center;
     font-family: Arial, Helvetica, sans-serif;
@@ -14,9 +44,8 @@
     font-size: x-large;
 }
 
-.edit_options{ 
-    grid-area: Edit-Options;
-    font-family: Arial, Helvetica, sans-serif;
-    position: fixed;
-    left: 0px; bottom: 0px;
+#item > img{
+    height: 30vw;
+    width: 30vw;
+    object-fit: cover;
 }

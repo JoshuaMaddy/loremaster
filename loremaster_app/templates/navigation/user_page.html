@@ -2,31 +2,6 @@
 
 {% block links%} <link rel="stylesheet" href="{{url_for('static', filename='user_page.css')}}"> {%endblock%}
 
-{% macro list_editables(iterator) -%}
-    {% for element in iterator %}
-        {% if element.type == 'character' %}
-            <li><a href="{{url_for('navi.character_page', character_id=element.id)}}">Character: {{element.name}}</a>
-        {% elif element.type == 'familiar' %}
-            <li><a href="{{url_for('navi.familiar_page', familiar_id=element.id)}}">Familiar: {{element.name}}</a>
-        {% elif element.type == 'location' %}
-            <li><a href="{{url_for('navi.location_page', location_id=element.id)}}">Location: {{element.name}}</a>
-        {% elif element.type == 'guild' %}
-            <li><a href="{{url_for('navi.guild_page', guild_id=element.id)}}">Guild: {{element.name}}</a>
-        {% elif element.type == 'inventory' %}
-            <li><a href="{{url_for('navi.inventory_page', inventory_id=element.id)}}">Inventory: {{element.name}}</a>
-        {% elif element.type == 'item' %}
-            <li><a href="{{url_for('navi.item_page', item_id=element.id)}}">Item: {{element.name}}</a>
-        {% elif element.type == 'image' %}
-            <li>
-                <a href="{{url_for('navi.image_page', image_id=element.id)}}">
-                    <img src="{{url_for('api.image_retrieve', image_id=element.id)}}" style="width: 100px; height: 100px; object-fit:cover;" alt="">
-                </a>
-        {% else %}
-            <li><p>{{ element }}</p>
-        {% endif %}
-    {% endfor %}
-{% endmacro -%}
-
 {% block title %} {{user.name}}'s User Page{% endblock %}
 
 {% block content %}
@@ -38,48 +13,7 @@
             <hr>
         </div>
 
-        <div class="owns">
-            <h1>Owned Pages</h1>
-            <h2>Characters</h2>
-            {% for character in user.list_of_type(polymorphic_type='character', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.character_page', character_id=character.id)}}">{{character.name}}</a></li>
-            {% endfor %}
-
-            <h2>Familiars</h2>
-            {% for familiar in user.list_of_type(polymorphic_type='familiar', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.familiar_page', familiar_id=familiar.id)}}">{{familiar.name}}</a></li>
-            {% endfor %}
-
-            <h2>Locations</h2>
-            {% for location in user.list_of_type(polymorphic_type='location', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.location_page', location_id=location.id)}}">{{location.name}}</a></li>
-            {% endfor %}
-
-            <h2>Guilds</h2>
-            {% for guild in user.list_of_type(polymorphic_type='guild', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.guild_page', guild_id=guild.id)}}">{{guild.name}}</a></li>
-            {% endfor %}
-
-            <h2>Inventories</h2>
-            {% for inventory in user.list_of_type(polymorphic_type='inventory', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.inventory_page', inventory_id=inventory.id)}}">{{inventory.name}}</a></li>
-            {% endfor %}
-
-            <h2>Items</h2>
-            {% for item in user.list_of_type(polymorphic_type='item', list_of_editbales=user.owns) %}
-                <li><a href="{{url_for('navi.item_page', item_id=item.id)}}">{{item.name}}</a></li>
-            {% endfor %}
-
-            <h2>Images</h2>
-            {% for image in user.list_of_type(polymorphic_type='image', list_of_editbales=user.owns) %}
-            <li>
-                <a href="{{url_for('navi.image_page', image_id=image.id)}}">
-                    <img src="{{url_for('api.image_retrieve', image_id=image.id)}}" style="width: 10vw; height: 10vw; object-fit:cover;" alt="">
-                </a>
-            </li>
-            {% endfor %}
-        </div>
-
+        {% include 'snippets/user/owns.html' %}
 
         <div class="editor_perms">
             <h1>Editor Permition Pages</h1>

@@ -2,9 +2,12 @@
 
 {% block title %}Homepage{% endblock %}
 
-{% block content %}
+{% block links %}
 <link rel="stylesheet" href="{{url_for('static', filename='homepage.css')}}">
+{% endblock %}
+
+{% block content %}
     {% if g.user %}
-        <p>Welcome Back {{ g.user.name }}!</p>
+        {% include 'snippets/user/owns.html' %}
     {% endif %}
 {% endblock %}

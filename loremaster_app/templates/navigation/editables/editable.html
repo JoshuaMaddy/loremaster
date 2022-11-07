@@ -6,14 +6,9 @@
 
     {% if editor_perms %}
         <div class="edit_options">
-            <a id="edit_ref" href="">
-                <button id="edit">
-                    Edit {{editable.name}}
-                </button>
-            </a>
-
+            <a id="edit_ref" href=""><button id="edit"><i class="fa-solid fa-pen-to-square fa-xl"></i></button></a>
             <button id="delete">
-                Delete {{editable.name}}
+                <i class="fa-solid fa-trash-can fa-xl"></i>
             </button>
         </div>
     {% endif %}
