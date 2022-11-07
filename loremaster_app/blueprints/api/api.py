@@ -171,29 +171,34 @@ def list_query():
             search_type = search_info.get('search_type')
             
             if search_type:
-                query = search_info.get('query')
-                tag = search_info.get('tag')
+                        query = search_info.get('query')
+                        tag = search_info.get('tag')
 
-                if not query:
-                    query = ''
+                        if not query:
+                            query = ''
 
-                user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+                        user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+                        if search_type == 'character':
+                            if not tag:
+                                tag = 'character'
+                            if (tag == 'character'):
+                                characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
+                            if (tag == 'location'):
+                                characters:Character = sqlsession.execute(select(Character).join(Location, Character.location_id == Location.editable_id).where(and_(Location.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
+                            if (tag == 'user'):
+                                characters:Character = sqlsession.execute(select(Character).join(User, Character.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
+                                return render_template('snippets/browse.html', characters=characters)
 
-                if search_type == 'character':
-
-                    if not tag:
-                        tag = 'character'
-
-                    if (tag == 'character'):
-                        characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
-                        return render_template('snippets/browse.html', characters=characters)
-
-                    if (tag == 'location'):
-                        characters:Character = sqlsession.execute(select(Character).join(Location, Character.location_id == Location.editable_id).where(and_(Location.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
-                        return render_template('snippets/browse.html', characters=characters)
-
-                    if (tag == 'user'):
-                        characters:Character = sqlsession.execute(select(Character).join(User, Character.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public)))).scalars().all()
-                        return render_template('snippets/browse.html', characters=characters)
+                        if search_type == 'location':
+                            if not tag:
+                                tag = 'location'
+                            if (tag == 'location' or tag == 'character'):
+                                locations:Location = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), or_((Location.editors.contains(user)), Location.visibility == Visibilites.public)))).scalars().all()
+                                return render_template('snippets/browse.html', locations=locations)
+                            if (tag == 'user'):
+                                locations:Location = sqlsession.execute(select(Location).join(User, Location.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Location.editors.contains(user)), Location.visibility == Visibilites.public)))).scalars().all()
+                                return render_template('snippets/browse.html', locations=locations)
 
             return render_template('navigation/browse.html')
