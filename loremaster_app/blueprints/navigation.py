@@ -36,6 +36,20 @@ def admin_panel():
 
     return redirect(url_for('navi.index'))
 
+@bp.route('/user_panel')
+@login_required
+def user_panel():
+    if g.user:
+        with Session.begin() as sqlsession:
+            sqlsession:Ses
+
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+            if user:
+                return render_template('navigation/user/user_info_edit.html')
+
+    return redirect(url_for('navi.index'))
+
 @bp.route('/user/<int:user_id>')
 def user_page(user_id:int):
     with Session.begin() as sqlsession:
