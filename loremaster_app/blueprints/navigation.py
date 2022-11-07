@@ -22,6 +22,20 @@ def index():
 
     return render_template('homepage.html')
 
+@bp.route('/admin_panel')
+@login_required
+def admin_panel():
+    if g.user:
+        with Session.begin() as sqlsession:
+            sqlsession:Ses
+
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+            if user and user.admin_status:
+                return render_template('navigation/admin/admin_panel.html')
+
+    return redirect(url_for('navi.index'))
+
 @bp.route('/user/<int:user_id>')
 def user_page(user_id:int):
     with Session.begin() as sqlsession:

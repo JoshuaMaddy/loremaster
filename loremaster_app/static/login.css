@@ -1,0 +1,11 @@
+.register, .login{
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 30vw;
+}
+
+.reg_log_container{
+    margin: 2rem 0 0 0;
+    display: flex;
+    justify-content: center;
+}
