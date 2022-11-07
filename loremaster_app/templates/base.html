@@ -19,6 +19,10 @@
 
     <div id="user_options">
       {% if g.user %}
+        {% if g.user.admin_status %}
+          <a id = "admin_button" href="{{url_for('navi.admin_panel')}}"><button><i class="fa-solid fa-shield-cat fa-xl"></i></button>
+          </a>
+        {% endif %}
         <a href="{{url_for('navi.user_page', user_id=g.user.id)}}">{{ g.user.name }}</a>
         <a href="{{ url_for('auth.logout') }}">Log Out</a>
       {% else %}
