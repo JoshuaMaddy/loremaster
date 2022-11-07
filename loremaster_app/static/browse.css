@@ -1,0 +1,9 @@
+.content{
+    display: grid;
+    justify-items: center;
+    margin: 2rem 0 0 0;
+}
+
+.public_characters li{
+    list-style-type: none;
+}

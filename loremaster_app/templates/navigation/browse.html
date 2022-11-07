@@ -5,6 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
+<link rel="stylesheet" href="{{url_for('static', filename='browse.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='browse_search.js')}}"></script>
 {% endblock %}
 
@@ -18,30 +19,33 @@
 
 {% block content %}
 
-<form method="post" id="search_form">
-  <div class="ui-widget">
-    <label for="tags">Tags: </label>
-    <input id="tags" name="tags">
-    <input id="name_id" hidden>
-  </div>
-  <div id="tag_selection">
-    <label for="tagtype">Search By:</label>
-    <div class="tagtype">
-        <select name="tagtype" id="tagtype_dropdown">
-            <option value="character">Name</option>
-            <option value="location">Location</option>
-            <option value="user">Owner</option>
-        </select>
+<div class="search_form">
+  <form method="post" id="search_form">
+    <div class="ui-widget">
+      <label for="tags">Tags: </label>
+      <input id="tags" name="tags">
+      <input id="name_id" hidden>
     </div>
-  </div>
-</form>
+    <div id="tag_selection">
+      <label for="tagtype">Search By:</label>
+      <div class="tagtype">
+          <select name="tagtype" id="tagtype_dropdown">
+              <option value="character">Name</option>
+              <option value="location">Location</option>
+              <option value="user">Owner</option>
+          </select>
+      </div>
+    </div>
+  </form>
 
-<button id="search", type="button">
-  search
-</button>
-  
+  <button id="search", type="button">
+    search
+  </button>
+</div>
+
 <div class="public_characters">
     <p>Characters</p>
     {{ list_editables(characters) }}
 </div>
+
 {% endblock content %}

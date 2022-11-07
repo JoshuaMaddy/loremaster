@@ -25,13 +25,16 @@
             {% autoescape false %}
             {{editable.description}}
             {% endautoescape %}
-            <p>Parent: {{editable.parent if editable.parent else 'No given Parent Location.'}}</p>
-
+            {% if editable.parent %}
+                <a href="{{url_for('navi.location_page', location_id=editable.parent.id)}}">Parent Location: {{editable.parent.name}}</a>
+            {% else %}
+                <p>No given Parent Location.</p>
+            {% endif %}
             <div class="child_locations">
                 <p>Child Locations:
                 {% if editable.children %}
                     {% for location in editable.children %}
-                        {{location}},
+                        <li><a href="{{url_for('navi.location_page', location_id=location.id)}}">{{location.name}}</a></li>
                     {% endfor %}
                 {% else %}
                     No given Children Locations.
