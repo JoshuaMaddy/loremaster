@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block links %}
+ 
+{% endblock %}
+
+{% block content %}
+    <form action="" id="user_info">
+        <label for="username">Username</label>
+        <input name="username" id="username" value="{{user.name}}" placeholder="Username" required>
+        
+        <label for="first_name">First name</label>
+        <input name="first_name" id="first_name" value="{{user.first_name}}" placeholder="First name" required>
+
+        <label for="last_name">Last name</label>
+        <input name="last_name" id="last_name" value="{{user.last_name}}" placeholder="Last name" required>
+
+        <label for="password">Password</label>
+        <input name="password" id="password" value="" placeholder="Password" required>
+
+        <label for="email">Email</label>
+        <input name="email" id="email" value="{{user.email}}" placeholder="Email" required>
+
+        <p>Description</p>
+            <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
+                <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -webkit-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
+                -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
+                    <textarea id="description">Description Text</textarea>
+                </div>
+            </div>
+        
+    </form>
+    <div id="hidden_description" hidden>
+        {% autoescape false %}
+            {{user.description if user else 'Description Text Here'}}
+        {% endautoescape %}
+    </div>
+{% endblock %}
