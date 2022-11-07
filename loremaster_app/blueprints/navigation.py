@@ -32,7 +32,7 @@ def admin_panel():
             user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
             if user and user.admin_status:
-                return render_template('navigation/admin/admin_panel.html',user=user)
+                return render_template('navigation/admin/admin_panel.html', user=user)
 
     return redirect(url_for('navi.index'))
 
@@ -46,7 +46,7 @@ def user_panel():
             user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
             if user:
-                return render_template('navigation/user/user_info_edit.html')
+                return render_template('navigation/user/user_info_edit.html', user=user)
 
     return redirect(url_for('navi.index'))
 
