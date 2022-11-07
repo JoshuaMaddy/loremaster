@@ -4,6 +4,3 @@
 
 {% block title %} {{user.name}}'s Admin Panel{% endblock %}
 
-{% if user.admin_status %}
-<a href="{{url_for('navi.create')}}">Create</a>
-{% endif %}
