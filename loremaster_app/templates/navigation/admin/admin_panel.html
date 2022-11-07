@@ -4,3 +4,11 @@
 
 {% block title %} {{user.name}}'s Admin Panel{% endblock %}
 
+{% block content %}
+    <div class="user_container">
+        <div class="user_info">
+            <h1>User Name: {{ user.name }}</h1>
+            <hr>
+        </div>
+    </div>
+{%endblock%}
