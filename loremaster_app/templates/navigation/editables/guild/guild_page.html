@@ -1,8 +1,3 @@
-{% extends 'base.html' %}
+{% extends 'navigation/editables/editable.html' %}
 
-{% block content%}
-<div class="content_header" style="display:flex; align-items: center; justify-content: space-evenly">
-    <p>guild: {{guild.name}}</p>
-    {{ super() }}
-</div>
-{%endblock%}
+{% block title%}Guild View{% endblock %}

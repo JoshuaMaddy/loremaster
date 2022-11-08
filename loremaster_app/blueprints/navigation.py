@@ -69,6 +69,61 @@ def user_page(user_id:int):
 def create():
     return render_template('navigation/editables/create_editable.html')
 
+
+@bp.route('/guild/<int:guild_id>')
+def guild_page(guild_id:int):
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        # Try to retrieve guild from DB session
+        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild.id)).scalar()
+
+        # If no guild for id (or subclass of familiar), fail silently
+        if guild is None or guild.type == 'familiar':
+            return redirect(url_for('navi.index'))
+
+        # Assume that viewer is not editor
+        editor_perms = False
+        # Assume no image
+        image = None
+
+        # If logged in
+        if g.user:
+            # Retrieve up to date user info
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            # If guild is owned/can be edited by the viewer
+            if guild in user.editor_perms:
+                editor_perms = True
+
+        # Find first image
+        if guild.images:
+            images = guild.images
+            images.sort(key = lambda image : image.index)
+            image = images[0]
+
+        # Pass guild and editor perms to character page to be rendered
+        return render_template('navigation/editables/guild/guild_page.html', editable=guild, editor_perms=editor_perms, image=image, Visibility=Visibilites)
+
+@bp.route('/guild/guild_create')
+@login_required
+def guild_create():
+        return render_template('navigation/editables/guild/guild_create.html', guild=None, Visibility=Visibilites)
+
+@bp.route('/guild/edit/<int:guild_id>')
+@login_required
+def guild_edit(guild_id:int):
+     with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
+        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        if user and guild: 
+            if guild in user.editor_perms:
+                return render_template('navigation/editables/guild/guild_edit.html', guild=guild, Visibility=Visibilites)
+        
+        return redirect(url_for('navi.index'))
+
 @bp.route('/character/<int:character_id>')
 def character_page(character_id:int):
     with Session.begin() as sqlsession:
@@ -374,14 +429,7 @@ def item_edit(item_id:int):
         
         return redirect(url_for('navi.index'))
 
-@bp.route('/guild/<int:guild_id>')
-def guild_page(guild_id:int):
-    with Session.begin() as sqlsession: 
-        sqlsession:Ses
 
-        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
-
-        return render_template('navigation/editables/guild/guild_page.html', guild = guild )
 
 @bp.route('/search')
 def search():
