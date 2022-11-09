@@ -56,7 +56,7 @@ function submitForm(){
         processData: false,
         contentType: 'application/json',
         data: JSON.stringify({
-            search_type: "character",
+            search_type: form.get('searchtype'),
             query: form.get("tags"),
             tag: form.get('tagtype')
         }) 

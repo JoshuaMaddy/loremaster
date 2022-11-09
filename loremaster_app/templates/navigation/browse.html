@@ -19,12 +19,19 @@
 
 {% block content %}
 
-<div class="search_form">
-  <form method="post" id="search_form">
-    <div class="ui-widget">
-      <label for="tags">Tags: </label>
-      <input id="tags" name="tags">
-      <input id="name_id" hidden>
+<form method="post" id="search_form">
+  <div class="ui-widget">
+    <label for="tags">Tags: </label>
+    <input id="tags" name="tags">
+    <input id="name_id" hidden>
+  </div>
+  <div id="search_selection">
+    <label for="searchtype">Search For:</label>
+    <div class="searchtype">
+        <select name="searchtype" id="searchtype_dropdown">
+            <option value="character">Character</option>
+            <option value="location">Location</option>
+        </select>
     </div>
     <div id="tag_selection">
       <label for="tagtype">Search By:</label>
