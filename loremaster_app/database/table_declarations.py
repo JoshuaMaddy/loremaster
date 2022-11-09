@@ -1,4 +1,3 @@
-from turtle import pu
 import enum
 from sqlalchemy import Column, ForeignKey, Integer, Enum, String, BINARY, Boolean, Float, Table, select, ForeignKeyConstraint
 from sqlalchemy.orm import declarative_base, relationship, backref
@@ -58,8 +57,6 @@ class Visibilites(enum.Enum):
     public = 1
     guild = 2
     private = 3
-
-
 
 class User(Base):
     __tablename__ = "user"
