@@ -1,10 +1,9 @@
-from ast import In
-from operator import inv
 from flask import (
     Blueprint, g, redirect, render_template, url_for
 )
 from ..database.init_db import Session
 from ..database.table_declarations import *
+from ..database.queries import *
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session as Ses
@@ -17,7 +16,8 @@ bp = Blueprint('navi', __name__)
 def index():
     if g.user:
         with Session.begin() as sqlsession:
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
+
             return render_template('homepage.html', user=user)
 
     return render_template('homepage.html')
@@ -29,7 +29,7 @@ def admin_panel():
         with Session.begin() as sqlsession:
             sqlsession:Ses
 
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
 
             if user and user.admin_status:
                 return render_template('navigation/admin/admin_panel.html', user=user)
@@ -43,7 +43,7 @@ def user_panel():
         with Session.begin() as sqlsession:
             sqlsession:Ses
 
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
 
             if user:
                 return render_template('navigation/user/user_info_edit.html', user=user)
@@ -56,7 +56,7 @@ def user_page(user_id:int):
         sqlsession:Ses
 
         #  Try to retrieve user from DB session
-        user:User = sqlsession.execute(select(User).where(User.id == user_id)).scalar()
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         # If no character for id, fail silently
         if user is None:
@@ -79,7 +79,7 @@ def guild_page(guild_id:int):
         guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild.id)).scalar()
 
         # If no guild for id (or subclass of familiar), fail silently
-        if guild is None or guild.type == 'familiar':
+        if guild is None:
             return redirect(url_for('navi.index'))
 
         # Assume that viewer is not editor
@@ -90,7 +90,7 @@ def guild_page(guild_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If guild is owned/can be edited by the viewer
             if guild in user.editor_perms:
                 editor_perms = True
@@ -116,7 +116,7 @@ def guild_edit(guild_id:int):
         sqlsession:Ses
 
         guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and guild: 
             if guild in user.editor_perms:
@@ -130,7 +130,7 @@ def character_page(character_id:int):
         sqlsession:Ses
 
         # Try to retrieve character from DB session
-        character:Character = sqlsession.execute(select(Character).where(Character.id == character_id)).scalar()
+        character:Character = get_element_by_id(session=sqlsession, element_type=Character, element_id=character_id)
 
         # If no character for id (or subclass of familiar), fail silently
         if character is None or character.type == 'familiar':
@@ -144,7 +144,7 @@ def character_page(character_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If Character is owned/can be edited by the viewer
             if character in user.editor_perms:
                 editor_perms = True
@@ -169,8 +169,8 @@ def character_edit(character_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        character:Character = sqlsession.execute(select(Character).where(Character.id == character_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        character:Character = get_element_by_id(session=sqlsession, element_type=Character, element_id=character_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and character: 
             if character in user.editor_perms:
@@ -189,7 +189,7 @@ def image_page(image_id:int):
         image = None
 
         # Try to retrieve image from DB session
-        image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
+        image:Image = get_element_by_id(session=sqlsession, element_type=Image, element_id=image_id)
 
         # If no image for id (or subclass of familiar), fail silently
         if not image:
@@ -198,7 +198,7 @@ def image_page(image_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If image is owned/can be edited by the viewer
             if image in user.editor_perms:
                 editor_perms = True
@@ -217,8 +217,8 @@ def image_edit(image_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        image:Image = sqlsession.execute(select(Image).where(Image.id == image_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        image:Image = get_element_by_id(session=sqlsession, element_type=Image, element_id=image_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and image: 
             if image in user.editor_perms:
@@ -237,7 +237,7 @@ def familiar_page(familiar_id:int):
         image = None
 
         # Try to retrieve familiar from DB session
-        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar() 
+        familiar:Familiar = get_element_by_id(session=sqlsession, element_type=Familiar, element_id=familiar_id)
 
         # If no image for id (or subclass of familiar), fail silently
         if not familiar:
@@ -246,7 +246,7 @@ def familiar_page(familiar_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If image is owned/can be edited by the viewer
             if familiar in user.editor_perms:
                 editor_perms = True
@@ -265,8 +265,9 @@ def familiar_edit(familiar_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+
+        familiar:Familiar = get_element_by_id(session=sqlsession, element_type=Familiar, element_id=familiar_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and familiar: 
             if familiar in user.editor_perms:
@@ -285,7 +286,7 @@ def location_page(location_id:int):
         image = None
 
         # Try to retrieve image from DB session
-        location:Location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
+        location:Location = get_element_by_id(session=sqlsession, element_type=Location, element_id=location_id)
 
         # If no image for id (or subclass of familiar), fail silently
         if not location:
@@ -300,7 +301,7 @@ def location_page(location_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If image is owned/can be edited by the viewer
             if location in user.editor_perms:
                 editor_perms = True
@@ -319,8 +320,8 @@ def location_edit(location_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        location:Location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        location:Location = get_element_by_id(session=sqlsession, element_type=Location, element_id=location_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and location: 
             if location in user.editor_perms:
@@ -338,7 +339,7 @@ def inventory_page(inventory_id:int):
         # Assume no image
 
         # Try to retrieve image from DB session
-        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == inventory_id)).scalar()
+        inventory:Inventory = get_element_by_id(session=sqlsession, element_type=Inventory, element_id=inventory_id)
 
         # If no image for id (or subclass of familiar), fail silently
         if not inventory:
@@ -347,7 +348,7 @@ def inventory_page(inventory_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If image is owned/can be edited by the viewer
             if inventory in user.editor_perms:
                 editor_perms = True
@@ -366,8 +367,8 @@ def inventory_edit(inventory_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        inventory:Inventory = sqlsession.execute(select(Inventory).where(Inventory.id == inventory_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        inventory:Inventory = get_element_by_id(session=sqlsession, element_type=Inventory, element_id=inventory_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and inventory: 
             if inventory in user.editor_perms:
@@ -386,7 +387,7 @@ def item_page(item_id:int):
         image = None
 
         # Try to retrieve image from DB session
-        item:Item = sqlsession.execute(select(Item).where(Item.id == item_id)).scalar()
+        item:Item = get_element_by_id(session=sqlsession, element_type=Item, element_id=item_id)
 
         # If no image for id (or subclass of familiar), fail silently
         if not item:
@@ -395,7 +396,7 @@ def item_page(item_id:int):
         # If logged in
         if g.user:
             # Retrieve up to date user info
-            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
             # If image is owned/can be edited by the viewer
             if item in user.editor_perms:
                 editor_perms = True
@@ -420,8 +421,8 @@ def item_edit(item_id:int):
      with Session.begin() as sqlsession:
         sqlsession:Ses
 
-        item:Item = sqlsession.execute(select(Item).where(Item.id == item_id)).scalar()
-        user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+        item:Item = get_element_by_id(session=sqlsession, element_type=Item, element_id=item_id)
+        user:User = get_user(session=sqlsession, user_id=g.user.id)
 
         if user and item: 
             if item in user.editor_perms:
@@ -439,6 +440,6 @@ def search():
 def browse():
     with Session.begin() as sqlsession: 
         sqlsession:Ses
-        characters:list[Character] = sqlsession.execute(select(Character).where(Editable.visibility == Visibilites.public)).scalars()
+        characters:list[Character] = sqlsession.execute(select(Character).where(Character.visibility == Visibilites.public)).scalars()
 
         return render_template('navigation/browse.html', characters=characters)
