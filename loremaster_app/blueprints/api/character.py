@@ -29,6 +29,9 @@ def create():
                 familiar_ids:list[dict] = character_info.get('familiar_ids')
                 editor_ids:list[dict] = character_info.get('editor_ids')
                 image_ids:list[int] = character_info.get('image_ids')
+                location_id:int = character_info.get('location_id')
+                guild_id:int = character_info.get('guild_id')
+                vis_int:int = character_info.get('visibility')
                 
                 user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
@@ -54,6 +57,15 @@ def create():
 
                     if editor_ids:
                         character.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                    if location_id:
+                        character.set_location(sqlsession=sqlsession, location_id=location_id)
+
+                    if guild_id:
+                        character.set_guild(sqlsession=sqlsession, guild_id=guild_id)
+
+                    if vis_int:
+                        character.set_visibility(sqlsession=sqlsession, vis_int=vis_int)
                 else:
                     flash('User not found in DB.')
                     return redirect
@@ -92,6 +104,8 @@ def edit():
                 familiar_ids:list[dict] = character_info.get('familiar_ids')
                 editor_ids:list[dict] = character_info.get('editor_ids')
                 image_ids:list[int] = character_info.get('image_ids')
+                location_id:int = character_info.get('location_id')
+                guild_id:int = character_info.get('guild_id')
                 vis_int:int = character_info.get('visibility')
 
                 if id:
@@ -135,6 +149,12 @@ def edit():
 
                             if editor_ids:
                                 character.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                            if location_id:
+                                character.set_location(sqlsession=sqlsession, user=user, location_id=location_id)
+
+                            if guild_id:
+                                character.set_guild(sqlsession=sqlsession, user=user, guild_id=guild_id)
 
                             if vis_int:
                                 character.set_visibility(sqlsession=sqlsession, vis_int=vis_int)

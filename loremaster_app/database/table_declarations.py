@@ -53,6 +53,10 @@ character_familiars = Table('familiars', Base.metadata,
     Column('character_id', ForeignKey('editable.id'), primary_key=True),
     Column('familiar_id', ForeignKey('familiar.editable_id'), primary_key=True))
 
+guild_characters = Table("g_characters", Base.metadata,
+    Column('guild_id', ForeignKey("editable.id"), primary_key=True),
+    Column('character_id', ForeignKey('character.editable_id'), primary_key=True))
+
 class Visibilites(enum.Enum):
     public = 1
     guild = 2
@@ -210,7 +214,8 @@ class Character(Editable):
     location_id:int = Column(Integer, ForeignKey("location.editable_id"))
     location:Location = relationship("Location", foreign_keys=[location_id], lazy='joined')
 
-    guilds = None
+    guild_id:int = Column(Integer, ForeignKey("guild.editable_id"))
+    guild:Guild = relationship("Guild", foreign_keys=[guild_id], lazy='joined')
 
     familiars:list[Familiar] = relationship('Familiar',
         secondary = character_familiars,
@@ -257,6 +262,14 @@ class Character(Editable):
 
             if familiar and familiar in user.editor_perms:
                 self.familiars.append(familiar)
+    
+    def set_location(self, sqlsession:Ses, user:User, location_id:int) -> None:
+        self.location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
+        self.location_id = location_id
+
+    def set_guild(self, sqlsession:Ses, user:User, guild_id:int) -> None:
+        self.guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
+        self.guild_id = guild_id
 
 
 class Familiar(Editable):
@@ -337,7 +350,7 @@ class Guild(Editable):
         'polymorphic_identity':'guild',
     }
 
-    guild_members = None
+    guild_members:list[Character] = relationship('Character', secondary = guild_characters)
 
     def __init__(self, owner: User, name: str) -> None:
         super().__init__(owner, name)

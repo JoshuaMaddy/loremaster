@@ -68,6 +68,13 @@
                 <input type="text" name="location_id" id="location_id" value="{{character.location.id if character.location else ''}}" hidden>
             </div>
 
+            <!-- Guild -->
+            <div id="guild_selection">
+                <label for="guild">Guild</label>
+                <input type="text" name="guild" id="guild_input" value="{{character.guild.name if character.guild else ''}}">
+                <input type="text" name="guild_id" id="guild_id" value="{{character.guild.id if character.guild else ''}}" hidden>
+            </div>
+
             <hr>
 
             <!-- Trait Selection -->

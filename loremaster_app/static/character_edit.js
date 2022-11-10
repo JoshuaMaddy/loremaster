@@ -42,6 +42,7 @@ class CharacterDescription {
     image_ids;
     description;
     location_id;
+    guild_id;
     traits;
     stats;
     relationships;
@@ -49,7 +50,7 @@ class CharacterDescription {
     inventories;
     editor_ids;
     constructor(character = null, image_ids = null, description = null, traits = null, stats = null,
-        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null, visibility = null) {
+        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null, guild_id = null, visibility = null) {
         this.character = character;
         this.image_ids = image_ids;
         this.description = description;
@@ -58,7 +59,8 @@ class CharacterDescription {
         this.relationships = relationships;
         this.familiar_ids = familiar_ids;
         this.editor_ids = editor_ids;
-        this.location_id = location;
+        this.location_id = location_id;
+        this.guild_id = guild_id;
         this.visibility = visibility;
     }
 }
@@ -290,9 +292,12 @@ $(function () {
             characterDescription.location_id = parseInt(form.get('location_id'));
         }
 
+        if (form.get('guild')) {
+            characterDescription.guild_id = parseInt(form.get('guild_id'));
+        }
+
         if (form.get('visibility')) {
             characterDescription.visibility = form.get('visibility');
-            console.log(form.get('visibility'))
         }
 
         return characterDescription
@@ -333,6 +338,40 @@ $(function () {
                 event.preventDefault();
                 $('#location_input').val(ui.item.label);
                 $('#location_id').val(ui.item.value);
+            },
+            delay: 200
+        });
+
+        $("#guild_input").autocomplete({
+            source: function (request, response) {
+                // Ajax is similar to fetch, tailored for jQuery objects
+                $.ajax({
+                    url: '/api/search',
+                    method: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        search_type: "guild",
+                        query: request.term
+                    }),
+                    success: function (data) {
+                        response($.map(data, function (result) {
+                            return {
+                                label: result.label,
+                                value: result.value,
+                            }
+                        }));
+                    }
+                });
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+            },
+            select: function (event, ui) {
+                event.preventDefault();
+                $('#guild_input').val(ui.item.label);
+                $('#guild_id').val(ui.item.value);
             },
             delay: 200
         });

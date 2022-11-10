@@ -129,6 +129,13 @@ def search():
 
                     return jsonify(users_list)
 
+                if search_type == 'guild':
+                    guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , Guild.editors.contains(user)))).scalars().all()
+
+                    guild_list = [{'label':guild.name, 'value':guild.id} for guild in guilds]
+
+                    return jsonify(guild_list)
+
     return jsonify('not json')
 
 @bp.route('/api/delete_editable', methods=['POST'])
