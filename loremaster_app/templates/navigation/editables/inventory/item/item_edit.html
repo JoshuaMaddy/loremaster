@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Item Edit{% endblock %}
+{% block title %}Guild Edit{% endblock %}
 
 {% block links%}
 <!-- TinyMCE links -->
@@ -14,23 +14,23 @@
 
 <!-- Internal stying links -->
 <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
-<script type="text/javascript" src="{{url_for('static', filename='item_edit.js')}}"></script>
-<link rel="stylesheet" href="{{url_for('static', filename='item_edit.css')}}">
+<script type="text/javascript" src="{{url_for('static', filename='guild_edit.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='guild_edit.css')}}">
 {% endblock %}
 
 {% block content %}
 
     {% if item %}
-    <div id="item_page" data-item_url="{{url_for('navi.item_page', item_id = item.id)}}"></div>
+    <div id="guild_page" data-item_url="{{url_for('navi.guild_page', guild_id = guild.id)}}"></div>
     {% endif %}
 
     {% block form %}
-        <form method="post" id="item_form">
+        <form method="post" id="guild_form">
 
             <!-- Name -->
             <label for="name">Name</label>
-            <input name="name" id="name" value="{{item.name if item else ''}}" placeholder="Your Item Name" required>
-            <input name="item_id" id="item_id" type="text" value="{{item.id if item else ''}}" hidden>
+            <input name="name" id="name" value="{{guild.name if item else ''}}" placeholder="Your Guild Name" required>
+            <input name="guild_id" id="guild_id" type="text" value="{{guild.id if guild else ''}}" hidden>
             
             <div id="image_container">
                 <label for="images">Images</label>
@@ -99,7 +99,7 @@
 
     <div id="hidden_description" hidden>
         {% autoescape false %}
-            {{item.description if item else 'Description Text Here'}}
+            {{guild.description if item else 'Description Text Here'}}
         {% endautoescape %}
     </div>
 {% endblock %}
