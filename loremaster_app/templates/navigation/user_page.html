@@ -7,10 +7,11 @@
 {% block content %}
     <div class="user_container">
         <div class="user_info">
-            <h1>User Name: {{ user.name }}</h1>
-            <p>Email: {{ user.email }}</p>
-
-            <hr>
+            <img src="{{url_for('static',filename='empty_scroll.png')}}">
+            <div id="text">
+                <h1>User Name: {{ user.name }}</h1>
+                <p>Email: {{ user.email }}</p>
+            </div>
         </div>
 
         {% include 'snippets/user/owns.html' %}

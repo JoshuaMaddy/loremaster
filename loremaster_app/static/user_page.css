@@ -8,17 +8,25 @@
 
 .user_info{
     grid-area: user_name;
-    justify-self: center;
+    justify-self: left;
     padding: 1em 0 0 0;
-    width: 100%;
+    width: min-content;
+    height: 5rem;
 }
 
-.user_info > *{
-    margin-left: 2rem;
+.user_info > img{
+    height: 100%;
+    width: 100%;
+    object-fit: fill;
 }
-.user_info > hr{
-    margin-left: 0;
-}
+
+.user_info > #text{
+    position: relative;
+    width: max-content;
+    padding: 0.5em 2em 1em 2em;
+    top: -100%;
+    left: 0;
+} 
 
 li{
     list-style-type: none;
