@@ -1,5 +1,10 @@
 <div class="owns">
-    <h1>Owned Pages</h1>
+    <div class = "title">
+        <div id = "text" style="border-image: url({{url_for('static',filename='empty_scroll_variation1.png')}}); border-image-slice: 30% fill; ">
+            <h1>Owned Pages</h1>
+        </div>
+    </div>
+    
     <h2>Characters</h2>
     {% for character in user.list_of_type(polymorphic_type='character', list_of_editbales=user.owns) %}
         <li><a href="{{url_for('navi.character_page', character_id=character.id)}}">{{character.name}}</a></li>

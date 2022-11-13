@@ -3,12 +3,13 @@
     grid-template-areas: 
             "user_name user_name"
             "user_owns user_edit_perm";
+    grid-template-columns: 1fr 1fr;
     
 }
 
 .user_info{
     grid-area: user_name;
-    justify-self: left;
+    justify-self: center;
     padding: 1em 0 0 0;
     width: min-content;
     height: 5rem;
@@ -40,14 +41,58 @@ li{
     grid-area: user_owns;
 }
 
+.owns > title {
+    width: min-content;
+    justify-self: left;
+    padding: 1em 0 0 0;
+    height: 5rem;
+}
+
+.owns > title > #text {
+    position: relative;
+    width: max-content;
+    padding: 0.5em 3em 1em 8em;
+    left: 0;
+}
+
+.title > img{
+    height: 40%;
+    width: 40%;
+    object-fit: fill;
+}
+
 .editor_perms{
     grid-area: user_edit_perm;
+}
+
+.edit_header, .title{
+    width: max-content;
+    justify-self: left;
+    height: auto;
+    padding: 1rem 0 0 0;
+}
+
+.edit_header > img, .title > img{
+    height: 115%;
+    width: 115%;
+    border-image-slice: 30;
+}
+
+.edit_header > #text, .title > #text{
+    border-width: 30px;
+    border-style: solid;
+    position: relative;
+    width: max-content;
+    padding: 1rem 2rem 1rem 2rem;
+    left: 0;
 }
 
 .owns > li, .editor_perms > li{
     padding-left: 1em;
 }
 
-hr{
-    margin: 0 0 1em 0;
+.editable_objects > h2, .owns > h2{
+    position: inherit;
+    padding-top: 2rem;
 }
+
