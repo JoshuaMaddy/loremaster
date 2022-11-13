@@ -14,8 +14,8 @@
 
 <!-- Internal stying links -->
 <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
-<script type="text/javascript" src="{{url_for('static', filename='guild_edit.js')}}"></script>
-<link rel="stylesheet" href="{{url_for('static', filename='guild_edit.css')}}">
+<script type="text/javascript" src="{{url_for('static', filename='editable/guild/guild_edit.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='editable/guild/guild_edit.css')}}">
 {% endblock %}
 
 {% block content %}
@@ -60,6 +60,38 @@
                 -moz-box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);">
                     <textarea id="description">Description Text</textarea>
                 </div>
+            </div>
+
+            <hr>
+
+            <!-- Location Parent -->
+            <div id="guild_leader_selection">
+                <label for="guild_leader">Guild Leader</label>
+                <input type="text" name="guild_leader" id="guild_leader" value="{{guild.leader.name if guild.leader else ''}}">
+                <input type="text" name="guild_leader_id" id="guild_leader_id" value="{{guild.leader.id if guild.leader else ''}}" hidden>
+            </div>
+
+            <!-- Location Children -->
+            <div id="children_guild_selection">
+                <label for="guild_members">Guild Members</label>
+                
+                {% for character in guild.guild_members %}
+                <div class="guild_members">
+                    <input type="text" name="guild_member" class="guild_member" value="{{character.name if character.name else ''}}" placeholder="Member">
+                    <input type="text" name="guild_member_id" id="guild_member_id" value="{{character.id}}" hidden>
+                    <button type="button" class="remove_member">-</button>
+                </div>
+                {% endfor %}
+
+                {% if not guild.children %}
+                <div class="guild_members">
+                    <input type="text" name="guild_member" class="guild_member" placeholder="Member">
+                    <input type="text" name="guild_member_id" id="guild_member_id" value="" hidden>
+                    <button type="button" class="remove_member">-</button>
+                </div>
+                {% endif %}
+
+                <button type="button" id="add_member">Add Member</button>
             </div>
 
             <hr>

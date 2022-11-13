@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
 
-from . import image, character, familiar, location, item, inventory
+from . import image, character, familiar, location, item, inventory, guild
 
 bp = Blueprint('api', __name__)
 
@@ -60,8 +60,18 @@ def location_create():
 
 @bp.route('/api/location_edit', methods=['POST'])
 @login_required
+def guild_edit():
+    return guild.edit()
+
+@bp.route('/api/guild_create', methods=['POST'])
+@login_required
+def guild_create():
+    return guild.create()
+
+@bp.route('/api/guild_edit', methods=['POST'])
+@login_required
 def location_edit():
-    return location.edit()
+    return guild.edit()
 
 @bp.route('/api/item_create', methods=['POST'])
 @login_required

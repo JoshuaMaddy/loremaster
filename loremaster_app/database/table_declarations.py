@@ -357,6 +357,18 @@ class Guild(Editable):
     def __repr__(self) -> str:
         return f"Guild{{name:{self.name}, id:{self.editable_id}}}"
 
+    def set_leader(self, sqlsession:Ses, user:User, leader_id:int) -> None:
+        character:Character = sqlsession.execute(select(Character).where(Familiar.editable_id == leader_id)).scalar()
+
+        if character and not character in self.familiars and character in user.editor_perms:
+            self.leader = character
+
+    def set_members(self, sqlsession:Ses, member_ids:list[int]) -> None:
+        for character_id in member_ids:
+            member = sqlsession.execute(select(Character).where(Character.editable_id == member_ids)).scalar()
+            if member:
+                self.guild_members.append(member)
+
 class Trait(Base):
     __tablename__ = "trait"
 
