@@ -76,7 +76,7 @@ def guild_page(guild_id:int):
         sqlsession:Ses
 
         # Try to retrieve guild from DB session
-        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild.id)).scalar()
+        guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
 
         # If no guild for id (or subclass of familiar), fail silently
         if guild is None:
@@ -102,7 +102,7 @@ def guild_page(guild_id:int):
             image = images[0]
 
         # Pass guild and editor perms to character page to be rendered
-        return render_template('navigation/editables/guild/guild_page.html', editable=guild, editor_perms=editor_perms, image=image, Visibility=Visibilites)
+        return render_template('navigation/editables/guild/guild.html', editable=guild, editor_perms=editor_perms, image=image, Visibility=Visibilites)
 
 @bp.route('/guild/guild_create')
 @login_required

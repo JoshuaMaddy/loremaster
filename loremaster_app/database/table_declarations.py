@@ -214,8 +214,7 @@ class Character(Editable):
     location_id:int = Column(Integer, ForeignKey("location.editable_id"))
     location:Location = relationship("Location", foreign_keys=[location_id], lazy='joined')
 
-    guild_id:int = Column(Integer, ForeignKey("guild.editable_id"))
-    guild:Guild = relationship("Guild", foreign_keys=[guild_id], lazy='joined')
+    guild:Guild = relationship('Guild', secondary = guild_characters, uselist=False)
 
     familiars:list[Familiar] = relationship('Familiar',
         secondary = character_familiars,

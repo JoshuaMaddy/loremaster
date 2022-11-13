@@ -1,43 +1,33 @@
 {% extends 'navigation/editables/editable.html' %}
 
-{% block title%}Inventory View{% endblock %}
+{% block title%}Guild View{% endblock %}
 
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="{{url_for('static', filename='editable/inventory/inventory.css')}}">
 {% endblock %}
 
 {% block editable %}
-    <!-- Inventory Container -->
-    <div id="inventory_container">
-        <h1 id="name">{{editable.name}}</h1>
-        {{ super() }}
-        <br>
-        
-        <div id="inventory">
-            <div id="inventory_items">
-                {% for itemLI in editable.items %}
-                    <div class="item">
-                            <a href="{{url_for('navi.item_page', item_id=itemLI.item.id)}}">
-                                <img src="{{url_for('api.image_retrieve', image_id=itemLI.item.images[0].image_id)}}" data-editable_id="{{itemLI.id}}" alt="">
-                            </a>
-                            <p>Name: {{itemLI.item.name}}</p>
-                            <p>Count: {{itemLI.count}}</p>
-                    </div>
-                {% endfor %}
-            </div>
+    <!-- Item Container -->
+    <div class="guild_container">
+        <div id="header">
+            <h1>{{editable.name}}</h1>
+            {{ super() }}
         </div>
 
-        <br>
-
-        <div id="description">
-            <h1>Description</h1>
+        <div id="item">
+            {% if image %}
+        
+            <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="">
+            
+            {% endif %}
+            
+            <h2>Description</h2>
             {% autoescape false %}
             {{editable.description}}
             {% endautoescape %}
+            <br>
         </div>
-
     </div>
 {% endblock%}
 
@@ -48,7 +38,7 @@
 {% block script %}
     <script>
         $(function () {
-            document.getElementById('edit_ref').href = "{{url_for('navi.inventory_edit', inventory_id = editable.id)}}"
+            document.getElementById('edit_ref').href = "{{url_for('navi.guild_edit', guild_id = editable.id)}}"
 
             $('#delete').on('click', function(){
                 $.ajax({

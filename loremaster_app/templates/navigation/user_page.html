@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 
-{% block links%} <link rel="stylesheet" href="{{url_for('static', filename='user_page.css')}}"> {%endblock%}
+{% block links%} <link rel="stylesheet" href="{{url_for('static', filename='user/user_page.css')}}"> {%endblock%}
 
 {% block title %} {{user.name}}'s User Page{% endblock %}
 
 {% block content %}
     <div class="user_container">
         <div class="user_info">
-            <img src="{{url_for('static',filename='empty_scroll.png')}}">
-            
+            <img src="{{url_for('static',filename='images/empty_scroll.png')}}">
             <div id="text">
                 <h1>User Name: {{ user.name }}</h1>
                 <p>Email: {{ user.email }}</p>
