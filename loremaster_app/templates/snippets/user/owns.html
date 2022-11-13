@@ -1,6 +1,7 @@
 <div class="owns">
     <div class = "title">
-        <div id = "text" style="border-image: url({{url_for('static',filename='empty_scroll_variation1.png')}}); border-image-slice: 30% fill; ">
+        {% set url = url_for('static',filename='images/empty_scroll_variation1.png') %}
+        <div id="text" style="border-image: url({{url}}); border-image-slice: 30% fill;">
             <h1>Owned Pages</h1>
         </div>
     </div>

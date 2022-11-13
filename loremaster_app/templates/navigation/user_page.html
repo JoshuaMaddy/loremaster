@@ -14,14 +14,13 @@
             </div>
         </div>
 
+
         {% include 'snippets/user/owns.html' %}
 
         <div class="editor_perms">
             <div class="edit_header">
-                <!--
-                <img src="{{url_for('static',filename='empty_scroll_variation1.png')}}">
-                -->
-                <div id="text" style="border-image: url({{url_for('static',filename='empty_scroll_variation1.png')}}); border-image-slice: 30% fill; ">
+                {% set url = url_for('static',filename='images/empty_scroll_variation1.png') %}
+                <div id="text" style="border-image: url({{url}}); border-image-slice: 30% fill;">
                     <h1>Editor Permission Pages</h1>
                 </div>
             </div>
