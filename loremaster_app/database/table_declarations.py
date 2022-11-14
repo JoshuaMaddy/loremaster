@@ -339,9 +339,6 @@ class Guild(Editable):
 
     editable_id:int = Column(Integer, ForeignKey("editable.id"), primary_key = True)
 
-    location_id:int = Column(Integer, ForeignKey("location.editable_id"))
-    location:Location = relationship("Location", foreign_keys=[location_id])
-
     character_id:int = Column(Integer, ForeignKey("character.editable_id"))
     leader:Character = relationship("Character", foreign_keys=[character_id])
 
@@ -358,14 +355,15 @@ class Guild(Editable):
         return f"Guild{{name:{self.name}, id:{self.editable_id}}}"
 
     def set_leader(self, sqlsession:Ses, user:User, leader_id:int) -> None:
-        character:Character = sqlsession.execute(select(Character).where(Familiar.editable_id == leader_id)).scalar()
+        character:Character = sqlsession.execute(select(Character).where(Character.editable_id == leader_id)).scalar()
 
-        if character and not character in self.familiars and character in user.editor_perms:
+        if character and character in user.editor_perms:
             self.leader = character
+            print(self.leader)
 
     def set_members(self, sqlsession:Ses, member_ids:list[int]) -> None:
         for character_id in member_ids:
-            member = sqlsession.execute(select(Character).where(Character.editable_id == member_ids)).scalar()
+            member = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
             if member:
                 self.guild_members.append(member)
 

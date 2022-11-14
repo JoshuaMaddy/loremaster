@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session as Ses
 
 def create():
     print("creating guild")
-        
+
     """Creates a guild from a POST request with the given form data:
     ImmutableMultiDict([('name', ''), ('guild_id', ''), ('parent_guild', ''), ('parent_guild_id', ''), 
         ('single_guild', ''), ('single_guild_id', ''), ('single_editor', ''), ('editor_id', ''), ('description', '')])
@@ -49,7 +49,7 @@ def create():
             guild.description = description
 
             if guild_leader_id:
-                guild.set_leader(sqlsession=sqlsession, leader_id=guild_leader_id)
+                guild.set_leader(sqlsession=sqlsession, user=user, leader_id=guild_leader_id)
             
             if member_ids:
                 guild.set_members(sqlsession=sqlsession, member_ids=member_ids)
@@ -121,7 +121,7 @@ def edit():
                     guild.editors.append(user)
 
                     if guild_leader_id:
-                        guild.set_leader(sqlsession=sqlsession, leader_id=guild_leader_id)
+                        guild.set_leader(sqlsession=sqlsession, user=user, leader_id=guild_leader_id)
                     
                     if member_ids:
                         guild.set_members(sqlsession=sqlsession, member_ids=member_ids)

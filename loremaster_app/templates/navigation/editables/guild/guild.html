@@ -27,6 +27,20 @@
             {{editable.description}}
             {% endautoescape %}
             <br>
+
+            <h3>Leader</h3>
+            {% if editable.leader %}
+
+            <a href="{{url_for('navi.character_page', character_id=editable.leader.id)}}"> Leader: {{editable.leader.name}}</a>
+
+            {% endif %}
+
+            <p>
+                <h3>Members:</h3>
+                {% for member in editable.guild_members %}
+                    <a href="{{url_for('navi.character_page', character_id=member.id)}}"> Member: {{member.name}}</a>,
+                {% endfor %}
+            </p>
         </div>
     </div>
 {% endblock%}

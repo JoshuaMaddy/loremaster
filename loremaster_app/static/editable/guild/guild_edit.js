@@ -70,7 +70,7 @@ $(function () {
         // Bit of a hack, a div with ID of character_page defines if this is an edit, or a creaction.
         if($('#guild_page').length > 0){
             submitGuildEdit();
-            console.log(createGuildData())
+            console.log("editting")
         }else{
             submitGuildCreation();
             console.log(createGuildData())
@@ -203,8 +203,8 @@ $(function () {
             },
             select: function (event, ui) {
                 event.preventDefault();
-                $('.guild_member').val(ui.item.label);
-                $('#guild_member_id').val(ui.item.value);
+                $(this).val(ui.item.label);
+                $(this).siblings().first().val(ui.item.value);
             },
             delay: 200
         });
