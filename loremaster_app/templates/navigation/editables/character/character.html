@@ -42,6 +42,11 @@
             </div>
         {% endif %}
         <br>
+        {% if editable.guild %}
+        <div class = "guild"> 
+            <a href="{{url_for('navi.guild_page', guild_id=editable.guild.id)}}"> Guild: {{editable.guild.name}} </a>
+        </div>
+        {% endif %}
         <div class="traits">
             <p>Traits: <br>
             {% if editable.traits %}
@@ -54,7 +59,7 @@
             </p>
         </div>
         <br>
-    
+        
         <div class="stats">
             <p id="stats">Stats:</p>
             {% if editable.stats %}
