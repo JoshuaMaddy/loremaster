@@ -107,6 +107,8 @@ def edit():
         guild:Guild = sqlsession.execute(select(Guild).where(Guild.id == id)).scalar()
         user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
+        vis_int:int = request.form.get('visibility', type=int)
+
         if user:
             if guild:
                 if guild in user.editor_perms: 
@@ -131,6 +133,9 @@ def edit():
                     
                     if editor_ids:
                         guild.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                    if vis_int:
+                        guild.set_visibility(sqlsession=sqlsession, vis_int=vis_int)
 
                     return(jsonify({'url':url_for('navi.guild_page', guild_id=guild.id)}))
 

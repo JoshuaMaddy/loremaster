@@ -41,6 +41,8 @@
                     <a href="{{url_for('navi.character_page', character_id=member.id)}}"> Member: {{member.name}}</a>,
                 {% endfor %}
             </p>
+
+            <p>Visibility: {{editable.visibility.name}}</p>
         </div>
     </div>
 {% endblock%}

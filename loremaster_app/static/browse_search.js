@@ -46,6 +46,61 @@ $(document).on('click', '#search',  function (evt){
     submitForm()
 });
 
+var search_by = {};
+search_by["character"] = $('<option>');
+search_by["character"].attr('value', "character").text("Character");
+search_by["owner"] = $('<option>');
+search_by["owner"].attr('value', "user").text("Owner");
+search_by["guild"] = $('<option>');
+search_by["guild"].attr('value', "guild").text("Guild");
+search_by["item"] = $('<option>');
+search_by["item"].attr('value', "item").text("Item");
+search_by["familiar"] = $('<option>');
+search_by["familiar"].attr('value', "familiar").text("Familiar");
+search_by["location"] = $('<option>');
+search_by["location"].attr('value', "location").text("Location");
+search_by["leader"] = $('<option>');
+search_by["leader"].attr('value', "leader").text("Leader");
+
+
+
+
+
+$(function(){
+
+    $("#searchtype_dropdown").change(function () {
+        var selection = this.value;
+        $("#tagtype_dropdown").empty()
+        switch(selection) {
+            case "character":
+                $("#tagtype_dropdown").append(search_by["character"]);
+                $("#tagtype_dropdown").append(search_by["location"]);
+                $("#tagtype_dropdown").append(search_by["familiar"]);
+                $("#tagtype_dropdown").append(search_by["item"]);
+                $("#tagtype_dropdown").append(search_by["guild"]);
+                break;
+            case "location":
+                $("#tagtype_dropdown").append(search_by["location"]);   
+                $("#tagtype_dropdown").append(search_by["character"]);    
+                break;
+            case "item":
+                $("#tagtype_dropdown").append(search_by["item"]); 
+                $("#tagtype_dropdown").append(search_by["character"]);    
+                break;
+            case "guild":
+                $("#tagtype_dropdown").append(search_by["guild"]); 
+                $("#tagtype_dropdown").append(search_by["character"]);
+                $("#tagtype_dropdown").append(search_by["leader"]);  
+                break;
+            case "familiar":
+                $("#tagtype_dropdown").append(search_by["familiar"]);
+                $("#tagtype_dropdown").append(search_by["character"]);  
+                break;
+        }   
+        $("#tagtype_dropdown").append(search_by["owner"]);
+    });
+})
+
 function submitForm(){
     var form = new FormData(document.getElementById('search_form'))
     

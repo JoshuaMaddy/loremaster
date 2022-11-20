@@ -6,6 +6,9 @@
         {% if element.type == 'location' %}
         <li><a href="{{url_for('navi.location_page', location_id=element.id)}}">Location: {{element.name}}</a>
         {% endif %}
+        {% if element.type == 'guild' %}
+        <li><a href="{{url_for('navi.guild_page', guild_id=element.id)}}">Location: {{element.name}}</a>
+        {% endif %}
     {% endfor %}
 {% endmacro -%}
 
@@ -20,5 +23,12 @@
 <div class="public_locations">
     <p>Public Locations</p>
     {{ list_editables(locations) }}
+</div>
+{% endif %}
+
+{% if guilds %}
+<div class="public_guilds">
+    <p>Public Guilds</p>
+    {{ list_editables(guilds) }}
 </div>
 {% endif %}
