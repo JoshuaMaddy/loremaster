@@ -202,13 +202,59 @@ def list_query():
                         tag = 'character'                    
 
                     if (tag == 'character'):
-                        characters:list[Character] = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%'), or_(Character.editors.contains(user), Character.visibility == Visibilites.public.value)))).scalars().all()
+                        characters:list[Character] = sqlsession.execute(select(Character)\
+                                                                            .where(\
+                                                                                and_(\
+                                                                                    Character.name.ilike('%'+query+'%'),\
+                                                                                    or_(\
+                                                                                        Character.editors.contains(user),\
+                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        ).scalars().fetchmany(100)
+
                     if (tag == 'location'):
-                        characters:list[Character] = sqlsession.execute(select(Character).join(Location, Character.location_id == Location.editable_id).where(and_(Location.name.ilike('%'+query+'%'), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public.value)))).scalars().all()
+                        characters:list[Character] = sqlsession.execute(select(Character)\
+                                                                            .join(Location, Character.location_id == Location.editable_id)\
+                                                                            .where(\
+                                                                                and_(\
+                                                                                    Location.name.ilike('%'+query+'%'),\
+                                                                                    or_(\
+                                                                                        Character.editors.contains(user),\
+                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        ).scalars().fetchmany(100)
+
                     if (tag == 'user'):
-                        characters:list[Character] = sqlsession.execute(select(Character).join(User, Character.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public.value)))).scalars().all()
+                        characters:list[Character] = sqlsession.execute(select(Character)\
+                                                                            .join(User, Character.owner_id == User.id)\
+                                                                            .where(\
+                                                                                and_(\
+                                                                                    User.name.ilike('%'+query+'%'),\
+                                                                                    or_(\
+                                                                                        Character.editors.contains(user),\
+                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        ).scalars().fetchmany(100)
+
                     if (tag == 'guild'):
-                        characters:list[Character] = sqlsession.execute(select(Character).join(Guild, Character.guild_id == Guild.editable_id).where(and_((Guild.name.ilike('%'+query+'%')), or_((Character.editors.contains(user)), Character.visibility == Visibilites.public.value)))).scalars().all()
+                        characters:list[Character] = sqlsession.execute(select(Character)\
+                                                                            .join(Guild, Character.guild_id == Guild.editable_id)\
+                                                                            .where(\
+                                                                                and_(\
+                                                                                    Guild.name.ilike('%'+query+'%'),\
+                                                                                    or_(\
+                                                                                        Character.editors.contains(user),\
+                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        ).scalars().fetchmany(100)
 
                     return render_template('snippets/browse.html', characters=characters)
 
@@ -219,11 +265,45 @@ def list_query():
                     if not tag:
                         tag = 'location'
                     if (tag == 'location'):
-                        locations:list[Location] = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), or_((Location.editors.contains(user)), Location.visibility == Visibilites.public.value)))).scalars().all()
+                        locations:list[Location] = sqlsession.execute(select(Location)\
+                                                                        .where(\
+                                                                            and_(\
+                                                                                Location.name.ilike('%'+query+'%'),\
+                                                                                or_(\
+                                                                                    Location.editors.contains(user),\
+                                                                                    Location.visibility == Visibilites.public.value
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    ).scalars().fetchmany(100)
+
                     if (tag == 'character'):
-                        locations:list[Location] = sqlsession.execute(select(Location).join(Character, Character.location_id == Location.editable_id).where(and_(Character.name.ilike('%'+query+'%'), or_((Location.editors.contains(user)), Location.visibility == Visibilites.public.value)))).scalars().all()
+                        locations:list[Location] = sqlsession.execute(select(Location)\
+                                                                        .join(Character, Character.location_id == Location.editable_id)\
+                                                                        .where(\
+                                                                            and_(\
+                                                                                Character.name.ilike('%'+query+'%'),\
+                                                                                or_(\
+                                                                                    Location.editors.contains(user),\
+                                                                                    Location.visibility == Visibilites.public.value
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    ).scalars().fetchmany(100)
+
                     if (tag == 'user'):
-                        locations:list[Location] = sqlsession.execute(select(Location).join(User, Location.owner_id == User.id).where(and_((User.name.ilike('%'+query+'%')), or_((Location.editors.contains(user)), Location.visibility == Visibilites.public.value)))).scalars().all()
+                        locations:list[Location] = sqlsession.execute(select(Location)\
+                                                                        .join(User, Location.owner_id == User.id)\
+                                                                        .where(\
+                                                                            and_(\
+                                                                                User.name.ilike('%'+query+'%'),\
+                                                                                or_(\
+                                                                                    Location.editors.contains(user),\
+                                                                                    Location.visibility == Visibilites.public.value
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    ).scalars().fetchmany(100)
 
                     return render_template('snippets/browse.html', locations=locations)
 
@@ -234,14 +314,59 @@ def list_query():
                     if not tag:
                         tag = 'guild'
                     if (tag == 'guild'):
-                        guilds:list[Guild] = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%'), or_((Guild.editors.contains(user)), Guild.visibility == Visibilites.public.value)))).scalars().all()
-                    if (tag == 'character'):
-                        guilds:list[Guild] = sqlsession.execute(select(Guild).join(Character, Character.guild_id == Guild.editable_id).where(and_(Character.name.ilike('%'+query+'%'), or_((Guild.editors.contains(user)), Guild.visibility == Visibilites.public.value)))).scalars().all()
-                    if (tag == 'leader'):
-                        guilds:list[Guild] = sqlsession.execute(select(Guild).join(Character, Guild.character_id == Character.editable_id).where(and_((Character.name.ilike('%'+query+'%')), or_((Guild.editors.contains(user)), Guild.visibility == Visibilites.public.value)))).scalars().all()
-                    if (tag == 'user'):
-                        guilds:list[Guild] = sqlsession.execute(select(Guild).join(User, User.id == Guild.owner_id).where(and_(User.name.ilike('%'+query+'%'), or_((Guild.editors.contains(user)), Guild.visibility == Visibilites.public.value)))).scalars().all()
+                        guilds:list[Guild] = sqlsession.execute(select(Guild)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            Guild.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Guild.editors.contains(user),\
+                                                                                Guild.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
 
+                    if (tag == 'character'):
+                        guilds:list[Guild] = sqlsession.execute(select(Guild)\
+                                                                    .join(Character, Character.guild_id == Guild.editable_id)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            Character.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Guild.editors.contains(user),\
+                                                                                Guild.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
+
+                    if (tag == 'leader'):
+                        guilds:list[Guild] = sqlsession.execute(select(Guild)\
+                                                                    .join(Character, Guild.character_id == Character.editable_id)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            Character.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Guild.editors.contains(user),\
+                                                                                Guild.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
+
+                    if (tag == 'user'):
+                        guilds:list[Guild] = sqlsession.execute(select(Guild)\
+                                                                    .join(User, User.id == Guild.owner_id)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            User.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Guild.editors.contains(user),\
+                                                                                Guild.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
 
                     return render_template('snippets/browse.html', guilds=guilds)
                     

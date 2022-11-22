@@ -287,10 +287,10 @@ class Familiar(Editable):
 
     guilds = None
 
-    character_owner_id:int = Column(Integer, ForeignKey("character.editable_id"))
-    character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])
+    #character_owner_id:int = Column(Integer, ForeignKey("character.editable_id"))
+    #character_owner:Character = relationship("Character", foreign_keys=[character_owner_id])
 
-    owners = relationship('Character',
+    owners:list[Character] = relationship('Character',
         secondary = character_familiars,
         back_populates = 'familiars')
 
