@@ -20,11 +20,12 @@
 {% block content %}
 
 <form method="post" id="search_form">
-  <div class="ui-widget">
+  <div class="ui-widget tag">
     <label for="tags">Tags: </label>
     <input id="tags" name="tags">
     <input id="name_id" hidden>
   </div>
+
   <div id="search_selection">
     <label for="searchtype">Search For:</label>
     <div class="searchtype">
@@ -36,29 +37,31 @@
             <option value="familiar">Familiar</option>
         </select>
     </div>
-    <div id="tag_selection">
-      <label for="tagtype">Search By:</label>
-      <div class="tagtype">
-          <select name="tagtype" id="tagtype_dropdown">
-              <option value="character">Character</option>
-              <option value="location">Location</option>
-              <option value="familiar">Familiar</option>
-              <option value="item">Item</option>
-              <option value="guild">Guild</option>
-              <option value="user">Owner</option>
-          </select>
-      </div>
-    </div>
-  </form>
+  </div>
 
-  <button id="search", type="button">
-    search
-  </button>
-</div>
+  <div id="tag_selection">
+    <label for="tagtype">Search By:</label>
+    <div class="tagtype">
+        <select name="tagtype" id="tagtype_dropdown">
+            <option value="character">Character</option>
+            <option value="location">Location</option>
+            <option value="familiar">Familiar</option>
+            <option value="item">Item</option>
+            <option value="guild">Guild</option>
+            <option value="user">Owner</option>
+        </select>
+    </div>
+  </div>
+  
+</form>
+
+<button id="search", type="button">
+  Search
+</button>
 
 <div class="public_characters">
     <p>Characters</p>
-    {{ list_editables(characters) }}
+    {{list_editables(characters)}}
 </div>
 
 {% endblock content %}

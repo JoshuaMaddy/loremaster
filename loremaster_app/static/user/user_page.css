@@ -12,7 +12,7 @@
     justify-self: center;
     padding: 1em 0 0 0;
     width: min-content;
-    height: 5rem;
+    height: 7rem;
 }
 
 .user_info > img{
@@ -22,12 +22,20 @@
 }
 
 .user_info > #text{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
     width: max-content;
-    padding: 0.5em 2em 1em 2em;
+    padding: 0 1.5rem 0 1.5rem;
     top: -100%;
     left: 0;
 } 
+
+h1{
+    font-family: papyrus, fantasy;
+}
 
 li{
     list-style-type: none;
@@ -83,11 +91,11 @@ li{
     border-style: solid;
     position: relative;
     width: max-content;
-    padding: 1rem 2rem 1rem 2rem;
+    padding: 0 0.5rem 0 0.5rem;
     left: 0;
 }
 
-.owns > li, .editor_perms > li{
+.owns > li, .editable_objects > li{
     padding-left: 1em;
 }
 

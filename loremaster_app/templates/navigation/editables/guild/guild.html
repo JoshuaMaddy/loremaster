@@ -5,6 +5,7 @@
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='editable/guild/guild.css')}}">
 {% endblock %}
 
 {% block editable %}
@@ -15,34 +16,44 @@
             {{ super() }}
         </div>
 
-        <div id="item">
+        <div id="guild">
             {% if image %}
         
             <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="">
             
             {% endif %}
-            
-            <h2>Description</h2>
-            {% autoescape false %}
-            {{editable.description}}
-            {% endautoescape %}
-            <br>
 
-            <h3>Leader</h3>
-            {% if editable.leader %}
-
-            <a href="{{url_for('navi.character_page', character_id=editable.leader.id)}}"> Leader: {{editable.leader.name}}</a>
-
-            {% endif %}
-
-            <p>
-                <h3>Members:</h3>
-                {% for member in editable.guild_members %}
-                    <a href="{{url_for('navi.character_page', character_id=member.id)}}"> Member: {{member.name}}</a>,
-                {% endfor %}
-            </p>
-
-            <p>Visibility: {{editable.visibility.name}}</p>
+            <div class="details">
+                <div class="description">
+                    <h2>Description</h2>
+                    {% autoescape false %}
+                    {{editable.description}}
+                    {% endautoescape %}
+                </div>
+    
+    
+                {% if editable.leader %}
+                    <br>
+    
+                    <h3>Leader</h3>
+                    <a href="{{url_for('navi.character_page', character_id=editable.leader.id)}}"> Leader: {{editable.leader.name}}</a>
+                {% endif %}
+    
+    
+                {% if editable.guild_members %}
+                    <br>
+    
+                    <h3>Members:</h3>
+                    <p>
+                        {% for member in editable.guild_members %}
+                            <a href="{{url_for('navi.character_page', character_id=member.id)}}"> Member: {{member.name}}</a>,
+                        {% endfor %}
+                    </p>
+                {% endif %}
+    
+                <br>
+                <p>Visibility: {{editable.visibility.name}}</p>
+            </div>
         </div>
     </div>
 {% endblock%}

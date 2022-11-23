@@ -1,7 +1,36 @@
 .content{
+    display: flex;
+    justify-items: center;
+    flex-direction: column;
+    width: clamp(400px, 70%, 80%);
+    margin: auto;
+}
+#search_form{
     display: grid;
     justify-items: center;
+    grid-template-areas: 
+        "tag tag"
+        "search_selection tag_selection";
+    grid-template-columns: 1fr 1fr;
     margin: 2rem 0 0 0;
+}
+
+.tag{
+    grid-area: tag;
+}
+
+#search_selection{
+    grid-area: search_selection;
+    display: flex;
+}
+
+#tag_selection{
+    grid-area: tag_selection;
+    display: flex;
+}
+
+.tagtype, .searchtype{
+    padding-left: 0.5rem;
 }
 
 .public_characters li{

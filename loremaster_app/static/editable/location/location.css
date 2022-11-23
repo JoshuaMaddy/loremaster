@@ -1,32 +1,43 @@
 .content{
-    display: flex;
-    justify-content: center;
-}
-
-.location_container{
-    width: min-content;
     display: grid;
     grid-template-areas: 
         "Header"
-        "Location";
+        "Location"
+        "Edit-Options" ;
 }
-#header{ 
+
+.header{
     grid-area: Header;
     font-family: Arial, Helvetica, sans-serif;
     align-content: baseline;
     margin: 0 0 1rem 0;
 }
 
-.location_container > h1{
+.header > h1{
     font-weight: bold;
     text-decoration: underline;
 }
 
-#header > .edit_options{
+.location_container{
+    grid-area: Location;
+    justify-self: center;
+    font-style: oblique;
+    font-size: large;
+}
+
+.location_container > img{
+    height: 30vw;
+    width: 30vw;
+    object-fit: contain;
+}
+
+.edit_options{
+    grid-area: Edit-Options;
+    justify-self: center;
     margin: 0.5em 0 0 0;
 }
 
-#header > .edit_options button{
+.edit_options button{
 	background: none;
 	color: inherit;
 	border: none;
@@ -36,16 +47,6 @@
 	outline: inherit;
 }
 
-#location{ 
-    grid-area: Location;
-    justify-self: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-style: oblique;
-    font-size: x-large;
-}
-
-#location > img{
-    height: 30vw;
-    width: 30vw;
-    object-fit: cover;
+.details{
+    margin: 1rem 0 0 0;
 }

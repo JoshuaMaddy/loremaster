@@ -15,16 +15,17 @@
         <h1>Name: {{editable.name}}</h1>
         {{ super() }}
         </div>
-        <div id="image">
+
         <img src="{{url_for('api.image_retrieve', image_id=editable.id)}}" alt="">
     
-        <p>Description: </p>
-        {% autoescape false %}
-        {{editable.description}}
-        {% endautoescape %}
+        <div class="details">
+            <p>Description</p>
+            {% autoescape false %}
+            {{editable.description}}
+            {% endautoescape %}
+        </div>
     
     </div>
-</div>
 {% endblock%}
 
 {% block edit_name %}

@@ -11,8 +11,9 @@
 {% block editable %}
     <!-- Inventory Container -->
     <div id="inventory_container">
-        <h1 id="name">{{editable.name}}</h1>
+        <h1>{{editable.name}}</h1>
         {{ super() }}
+
         <br>
         
         <div id="inventory">
@@ -31,13 +32,14 @@
 
         <br>
 
-        <div id="description">
-            <h1>Description</h1>
-            {% autoescape false %}
-            {{editable.description}}
-            {% endautoescape %}
+        <div class="details">
+            <div id="description">
+                <h1>Description</h1>
+                {% autoescape false %}
+                {{editable.description}}
+                {% endautoescape %}
+            </div>
         </div>
-
     </div>
 {% endblock%}
 

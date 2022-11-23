@@ -8,6 +8,23 @@ html, body{
     
 }
 
+h1{
+    font-weight: bold;
+}
+
+a:link,
+a:visited {
+    color: rgb(71, 61, 56);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:link:active,
+a:visited:active {
+    color: rgb(71, 61, 56);
+}
+
+
 .flash{
     display: flex;
     justify-content: center;

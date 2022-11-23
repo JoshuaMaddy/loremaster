@@ -5,78 +5,77 @@
 {% block links %}
 <!-- jQuery Link -->
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='editable/familiar/familiar.css')}}">
 {% endblock %}
 
 {% block editable %}
     <!-- Character Container -->
-    <div class="character_container">
-        <p>Name: {{editable.name}}</p>
+    <div class="familiar_container">
+        <h1>{{editable.name}}</h1>
         {{ super() }}
 
         {% if image %}
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
         {% endif %}
     
-        <p>Description: </p>
+        <div class="details">
+            <h2>Description</h2>
+            <div class="description">
+                {% autoescape false %}
+                {{editable.description}}
+                {% endautoescape %}
+            </div>
         
-        {% autoescape false %}
-        {{editable.description}}
-        {% endautoescape %}
+            <br>
+
+            {% if editable.location %}
+                <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}"> Location: {{editable.location.name}}</a>
+            {% else %}
+                <p> Location: No Set Location </p>
+            {% endif %}
     
-        {% if editable.location %}
-            <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}"> Location: {{editable.location.name}}</a>
-        {% else %}
-            <p> Location: No Set Location </p>
-        {% endif %}
-    
-        {% if editable.familiars %}
-            <div class="familiars">
-                <p>Familiars:
-                {% for familiar in editable.familiars %}
-                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.id)}}"> Familiar: {{editable.name}}</a>,
-                {% endfor %}
+            <br>
+
+            <div class="traits">
+                <p>Traits: <br>
+                {% if editable.traits %}
+                    {% for trait in editable.traits %}
+                        {{trait.name}}:  {{trait.short_description}} <br>
+                    {% endfor %}
+                {% else %}
+                    No given Traits.
+                {% endif %}
                 </p>
             </div>
-        {% endif %}
 
-        <br>
+            <br>
+        
+            <div class="stats">
+                <p>Stats:<br>
+                    {% if editable.stats %}
+                        {% for stat in editabale.stats %}
+                        {{stat.name}}:  {{stat.short_description}} <br>
+                        {% endfor %}
+                    {% else %}
+                        No given Stats.
+                    {% endif %}
+                </p>
+            </div>
 
-        <div class="traits">
-            <p>Traits: <br>
-            {% if editable.traits %}
-                {% for trait in editable.traits %}
-                    {{trait.name}}:  {{trait.short_description}} <br>
-                {% endfor %}
-            {% else %}
-                No given Traits.
-            {% endif %}
-            </p>
-        </div>
-        <br>
-    
-        <div class="stats">
-            <p>Stats:<br>
-                {% if editable.stats %}
-                    {% for stat in editabale.stats %}
-                    {{stat.name}}:  {{stat.short_description}} <br>
-                    {% endfor %}
-                {% else %}
-                    No given Stats.
-                {% endif %}
-            </p>
-        </div>
-        <br>
-    
-        <div class="relationships">
-            <p>Relationships:
-                {% if editable.relationships %}
-                    {% for relationship in editable.relationships %}
-                        {{relationship}},
-                    {% endfor %}
-                {% else %}
-                    No given Relationships.
-                {% endif %}
-            </p>
+            <br>
+        
+            <div class="relationships">
+                <p>Relationships:
+                    {% if editable.relationships %}
+                        {% for relationship in editable.relationships %}
+                            {{relationship}},
+                        {% endfor %}
+                    {% else %}
+                        No given Relationships.
+                    {% endif %}
+                </p>
+            </div>
+            
         </div>
     </div>
 {% endblock%}

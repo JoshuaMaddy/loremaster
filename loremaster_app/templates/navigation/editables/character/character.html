@@ -13,81 +13,96 @@
     {% if editable.visibility == Visibility.public or editor_perms %}
     <!-- Character Container -->
     <div class="character_container">
-        <p id="name">Name: {{editable.name}}</p>
+        <h1>{{editable.name}}</h1>
         {{ super() }}
 
         {% if image %}
         <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
         {% endif %}
     
-        <p>Description: </p>
-        
-        {% autoescape false %}
-        {{editable.description}}
-        {% endautoescape %}
-    
-        {% if editable.location %}
-            <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}"> Location: {{editable.location.name}}</a>
-        {% else %}
-            <p> Location: No Set Location </p>
-        {% endif %}
-    
-        {% if editable.familiars %}
-            <div class="familiars">
-                <p>Familiars:
-                {% for familiar in editable.familiars %}
-                    <a href="{{url_for('navi.familiar_page', familiar_id=familiar.id)}}"> Familiar: {{familiar.name}}</a>,
-                {% endfor %}
-                </p>
+        <div class="details">
+            <div class="description">
+                <h2>Description</h2>
+                {% autoescape false %}
+                {{editable.description}}
+                {% endautoescape %}
             </div>
-        {% endif %}
-        <br>
-        {% if editable.guild %}
-        <div class = "guild"> 
-            <a href="{{url_for('navi.guild_page', guild_id=editable.guild.id)}}"> Guild: {{editable.guild.name}} </a>
-        </div>
-        {% endif %}
-        <div class="traits">
-            <p>Traits: <br>
-            {% if editable.traits %}
-                {% for trait in editable.traits %}
-                    {{trait.name}}:  {{trait.short_description}} <br>
-                {% endfor %}
-            {% else %}
-                No given Traits.
-            {% endif %}
-            </p>
-        </div>
-        <br>
+
+            <br>
         
-        <div class="stats">
-            <p id="stats">Stats:</p>
-            {% if editable.stats %}
-                {% for stat in editable.stats %}
-                <p class="stat_desc">{{stat.name}}:  {{stat.short_description}}</p> 
+            {% if editable.location %}
+                <p>Location: <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}">{{editable.location.name}}</a></p> 
+            {% else %}
+                <p>Location: No Set Location</p>
+            {% endif %}
+        
+            {% if editable.familiars %}
                 <br>
-                {% endfor %}
-            {% else %}
-                No given Stats.
+
+                <div class="familiars">
+                    <p>Familiars:
+                    {% for familiar in editable.familiars %}
+                        <a href="{{url_for('navi.familiar_page', familiar_id=familiar.id)}}">{{familiar.name}}</a>,
+                    {% endfor %}
+                    </p>
+                </div>
             {% endif %}
-        
-        </div>
-        <br>
-    
-        <div class="relationships">
-            <p>Relationships:
-                {% if editable.relationships %}
-                    {% for relationship in editable.relationships %}
-                        {{relationship}},
+
+
+            {% if editable.guild %}
+                <br>
+
+                <div class = "guild"> 
+                    Guild: <a href="{{url_for('navi.guild_page', guild_id=editable.guild.id)}}">{{editable.guild.name}} </a>
+                </div>
+            {% endif %}
+
+            <br>
+
+            <div class="traits">
+                <p>Traits: <br>
+                {% if editable.traits %}
+                    {% for trait in editable.traits %}
+                        {{trait.name}}:  {{trait.short_description}} <br>
                     {% endfor %}
                 {% else %}
-                    No given Relationships.
+                    No given Traits.
                 {% endif %}
-            </p>
-        </div>
+                </p>
+            </div>
 
-        <br>
-        <p>Visibility: {{editable.visibility.name}}</p>
+            <br>
+            
+            <div class="stats">
+                <p id="stats">Stats:</p>
+                {% if editable.stats %}
+                    {% for stat in editable.stats %}
+                    <p class="stat_desc">{{stat.name}}:  {{stat.short_description}}</p> 
+                    {% endfor %}
+                {% else %}
+                    No given Stats.
+                {% endif %}
+            </div>
+        
+            <br>
+
+            <div class="relationships">
+                <p>Relationships:
+                    {% if editable.relationships %}
+                        {% for relationship in editable.relationships %}
+                            {{relationship}},
+                        {% endfor %}
+                    {% else %}
+                        No given Relationships.
+                    {% endif %}
+                </p>
+            </div>
+
+            <br>
+    
+            <p>Visibility: {{editable.visibility.name}}</p>
+
+        </div>
     </div>
     {% endif %}
 {% endblock%}

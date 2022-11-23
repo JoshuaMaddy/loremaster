@@ -12,34 +12,44 @@
     <!-- Location Container -->
     <div class="location_container">
         <div id="header">
-        <h1>Name: {{editable.name}}</h1>
-        {{ super() }}
+            <h1>{{editable.name}}</h1>
+            {{ super() }}
         </div>
 
         <div id="location">
             {% if image %}
             <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="">
             {% endif %}
-        
-            <p>Description: </p>
-            {% autoescape false %}
-            {{editable.description}}
-            {% endautoescape %}
-            {% if editable.parent %}
-                <a href="{{url_for('navi.location_page', location_id=editable.parent.id)}}">Parent Location: {{editable.parent.name}}</a>
-            {% else %}
-                <p>No given Parent Location.</p>
-            {% endif %}
-            <div class="child_locations">
-                <p>Child Locations:
-                {% if editable.children %}
-                    {% for location in editable.children %}
-                        <li><a href="{{url_for('navi.location_page', location_id=location.id)}}">{{location.name}}</a></li>
-                    {% endfor %}
+            <div class="details">
+                <div class="description">
+                    <h2>Description</h2>
+                    {% autoescape false %}
+                    {{editable.description}}
+                    {% endautoescape %}
+                </div>
+
+                <br>
+
+                {% if editable.parent %}
+                    <a href="{{url_for('navi.location_page', location_id=editable.parent.id)}}">Parent Location: {{editable.parent.name}}</a>
                 {% else %}
-                    No given Children Locations.
+                    <p>No given Parent Location.</p>
                 {% endif %}
-                </p>
+
+                <br>
+
+                <div class="child_locations">
+                    <p>Child Locations: <br>
+                    {% if editable.children %}
+                        {% for location in editable.children %}
+                            <li><a href="{{url_for('navi.location_page', location_id=location.id)}}">{{location.name}}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        No given Children Locations.
+                    {% endif %}
+                    </p>
+                </div>
+                
             </div>
         </div>
     </div>

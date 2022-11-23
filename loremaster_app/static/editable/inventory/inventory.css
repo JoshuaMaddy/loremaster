@@ -28,3 +28,23 @@ div.item img{
     height: 100%;
     object-fit: cover;
 }
+
+.edit_options{
+    justify-self: center;
+    margin: 0.5em 0 0 0;
+}
+
+.edit_options button{
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.details{
+    margin: 1rem 0 0 0;
+    font-style: oblique;
+}

@@ -2,7 +2,7 @@
     display: grid;
     grid-template-areas: 
         "Header"
-        "Guild"
+        "Character"
         "Edit-Options" ;
 }
 
@@ -18,14 +18,14 @@
     text-decoration: underline;
 }
 
-.guild_container{
-    grid-area: Guild;
+.familiar_container{
+    grid-area: Character;
     justify-self: center;
     font-style: oblique;
     font-size: large;
 }
 
-.guild_container > img{
+.familiar_container > img{
     height: 30vw;
     width: 30vw;
     object-fit: contain;
