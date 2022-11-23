@@ -112,21 +112,21 @@ def search():
                 user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
                 if search_type == 'location':
-                    locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%') , Location.editors.contains(user)))).scalars().all()
+                    locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%') , or_(Location.editors.contains(user), Location.visibility == Visibilites.public.value)))).scalars().all()
 
                     location_list = [{'label':location.name, 'value':location.id} for location in locations]
 
                     return jsonify(location_list)
 
                 if search_type == 'character' or search_type == 'leader':
-                    characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , Character.editors.contains(user)))).scalars().all()
+                    characters = sqlsession.execute(select(Character).where(and_(Character.name.ilike('%'+query+'%') , or_(Character.editors.contains(user), Character.visibility == Visibilites.public.value)))).scalars().all()
 
                     characters_list = [{'label':character.name, 'value':character.id} for character in characters]
 
                     return jsonify(characters_list)
                 
                 if search_type == 'familiar':
-                    familiars = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%') , Familiar.editors.contains(user)))).scalars().all()
+                    familiars = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%') , or_(Familiar.editors.contains(user), Familiar.visibility == Visibilites.public.value)))).scalars().all()
 
                     familiars_list = [{'label':familiar.name, 'value':familiar.id} for familiar in familiars]
 
@@ -140,7 +140,7 @@ def search():
                     return jsonify(users_list)
 
                 if search_type == 'guild':
-                    guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , Guild.editors.contains(user)))).scalars().all()
+                    guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , or_(Guild.editors.contains(user), Guild.visibility == Visibilites.public.value)))).scalars().all()
 
                     guild_list = [{'label':guild.name, 'value':guild.id} for guild in guilds]
 
@@ -190,6 +190,8 @@ def list_query():
                 query:str = search_info.get('query')
                 tag:str = search_info.get('tag')
 
+                print(search_type, " tag: ", tag, " query: ", query)
+
                 if not query:
                     query = ''
                 
@@ -220,9 +222,15 @@ def list_query():
                                                                             .where(\
                                                                                 and_(\
                                                                                     Location.name.ilike('%'+query+'%'),\
-                                                                                    or_(\
-                                                                                        Character.editors.contains(user),\
-                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    and_(\
+                                                                                        or_(\
+                                                                                            Character.editors.contains(user),\
+                                                                                            Character.visibility == Visibilites.public.value
+                                                                                        ),
+                                                                                        or_(\
+                                                                                            Location.editors.contains(user),\
+                                                                                            Location.visibility == Visibilites.public.value
+                                                                                        )                                                                                    
                                                                                     )
                                                                                 )
                                                                             )
@@ -248,13 +256,43 @@ def list_query():
                                                                             .where(\
                                                                                 and_(\
                                                                                     Guild.name.ilike('%'+query+'%'),\
-                                                                                    or_(\
-                                                                                        Character.editors.contains(user),\
-                                                                                        Character.visibility == Visibilites.public.value
+                                                                                    and_(\
+                                                                                        or_(\
+                                                                                            Character.editors.contains(user),\
+                                                                                            Character.visibility == Visibilites.public.value
+                                                                                        ),
+                                                                                        or_(\
+                                                                                            Guild.editors.contains(user),\
+                                                                                            Guild.visibility == Visibilites.public.value
+                                                                                        )                                                                                    
                                                                                     )
                                                                                 )
                                                                             )
                                                                         ).scalars().fetchmany(100)
+
+                    if (tag == 'familiar'):
+                        characters:set[Character] = set()
+                        familiars:list[Familiar] = sqlsession.execute(select(Familiar)\
+                            .where(\
+                                and_(\
+                                    Familiar.name.ilike('%'+query+'%') ,\
+                                        and_(\
+                                            or_(\
+                                                Character.editors.contains(user),\
+                                                Character.visibility == Visibilites.public.value
+                                            ),
+                                            or_(\
+                                                Familiar.editors.contains(user),\
+                                                Familiar.visibility == Visibilites.public.value
+                                            )                                                                                    
+                                        )
+                                    )
+                                )
+                            ).scalars().fetchmany(100)
+                        for familiar in familiars:
+                            if familiar.owners:
+                                for owner in familiar.owners:
+                                    characters.add(owner)
 
                     return render_template('snippets/browse.html', characters=characters)
 
@@ -283,10 +321,16 @@ def list_query():
                                                                         .where(\
                                                                             and_(\
                                                                                 Character.name.ilike('%'+query+'%'),\
-                                                                                or_(\
-                                                                                    Location.editors.contains(user),\
-                                                                                    Location.visibility == Visibilites.public.value
-                                                                                )
+                                                                                    and_(\
+                                                                                        or_(\
+                                                                                            Character.editors.contains(user),\
+                                                                                            Character.visibility == Visibilites.public.value
+                                                                                        ),
+                                                                                        or_(\
+                                                                                            Location.editors.contains(user),\
+                                                                                            Location.visibility == Visibilites.public.value
+                                                                                        )                                                                                    
+                                                                                    )
                                                                             )
                                                                         )
                                                                     ).scalars().fetchmany(100)
@@ -304,6 +348,32 @@ def list_query():
                                                                             )
                                                                         )
                                                                     ).scalars().fetchmany(100)
+
+                    if (tag == 'parentloc'):                                             
+                        parentlocs:list[Location] = sqlsession.execute(select(Location)\
+                                                .where(\
+                                                    and_(\
+                                                        Location.name.ilike('%'+query+'%'),\
+                                                        or_(\
+                                                            Location.editors.contains(user),\
+                                                            Location.visibility == Visibilites.public.value
+                                                        )
+                                                    )
+                                                )
+                                            ).scalars().fetchmany(100)
+                        locations:list[Location] = list()
+                        for location in parentlocs:
+                            locations.append(sqlsession.execute(select(Location)\
+                                .where(\
+                                    and_(\
+                                        Location.parent_id == location.editable_id,\
+                                        or_(\
+                                            Location.editors.contains(user),\
+                                            Location.visibility == Visibilites.public.value
+                                        )
+                                    )
+                                )
+                            ).scalars().fetchmany(100))
 
                     return render_template('snippets/browse.html', locations=locations)
 
@@ -332,10 +402,16 @@ def list_query():
                                                                     .where(\
                                                                         and_(\
                                                                             Character.name.ilike('%'+query+'%'),\
-                                                                            or_(\
-                                                                                Guild.editors.contains(user),\
-                                                                                Guild.visibility == Visibilites.public.value
-                                                                            )
+                                                                                    and_(\
+                                                                                        or_(\
+                                                                                            Character.editors.contains(user),\
+                                                                                            Character.visibility == Visibilites.public.value
+                                                                                        ),
+                                                                                        or_(\
+                                                                                            Guild.editors.contains(user),\
+                                                                                            Guild.visibility == Visibilites.public.value
+                                                                                        )                                                                                    
+                                                                                    )
                                                                         )
                                                                     )
                                                                 ).scalars().fetchmany(100)
@@ -346,10 +422,16 @@ def list_query():
                                                                     .where(\
                                                                         and_(\
                                                                             Character.name.ilike('%'+query+'%'),\
-                                                                            or_(\
-                                                                                Guild.editors.contains(user),\
-                                                                                Guild.visibility == Visibilites.public.value
-                                                                            )
+                                                                                    and_(\
+                                                                                        or_(\
+                                                                                            Character.editors.contains(user),\
+                                                                                            Character.visibility == Visibilites.public.value
+                                                                                        ),
+                                                                                        or_(\
+                                                                                            Guild.editors.contains(user),\
+                                                                                            Guild.visibility == Visibilites.public.value
+                                                                                        )                                                                                    
+                                                                                    )
                                                                         )
                                                                     )
                                                                 ).scalars().fetchmany(100)
@@ -369,5 +451,106 @@ def list_query():
                                                                 ).scalars().fetchmany(100)
 
                     return render_template('snippets/browse.html', guilds=guilds)
+
+                if search_type == "familiar":
+                    familiars:list[Familiar] = None
+
+                    if not tag:
+                        tag = 'familiar'
+                    if (tag == 'familiar'):
+                        familiars:list[Familiar] = sqlsession.execute(select(Familiar)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            Familiar.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Familiar.editors.contains(user),\
+                                                                                Familiar.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
+                    if (tag == 'character'):
+                        familiars:set[Familiar] = set()
+                        characters:list[Character] = sqlsession.execute(select(Character)\
+                            .where(\
+                                and_(\
+                                    Character.name.ilike('%'+query+'%') ,\
+                                    and_(\
+                                        or_(\
+                                            Character.editors.contains(user),\
+                                            Character.visibility == Visibilites.public.value
+                                        ),
+                                        or_(\
+                                            Familiar.editors.contains(user),\
+                                            Familiar.visibility == Visibilites.public.value
+                                        )                                                                                    
+                                    )
+                                )
+                            )
+                        ).scalars().fetchmany(100)
+                        for character in characters:
+                            if character.familiars:
+                                for familiar in character.familiars:
+                                    familiars.add(familiar)
+                    if (tag == 'user'):
+                        familiars:list[Familiar] = sqlsession.execute(select(Familiar)\
+                                                                    .join(User, User.id == Familiar.owner_id)\
+                                                                    .where(\
+                                                                        and_(\
+                                                                            User.name.ilike('%'+query+'%'),\
+                                                                            or_(\
+                                                                                Familiar.editors.contains(user),\
+                                                                                Familiar.visibility == Visibilites.public.value
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                ).scalars().fetchmany(100)
+                        
+                    return render_template('snippets/browse.html', familiars=familiars)
+
+                if search_type == "item":
+                    items:list[Item] = None
+
+                    if not tag:
+                        tag = 'item'
+                    if (tag == 'item'):
+                        items:list[Item] = sqlsession.execute(select(Item)\
+                                            .where(\
+                                                and_(\
+                                                    Item.name.ilike('%'+query+'%'),\
+                                                    or_(\
+                                                        Item.editors.contains(user),\
+                                                        Item.visibility == Visibilites.public.value
+                                                    )
+                                                )
+                                            )
+                                        ).scalars().fetchmany(100)
+                    return render_template('snippets/browse.html', items=items)
+
+            if search_type == "user":
+                users:list[User] = None
+
+                if not tag:
+                    tag = 'user'
+                if (tag == 'user'):
+                    users:list[User] = sqlsession.execute(select(User)\
+                        .where(\
+                            User.name.ilike('%'+query+'%'),\
+                        )
+                    ).scalars().fetchmany(100)
+                if (tag == 'character' or tag == 'location' or tag == 'familiar' or tag == 'item' or tag == ' guild'):
+                        users:list[User] = sqlsession.execute(select(User)\
+                            .join(Editable, User.id == Editable.owner_id)\
+                            .where(\
+                                and_(\
+                                    Editable.name.ilike('%'+query+'%'),\
+                                    or_(\
+                                        Editable.editors.contains(user),\
+                                        Editable.visibility == Visibilites.public.value
+                                    )
+                                )
+                            )
+                        ).scalars().fetchmany(100)
+                return render_template('snippets/browse.html', users=users)
                     
-            return render_template('navigation/browse.html')
+            return render_template('snippets/browse.html')
