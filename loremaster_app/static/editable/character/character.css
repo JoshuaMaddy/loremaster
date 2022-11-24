@@ -50,3 +50,10 @@
 .details{
     margin: 1rem 0 0 0;
 }
+
+.character_container img{
+    height: 30vw;
+    width: 30vw;
+    object-fit: contain;
+    margin: 1rem 0 0 0;
+}

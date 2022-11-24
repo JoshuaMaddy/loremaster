@@ -1,14 +1,66 @@
-.user_container{
+.admin_container{
     display: grid;
     grid-template-areas: 
             "user_name user_name"
-            "user_owns user_edit_perm";
-    
+            "search search";
+    grid-template-columns: 1fr 1fr;
 }
 
-.user_info{
+.user_container{
     grid-area: user_name;
     justify-self: center;
     padding: 1em 0 0 0;
+    width: min-content;
+    height: 5rem;
+}
+
+.user_info{
+    height: 7rem;
+}
+
+.user_info > img{
+    height: 100%;
     width: 100%;
+    object-fit: fill;
+}
+
+.user_info > #text{
+    height: 100%;
+    width: max-content;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 0 1.5rem 0 1.5rem;
+    top: -100%;
+    left: 0;
+} 
+
+.search_menu{
+    display: grid;
+    grid-area: search;
+    justify-content: center;
+    padding-top: 4rem;
+}
+
+#search {
+    display: grid;
+    grid-area: search;
+    position:fixed;
+    left: 62.5rem;
+    padding: 0.25em 0.5em 0.25em 0.5em;
+}
+
+#search_selection{
+    justify-content: center;
+    display: flex;
+    padding: 1em 1em 1em 1em;
+}
+
+#tag_selection{
+    justify-content: center;
+    display: flex;
+    padding: 1em 1em 1em 1em;
 }

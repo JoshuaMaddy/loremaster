@@ -13,8 +13,8 @@ var stat_snippet = `<div class="stat">
 
 var relationship_snippet = `<div class="relationship">
         <input type="text" name="single_relationship" class="single_relationship" placeholder="Relationship">
-        <input type="text" name="relationship_familiar" class="relationship_familiar" placeholder="Familiar">
-        <input type="text" name="relationship_familiar_id" class="relationship_familiar_id" hidden>
+        <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
+        <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
         <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
         <button type="button" class="remove_relationship">-</button>
     </div>`
@@ -293,7 +293,7 @@ $(function () {
     }
 
     // Bit of a hack, when any input that needs autocomplete is clicked, refresh autocomplete fields. Needed because fields come/go by user choice
-    $(document).on('click', '#location_input, .single_familiar, .single_editor, .relationship_familiar', function (evt) {
+    $(document).on('click', '#location_input, .single_familiar, .single_editor, .relationship_character, #character_owner_selection', function (evt) {
 
         // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
@@ -397,7 +397,7 @@ $(function () {
             delay: 200
         });
 
-        $(".relationship_familiar").autocomplete({
+        $(".relationship_character").autocomplete({
             source: function (request, response) {
                 $.ajax({
                     url: '/api/search',
@@ -406,7 +406,7 @@ $(function () {
                     processData: false,
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        search_type: "familiar",
+                        search_type: "character",
                         query: request.term
                     }),
                     success: function (data) {
@@ -425,7 +425,40 @@ $(function () {
             select: function (event, ui) {
                 event.preventDefault();
                 $(this).val(ui.item.label);
-                $(this).siblings('.relationship_familiar_id').first().val(ui.item.value);
+                $(this).siblings('.relationship_character_id').first().val(ui.item.value);
+            },
+            delay: 200
+        });
+
+        $(".character_owner_input").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/api/search',
+                    method: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        search_type: "character",
+                        query: request.term
+                    }),
+                    success: function (data) {
+                        response($.map(data, function (result) {
+                            return {
+                                label: result.label,
+                                value: result.value,
+                            }
+                        }));
+                    }
+                });
+            },
+            focus: function (event, ui) {
+                event.preventDefault();
+            },
+            select: function (event, ui) {
+                event.preventDefault();
+                $(this).val(ui.item.label);
+                $(this).siblings('.character_owner_id').first().val(ui.item.value);
             },
             delay: 200
         });

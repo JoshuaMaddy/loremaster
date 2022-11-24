@@ -60,8 +60,8 @@ def location_create():
 
 @bp.route('/api/location_edit', methods=['POST'])
 @login_required
-def guild_edit():
-    return guild.edit()
+def location_edit():
+    return location.edit()
 
 @bp.route('/api/guild_create', methods=['POST'])
 @login_required
@@ -70,7 +70,7 @@ def guild_create():
 
 @bp.route('/api/guild_edit', methods=['POST'])
 @login_required
-def location_edit():
+def guild_edit():
     return guild.edit()
 
 @bp.route('/api/item_create', methods=['POST'])

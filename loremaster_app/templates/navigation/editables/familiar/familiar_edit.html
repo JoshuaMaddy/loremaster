@@ -14,7 +14,7 @@
 
 <!-- Internal stying links -->
 <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
-<script type="text/javascript" src="{{url_for('static', filename='familiar_edit.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='editable/familiar/familiar_edit.js')}}"></script>
 {% endblock %}
 
 {% block content %}
@@ -66,6 +66,15 @@
                 <label for="location">Location</label>
                 <input type="text" name="location" id="location_input" value="{{familiar.location.name if familiar.location else ''}}">
                 <input type="text" name="location_id" id="location_id" value="{{familiar.location.id if familiar.location else ''}}" hidden>
+            </div>
+
+            <hr>
+
+            <!-- Character Owner -->
+            <div id="character_owner_selection">
+                <label for="character_owner">Character Owner</label>
+                <input type="text" name="character_owner" id="character_owner_input" value="{{familiar.owners[0].name if familiar.owners[0] else ''}}">
+                <input type="text" name="character_owner_id" id="character_owner_id" value="{{familiar.owners[0].id if familiar.owners[0] else ''}}" hidden>
             </div>
 
             <hr>
@@ -125,8 +134,8 @@
                 {% for relationship in familiar.relationships %}
                 <div class="relationship">
                     <input type="text" name="single_relationship" class="single_relationship" value="{{relationship.name if relationship.name else ''}}" placeholder="Relationship">
-                    <input type="text" name="relationship_familiar" class="relationship_familiar" value="{{relationship.familiar.name if relationship.familiar else ''}}" placeholder="familiar">
-                    <input type="text" name="relationship_familiar_id" class="relationship_familiar_id" value="{{relationship.familiar.id if relationship.familiar else ''}}" hidden>
+                    <input type="text" name="relationship_character" class="relationship_character" value="{{relationship.character.name if relationship.character else ''}}" placeholder="Character">
+                    <input type="text" name="relationship_character_id" class="relationship_character_id" value="{{relationship.character.id if relationship.character else ''}}" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" value="{{relationship.short_description if relationship.short_description else ''}}" placeholder="Short Description">
                     <button type="button" class="remove_relationship">-</button>
                 </div>
@@ -135,8 +144,8 @@
                 {% if not familiar.relationships %}
                 <div class="relationship">
                     <input type="text" name="single_relationship" class="single_relationship" placeholder="Relationship">
-                    <input type="text" name="relationship_familiar" class="relationship_familiar" placeholder="familiar">
-                    <input type="text" name="relationship_familiar_id" class="relationship_familiar_id" hidden>
+                    <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
+                    <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
                     <button type="button" class="remove_relationship">-</button>
                 </div>

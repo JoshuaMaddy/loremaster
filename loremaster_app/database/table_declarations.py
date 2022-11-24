@@ -330,10 +330,10 @@ class Familiar(Editable):
                     self.relationships.append(new_relationship)
 
     def set_owner(self, sqlsession:Ses, user:User, owner_id:int) -> None:
-        character:Character = sqlsession.execute(select(Character).where(Familiar.editable_id == owner_id)).scalar()
+        character:Character = sqlsession.execute(select(Character).where(Character.id == owner_id)).scalar()
 
-        if character and not character in self.familiars and character in user.editor_perms:
-            self.owner_id = character
+        if character and character in user.editor_perms:
+            self.owners = [character]
 
 class Guild(Editable):
     __tablename__ = "guild"

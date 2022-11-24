@@ -4,6 +4,7 @@
             "user_name user_name"
             "user_owns user_edit_perm";
     grid-template-columns: 1fr 1fr;
+    width: 100%;
     
 }
 
@@ -104,3 +105,15 @@ li{
     padding-top: 2rem;
 }
 
+.images{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.images img{
+    width: 5vw; 
+    height: 5vw; 
+    object-fit:cover;
+    padding: 0 0 0 1rem;
+}

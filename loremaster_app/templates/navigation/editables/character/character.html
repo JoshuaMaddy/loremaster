@@ -7,6 +7,9 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{url_for('static', filename='editable/character/character.css')}}">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.11.0/simple-lightbox.css" integrity="sha512-HL1y3YvMbRp23VyjlaZDXCwtM5iJ6amoDyEcjpANI6qObX9pb8B7c31UJVyesMb3LKvmS8sr6eKOFMAEaHgf+g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.11.0/simple-lightbox.jquery.js" integrity="sha512-/F4nDrEbOuHGS1GWs2A9AgnBCHGzgu5XdgA4HWpzjumHxe0E0d5Yu3UInfoHUZRL6MP99g2es4AgiOg/fmfP6Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="{{url_for('static', filename='editable/character/character.js')}}"></script>
 {% endblock %}
 
 {% block editable %}
@@ -17,7 +20,15 @@
         {{ super() }}
 
         {% if image %}
-        <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" style="height: 100px; width: 100px; object-fit: cover;" alt="">
+        <img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="" class="main_image">
+        {% endif %}
+
+        {% if editable.images %}
+            <div class="all_images" style="display: none; visibility: hidden;">
+                {% for image in editable.images%}
+                <a href="{{url_for('api.image_retrieve', image_id=image.image_id)}}"><img src="{{url_for('api.image_retrieve', image_id=image.image_id)}}" alt="{{image.image.name}}" title="{{image.image.name}}" /></a>
+                {% endfor %}
+            </div>
         {% endif %}
     
         <div class="details">
