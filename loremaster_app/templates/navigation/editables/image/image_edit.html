@@ -13,6 +13,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='editable/edit.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='editable/image/image_edit.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='editable/image/image_edit.js')}}"></script>
 {% endblock %}
@@ -36,6 +37,8 @@
                 <label for="choose-file">Choose File</label>
                 <input type="file" accept="image/*" id="choose-file" name="choose-file" />
             </div>
+
+            <hr>
 
             <!-- Name -->
             <label for="name">Name</label>
@@ -63,7 +66,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -71,7 +74,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endif %}
 
@@ -81,6 +84,9 @@
         </form>
     {% endblock %}
 
+    <hr>
+
+    <div class="options">
     {% block options %}
         <button id="confirm" type="button">Confirm</button>
 
@@ -88,6 +94,7 @@
             <button id="discard">Discard</button>
         </a>
     {% endblock %}
+    </div>
 
     <div id="hidden_description" hidden>
         {% autoescape false %}

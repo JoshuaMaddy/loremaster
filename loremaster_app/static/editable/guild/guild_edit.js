@@ -2,13 +2,13 @@
 var editor_snippet = `<div class="editor">
 <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
 <input type="text" name="editor_id" id="editor_id" hidden>
-<button type="button" class="remove_editor">-</button>
+<button type="button" class="remove_editor remove">-</button>
 </div>`
 
 var guild_snippet = `<div class="guild_member">
 <input type="text" name="guild_member" class="guild_member" placeholder="Member">
 <input type="text" name="guild_member_id" id="guild_member_id" value="" hidden>
-<button type="button" class="remove_member">-</button>
+<button type="button" class="remove_member remove">-</button>
 </div>`
 
 $(function () {

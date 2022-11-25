@@ -2,13 +2,13 @@
 var trait_snippet = `<div class="trait">
 <input type="text" name="single_trait" class="single_trait" placeholder="Trait">
 <input type="text" name="single_trait_desc" class="single_trait_desc" placeholder="Short Description">
-<button type="button" class="remove_trait">-</button>
+<button type="button" class="remove_trait remove">-</button>
 </div>`
 
 var stat_snippet = `<div class="stat">
 <input type="text" name="single_stat" class="single_stat" placeholder="Trait">
 <input type="text" name="single_stat_desc" class="single_stat_desc" placeholder="Short Description">
-<button type="button" class="remove_stat">-</button>
+<button type="button" class="remove_stat remove">-</button>
 </div>`
 
 var relationship_snippet = `<div class="relationship">
@@ -16,24 +16,24 @@ var relationship_snippet = `<div class="relationship">
         <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
         <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
         <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
-        <button type="button" class="remove_relationship">-</button>
+        <button type="button" class="remove_relationship remove">-</button>
     </div>`
 
 var familiar_snippet = `<div class="familiar">
     <input type="text" name="single_familiar" class="single_familiar" placeholder="Familiar">
     <input name="familiar_id" id="familiar_id" type="text" hidden>
-    <button type="button" class="remove_familiar">-</button>
+    <button type="button" class="remove_familiar remove">-</button>
 </div>`
 
 var inventory_snippet = `<div class="inventories">
     <input type="text" name="single_inventory" class="single_inventory" placeholder="Inventory">
-    <button type="button" class="remove_inventory">-</button>
+    <button type="button" class="remove_inventory remove">-</button>
 </div>`
 
 var editor_snippet = `<div class="editor">
 <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
 <input type="text" name="editor_id" id="editor_id" hidden>
-<button type="button" class="remove_editor">-</button>
+<button type="button" class="remove_editor remove">-</button>
 </div>`
 
 // Familiar Description class/template. Used for form submission as a container.

@@ -13,6 +13,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='editable/edit.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='editable/location/location_edit.js')}}"></script>
 {% endblock %}
@@ -30,6 +31,8 @@
             <label for="name">Name</label>
             <input name="name" id="name" value="{{location.name if location else ''}}" placeholder="Location Name" required>
             <input name="location_id" id="location_id" type="text" value="{{location.id if location else ''}}" hidden>
+
+            <hr>
             
             <!-- Images -->
             <div id="image_container">
@@ -62,6 +65,8 @@
                 </div>
             </div>
 
+            <hr>
+
             <!-- Location Parent -->
             <div id="parent_location_selection">
                 <label for="location">Parent Location</label>
@@ -79,7 +84,7 @@
                 <div class="child_location">
                     <input type="text" name="single_location" class="single_location" value="{{location.name if location.name else ''}}" placeholder="Location">
                     <input type="text" name="single_location_id" id="single_location_id" value="{{location.id}}" hidden>
-                    <button type="button" class="remove_location">-</button>
+                    <button type="button" class="remove_location remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -87,7 +92,7 @@
                 <div class="child_location">
                     <input type="text" name="single_location" class="single_location" placeholder="Location">
                     <input type="text" name="single_location_id" id="single_location_id" value="" hidden>
-                    <button type="button" class="remove_location">-</button>
+                    <button type="button" class="remove_location remove">-</button>
                 </div>
                 {% endif %}
 
@@ -103,7 +108,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -111,7 +116,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endif %}
 
@@ -121,6 +126,9 @@
         </form>
     {% endblock %}
 
+    <hr>
+
+    <div class="options">
     {% block options %}
         <button id="confirm" type="button">Confirm</button>
 
@@ -128,6 +136,7 @@
             <button id="discard">Discard</button>
         </a>
     {% endblock %}
+    </div>
 
     <div id="hidden_description" hidden>
         {% autoescape false %}

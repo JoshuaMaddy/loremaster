@@ -2,13 +2,13 @@
 var editor_snippet = `<div class="editor">
 <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
 <input type="text" name="editor_id" id="editor_id" hidden>
-<button type="button" class="remove_editor">-</button>
+<button type="button" class="remove_editor remove">-</button>
 </div>`
 
 var location_snippet = `<div class="child_location">
 <input type="text" name="single_location" class="single_location" placeholder="Location">
 <input type="text" name="single_location_id" id="single_location_id" value="" hidden>
-<button type="button" class="remove_location">-</button>
+<button type="button" class="remove_location remove">-</button>
 </div>`
 
 $(function () {

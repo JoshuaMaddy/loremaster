@@ -56,7 +56,7 @@ def user_page(user_id:int):
         sqlsession:Ses
 
         #  Try to retrieve user from DB session
-        user:User = get_user(session=sqlsession, user_id=g.user.id)
+        user:User = get_user(session=sqlsession, user_id=user_id)
 
         # If no character for id, fail silently
         if user is None:

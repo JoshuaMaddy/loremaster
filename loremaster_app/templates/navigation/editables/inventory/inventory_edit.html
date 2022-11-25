@@ -13,6 +13,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='editable/edit.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='editable/inventory/inventory.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='editable/inventory/inventory_edit.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='editable/inventory/inventory_edit.js')}}"></script>
@@ -31,6 +32,8 @@
             <label for="name">Name</label>
             <input name="name" id="name" value="{{inventory.name if inventory else ''}}" placeholder="Your inventory Name" required>
             <input name="inventory_id" id="inventory_id" type="text" value="{{inventory.id if inventory else ''}}" hidden>
+
+            <hr>
             
             <div id="item_container">
                 <label for="items">Items</label>
@@ -80,7 +83,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -88,7 +91,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endif %}
 
@@ -100,6 +103,7 @@
         </form>
     {% endblock %}
 
+    <div class="options">
     {% block options %}
         <button id="confirm" type="button">Confirm</button>
 
@@ -107,6 +111,7 @@
             <button id="discard">Discard</button>
         </a>
     {% endblock %}
+    </div>
 
     <div id="hidden_description" hidden>
         {% autoescape false %}

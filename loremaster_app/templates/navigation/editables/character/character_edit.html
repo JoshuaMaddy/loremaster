@@ -13,6 +13,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <!-- Internal stying links -->
+<link rel="stylesheet" href="{{url_for('static', filename='editable/edit.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='image_sort.css')}}">
 <script type="text/javascript" src="{{url_for('static', filename='editable/character/character_edit.js')}}"></script>
 {% endblock %}
@@ -31,6 +32,8 @@
             <input name="name" id="name" value="{{character.name if character else ''}}" placeholder="Your Character Name" required>
             <input name="character_id" id="character_id" type="text" value="{{character.id if character else ''}}" hidden>
             
+            <hr>
+
             <div id="image_container">
                 <label for="images">Images</label>
                 <div id="image_list">
@@ -61,12 +64,16 @@
                 </div>
             </div>
 
+            <hr>
+
             <!-- Location -->
             <div id="location_selection">
                 <label for="location">Location</label>
                 <input type="text" name="location" id="location_input" value="{{character.location.name if character.location else ''}}">
                 <input type="text" name="location_id" id="location_id" value="{{character.location.id if character.location else ''}}" hidden>
             </div>
+
+            <hr>
 
             <!-- Guild -->
             <div id="guild_selection">
@@ -85,7 +92,7 @@
                 <div class="trait">
                     <input type="text" name="single_trait" class="single_trait" value="{{trait.name if trait.name else ''}}" placeholder="Trait">
                     <input type="text" name="single_trait_desc" class="single_trait_desc" value="{{trait.short_description if trait.short_description else ''}}" placeholder="Short Description">
-                    <button type="button" class="remove_trait">-</button>
+                    <button type="button" class="remove_trait remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -93,7 +100,7 @@
                 <div class="trait">
                     <input type="text" name="single_trait" class="single_trait" placeholder="Trait">
                     <input type="text" name="single_trait_desc" class="single_trait_desc" placeholder="Short Description">
-                    <button type="button" class="remove_trait">-</button>
+                    <button type="button" class="remove_trait remove">-</button>
                 </div>
                 {% endif %}
 
@@ -109,7 +116,7 @@
                 <div class="stat">
                     <input type="text" name="single_stat" class="single_stat" value="{{stat.name if stat.name else ''}}" placeholder="Stat">
                     <input type="text" name="single_stat_desc" class="single_stat_desc" value="{{stat.short_description if stat.short_description else ''}}" placeholder="Short Description">
-                    <button type="button" class="remove_stat">-</button>
+                    <button type="button" class="remove_stat remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -117,7 +124,7 @@
                 <div class="stat">
                     <input type="text" name="single_stat" class="single_stat" placeholder="Trait">
                     <input type="text" name="single_stat_desc" class="single_stat_desc" placeholder="Short Description">
-                    <button type="button" class="remove_stat">-</button>
+                    <button type="button" class="remove_stat remove">-</button>
                 </div>
                 {% endif %}
 
@@ -135,7 +142,7 @@
                     <input type="text" name="relationship_character" class="relationship_character" value="{{relationship.character.name if relationship.character else ''}}" placeholder="Character">
                     <input type="text" name="relationship_character_id" class="relationship_character_id" value="{{relationship.character.id if relationship.character else ''}}" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" value="{{relationship.short_description if relationship.short_description else ''}}" placeholder="Short Description">
-                    <button type="button" class="remove_relationship">-</button>
+                    <button type="button" class="remove_relationship remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -145,7 +152,7 @@
                     <input type="text" name="relationship_character" class="relationship_character" placeholder="Character">
                     <input type="text" name="relationship_character_id" class="relationship_character_id" hidden>
                     <input type="text" name="single_relationship_desc" class="single_relationship_desc" placeholder="Short Description">
-                    <button type="button" class="remove_relationship">-</button>
+                    <button type="button" class="remove_relationship remove">-</button>
                 </div>
                 {% endif %}
 
@@ -161,7 +168,7 @@
                 <div class="familiar">
                     <input type="text" name="single_familiar" class="single_familiar" value="{{familiar.name if familiar.name else ''}}" placeholder="Familiar">
                     <input name="familiar_id" id="familiar_id" type="text" value="{{familiar.id}}" hidden>
-                    <button type="button" class="remove_familiar">-</button>
+                    <button type="button" class="remove_familiar remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -169,7 +176,7 @@
                 <div class="familiar">
                     <input type="text" name="single_familiar" class="single_familiar" placeholder="Familiar">
                     <input name="familiar_id" id="familiar_id" type="text" hidden>
-                    <button type="button" class="remove_familiar">-</button>
+                    <button type="button" class="remove_familiar remove">-</button>
                 </div>
                 {% endif %}
 
@@ -184,14 +191,14 @@
                 {% for inventory in character.inventories %}
                 <div class="inventory">
                     <input type="text" name="single_inventory" class="single_inventory" value="{{inventory.name if inventory.name else ''}}" placeholder="Inventory">
-                    <button type="button" class="remove_inventory">-</button>
+                    <button type="button" class="remove_inventory remove">-</button>
                 </div>
                 {% endfor %}
 
                 {% if not character.inventories %}
                 <div class="inventory">
                     <input type="text" name="single_inventory" class="single_inventory" placeholder="Inventory">
-                    <button type="button" class="remove_inventory">-</button>
+                    <button type="button" class="remove_inventory remove">-</button>
                 </div>
                 {% endif %}
 
@@ -207,7 +214,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" value="{{editor.name if editor.name else ''}}" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" value="{{editor.id}}" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endfor %}
 
@@ -215,7 +222,7 @@
                 <div class="editor">
                     <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
                     <input type="text" name="editor_id" id="editor_id" hidden>
-                    <button type="button" class="remove_editor">-</button>
+                    <button type="button" class="remove_editor remove">-</button>
                 </div>
                 {% endif %}
 
@@ -238,6 +245,9 @@
         </form>
     {% endblock %}
 
+    <hr>
+    
+    <div class="options">
     {% block options %}
         <button id="confirm" type="button">Confirm</button>
 
@@ -245,6 +255,8 @@
             <button id="discard">Discard</button>
         </a>
     {% endblock %}
+    </div>
+
 
     <div id="hidden_description" hidden>
         {% autoescape false %}

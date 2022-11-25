@@ -59,10 +59,10 @@ def create():
                         character.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
 
                     if location_id:
-                        character.set_location(sqlsession=sqlsession, location_id=location_id)
+                        character.set_location(sqlsession=sqlsession, user=user, location_id=location_id)
 
                     if guild_id:
-                        character.set_guild(sqlsession=sqlsession, guild_id=guild_id)
+                        character.set_guild(sqlsession=sqlsession, user=user, guild_id=guild_id)
 
                     if vis_int:
                         character.set_visibility(sqlsession=sqlsession, vis_int=vis_int)

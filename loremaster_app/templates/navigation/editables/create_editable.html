@@ -4,26 +4,44 @@
 
 <style>
     #create{
-        margin: 2rem;
-    }
-
-    #create a:link, #create a:visited{
-        color: black;
-        text-decoration: none;
+        margin: auto;
+        width: 50%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding-top: 2rem;
     }
 
     #create a{
         margin: 0 0 2rem 0;
     }
+
+    #create > h1{
+        grid-area: span 1 / span 2;
+    }
+
+    #horizontal{
+        grid-area: span 1 / span 2;
+        padding-bottom: 1rem;
+    }
+
+    #create h2{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 </style>
 
 <div id="create">
-    <a href="{{url_for('navi.image_creation')}}" id="image_creation"><h1>Create Image</h1></a>
-    <a href="{{url_for('navi.character_creation')}}" id="character_creation"><h1>Create Character</h1></a>
-    <a href="{{url_for('navi.familiar_creation')}}" id="familiar_creation"><h1>Create Familiar</h1></a>
-    <a href="{{url_for('navi.location_creation')}}" id="location_creation"><h1>Create Location</h1></a>
-    <a href="{{url_for('navi.item_creation')}}" id="item_creation"><h1>Create Item</h1></a>
-    <a href="{{url_for('navi.inventory_creation')}}" id="inventory_creation"><h1>Create Inventory</h1></a>
-    <a href="{{url_for('navi.guild_create')}}" id="guild_create"><h1>Create Guild</h1></a>
+    <h1>Create:</h1>
+    <div id="horizontal">
+        <hr>
+    </div>
+    <a href="{{url_for('navi.image_creation')}}" id="image_creation"><h2>Image</h2></a>
+    <a href="{{url_for('navi.character_creation')}}" id="character_creation"><h2>Character</h2></a>
+    <a href="{{url_for('navi.familiar_creation')}}" id="familiar_creation"><h2>Familiar</h2></a>
+    <a href="{{url_for('navi.location_creation')}}" id="location_creation"><h2>Location</h2></a>
+    <a href="{{url_for('navi.item_creation')}}" id="item_creation"><h2>Item</h2></a>
+    <a href="{{url_for('navi.inventory_creation')}}" id="inventory_creation"><h2>Inventory</h2></a>
+    <a href="{{url_for('navi.guild_create')}}" id="guild_create"><h2>Guild</h2></a>
 </div>
 {% endblock %}

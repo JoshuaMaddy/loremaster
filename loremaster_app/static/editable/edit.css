@@ -1,0 +1,36 @@
+form{
+    padding: 1rem 0 0 0;
+}
+
+form button{
+    margin: 0.5rem 0 0 0;
+}
+
+form input, form button{
+    width: 15vw;
+}
+
+.remove{
+    width: 2rem;
+}
+
+form > label, form > div, form > p{
+    padding-left: 1rem;
+}
+
+hr{
+    margin: 0.5rem 0 0.5rem 0;
+}
+
+.options{
+    padding: 0 0 1rem 1rem;
+}
+
+.options button{
+    width: clamp(50px, 10vw, 75px); 
+    overflow: hidden;
+}
+
+#choose-file{
+    width: inherit;
+}

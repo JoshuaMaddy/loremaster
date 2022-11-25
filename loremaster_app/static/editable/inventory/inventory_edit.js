@@ -2,7 +2,7 @@
 var editor_snippet = `<div class="editor">
 <input type="text" name="single_editor" class="single_editor" placeholder="Editor">
 <input type="text" name="editor_id" id="editor_id" hidden>
-<button type="button" class="remove_editor">-</button>
+<button type="button" class="remove_editor remove">-</button>
 </div>`
 
 var item_snippet = `
