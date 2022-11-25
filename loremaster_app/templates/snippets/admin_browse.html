@@ -1,0 +1,69 @@
+{% macro list_editables(iterator) -%}
+    <div class="results">
+        {% for element in iterator %}
+            <div class="result">
+                {% if element.email %}
+                    <li><a href="{{url_for('navi.user_page', user_id=element.id)}}">User: {{element.name}}</a>
+                    <button><p class="ban_button" data-url="/api/ban_user/{{element.id}}">⛔</p></button>
+                    <button><p class="unban_button" data-url="/api/unban_user/{{element.id}}">✔️</p></button>
+                {% else %}
+                    {% if element.type == 'character' %}
+                    <li><a href="{{url_for('navi.character_page', character_id=element.id)}}">Character: {{element.name}}</a>
+                    {% elif element.type == 'location' %}
+                    <li><a href="{{url_for('navi.location_page', location_id=element.id)}}">Location: {{element.name}}</a>
+                    {% elif element.type == 'guild' %}
+                    <li><a href="{{url_for('navi.guild_page', guild_id=element.id)}}">Guild: {{element.name}}</a>
+                    {% elif element.type == 'familiar' %}
+                    <li><a href="{{url_for('navi.familiar_page', familiar_id=element.id)}}">Familiar: {{element.name}}</a>
+                    {% elif element.type == 'item' %}
+                    <li><a href="{{url_for('navi.item_page', item_id=element.id)}}">Item: {{element.name}}</a>
+                    {% endif %}
+                    <button><p class="ban_button" data-url="/api/ban_user/{{element.owner.id}}">⛔</p></button>
+                    <button><p class="unban_button" data-url="/api/unban_user/{{element.owner.id}}">✔️</p></button>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro -%}
+
+{% if characters %}
+<div class="public_characters">
+    <p>Public Characters</p>
+    {{ list_editables(characters) }}
+</div>
+{% endif %}
+
+{% if locations %}
+<div class="public_locations">
+    <p>Public Locations</p>
+    {{ list_editables(locations) }}
+</div>
+{% endif %}
+
+{% if guilds %}
+<div class="public_guilds">
+    <p>Public Guilds</p>
+    {{ list_editables(guilds) }}
+</div>
+{% endif %}
+
+{% if familiars %}
+<div class="public_familiars">
+    <p>Familiars</p>
+    {{ list_editables(familiars) }}
+</div>
+{% endif %}
+
+{% if items %}
+<div class="public_items">
+    <p>Familiars</p>
+    {{ list_editables(items) }}
+</div>
+{% endif %}
+
+{% if users %}
+<div class="public_users">
+    <p>User</p>
+    {{ list_editables(users) }}
+</div>
+{% endif %}

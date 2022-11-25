@@ -88,6 +88,8 @@ def guild_page(guild_id:int):
         # Assume no image
         image = None
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
@@ -95,6 +97,9 @@ def guild_page(guild_id:int):
             # If guild is owned/can be edited by the viewer
             if guild in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Find first image
         if guild.images:
@@ -103,7 +108,7 @@ def guild_page(guild_id:int):
             image = images[0]
 
         # Pass guild and editor perms to character page to be rendered
-        return render_template('navigation/editables/guild/guild.html', editable=guild, editor_perms=editor_perms, image=image, Visibility=Visibilites)
+        return render_template('navigation/editables/guild/guild.html', editable=guild, editor_perms=editor_perms, image=image, Visibility=Visibilites, admin=admin)
 
 @bp.route('/guild/guild_create')
 @login_required
@@ -142,13 +147,18 @@ def character_page(character_id:int):
         # Assume no image
         image = None
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
             user:User = get_user(session=sqlsession, user_id=g.user.id)
-            # If Character is owned/can be edited by the viewer
+            # If guild is owned/can be edited by the viewer
             if character in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Find first image
         if character.images:
@@ -157,7 +167,7 @@ def character_page(character_id:int):
             image = images[0]
 
         # Pass character and editor perms to character page to be rendered
-        return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image, Visibility=Visibilites)
+        return render_template('navigation/editables/character/character.html', editable=character, editor_perms=editor_perms, image=image, Visibility=Visibilites, admin=admin)
 
 @bp.route('/character/create/')
 @login_required
@@ -244,13 +254,18 @@ def familiar_page(familiar_id:int):
         if not familiar:
             return redirect(url_for('navi.index'))
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
             user:User = get_user(session=sqlsession, user_id=g.user.id)
-            # If image is owned/can be edited by the viewer
+            # If guild is owned/can be edited by the viewer
             if familiar in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Find first image
         if familiar.images:
@@ -258,7 +273,7 @@ def familiar_page(familiar_id:int):
             images.sort(key = lambda image : image.index)
             image = images[0]
 
-        return render_template('navigation/editables/familiar/familiar.html', editable=familiar, editor_perms=editor_perms, image=image)
+        return render_template('navigation/editables/familiar/familiar.html', editable=familiar, editor_perms=editor_perms, image=image, admin=admin)
 
 @bp.route('/familiar/create/')
 @login_required
@@ -304,16 +319,21 @@ def location_page(location_id:int):
             images.sort(key = lambda image : image.index)
             image = images[0]
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
             user:User = get_user(session=sqlsession, user_id=g.user.id)
-            # If image is owned/can be edited by the viewer
+            # If guild is owned/can be edited by the viewer
             if location in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Pass image and editor perms to image page to be rendered
-        return render_template('navigation/editables/location/location.html', editable=location, image=image, editor_perms=editor_perms)
+        return render_template('navigation/editables/location/location.html', editable=location, image=image, editor_perms=editor_perms, admin=admin)
 
 @bp.route('/location/create/')
 @login_required
@@ -351,16 +371,21 @@ def inventory_page(inventory_id:int):
         if not inventory:
             return redirect(url_for('navi.index'))
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
             user:User = get_user(session=sqlsession, user_id=g.user.id)
-            # If image is owned/can be edited by the viewer
+            # If guild is owned/can be edited by the viewer
             if inventory in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Pass image and editor perms to image page to be rendered
-        return render_template('navigation/editables/inventory/inventory.html', editable=inventory, editor_perms=editor_perms)
+        return render_template('navigation/editables/inventory/inventory.html', editable=inventory, editor_perms=editor_perms, admin=admin)
 
 @bp.route('/inventory/create/')
 @login_required
@@ -399,13 +424,18 @@ def item_page(item_id:int):
         if not item:
             return redirect(url_for('navi.index'))
 
+        admin = False
+
         # If logged in
         if g.user:
             # Retrieve up to date user info
             user:User = get_user(session=sqlsession, user_id=g.user.id)
-            # If image is owned/can be edited by the viewer
+            # If guild is owned/can be edited by the viewer
             if item in user.editor_perms:
                 editor_perms = True
+            
+            if user.admin_status:
+                admin = True
 
         # Find first image
         if item.images:
@@ -414,7 +444,7 @@ def item_page(item_id:int):
             image = images[0]
 
         # Pass image and editor perms to image page to be rendered
-        return render_template('navigation/editables/inventory/item/item.html', editable=item, image=image, editor_perms=editor_perms)
+        return render_template('navigation/editables/inventory/item/item.html', editable=item, image=image, editor_perms=editor_perms, admin=admin)
 
 @bp.route('/item/create/')
 @login_required

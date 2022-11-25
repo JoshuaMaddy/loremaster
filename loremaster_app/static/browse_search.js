@@ -1,7 +1,6 @@
 
 $(document).on('click', '#tags',  function (evt){
-
-            // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
+        // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
         var form = new FormData(document.getElementById('search_form'))
         $("#tags").autocomplete({
@@ -74,12 +73,7 @@ search_by["childloc"].attr('value', "childloc").text("Child Location");
 search_by["user"] = $('<option>');
 search_by["user"].attr('value', "user").text("User");
 
-
-
-
-
 $(function(){
-
     $("#searchtype_dropdown").change(function () {
         var selection = this.value;
         $("#tagtype_dropdown").empty()

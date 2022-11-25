@@ -13,6 +13,15 @@
         </div>
     {% endif %}
 
+    {% if admin %}
+        <script type="text/javascript" src="{{url_for('static', filename='admin.js')}}"></script>
+
+        <div class="ban_options">
+            <button><p class="ban_button" data-url="/api/ban_user/{{editable.owner.id}}">⛔</p></button>
+            <button><p class="unban_button" data-url="/api/unban_user/{{editable.owner.id}}">✔️</p></button>
+        </div>
+    {% endif %}
+
     {% block data %}
     {% endblock %}
 

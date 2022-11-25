@@ -105,3 +105,13 @@ a:visited:active {
 #admin_button > button > i{
     color:red;
 }
+
+.ban_options > button{ 
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0.5em 0em 0.5em 0em;
+	cursor: pointer;
+	outline: inherit;
+    font-size: large;
+}

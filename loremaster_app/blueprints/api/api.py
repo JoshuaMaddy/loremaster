@@ -6,6 +6,7 @@ from flask import (
 
 from ...database.init_db import Session
 from ...database.table_declarations import *
+from ...database.queries import *
 
 from sqlalchemy import or_, select, and_
 from sqlalchemy.orm import Session as Ses
@@ -13,6 +14,7 @@ from sqlalchemy.orm import Session as Ses
 from ..auth import login_required
 
 from . import image, character, familiar, location, item, inventory, guild
+
 
 bp = Blueprint('api', __name__)
 
@@ -184,9 +186,19 @@ def delete_editable():
 @bp.route('/api/list_query', methods=['POST'])
 @login_required
 def list_query():
+    normal_browse:str = 'snippets/browse.html'
+    admin_browse:str = 'snippets/admin_browse.html'
+
+    route:str = normal_browse
+
     if request.is_json:
         with Session.begin() as sqlsession:
             sqlsession:Ses
+
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
+
+            if user and user.admin_status:
+                route = admin_browse
 
             search_info:dict = request.json
             search_type:str = search_info.get('search_type')
@@ -200,7 +212,6 @@ def list_query():
                 if not query:
                     query = ''
                 
-                user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
                 if search_type == 'character':
 
                     characters:list[Character] = None
@@ -299,7 +310,7 @@ def list_query():
                                 for owner in familiar.owners:
                                     characters.add(owner)
 
-                    return render_template('snippets/browse.html', characters=characters)
+                    return render_template(route, characters=characters)
 
                 if search_type == 'location':
 
@@ -380,7 +391,7 @@ def list_query():
                                 )
                             ).scalars().fetchmany(100))
 
-                    return render_template('snippets/browse.html', locations=locations)
+                    return render_template(route, locations=locations)
 
                 if search_type == 'guild':
 
@@ -455,7 +466,7 @@ def list_query():
                                                                     )
                                                                 ).scalars().fetchmany(100)
 
-                    return render_template('snippets/browse.html', guilds=guilds)
+                    return render_template(route, guilds=guilds)
 
                 if search_type == "familiar":
                     familiars:list[Familiar] = None
@@ -511,7 +522,7 @@ def list_query():
                                                                     )
                                                                 ).scalars().fetchmany(100)
                         
-                    return render_template('snippets/browse.html', familiars=familiars)
+                    return render_template(route, familiars=familiars)
 
                 if search_type == "item":
                     items:list[Item] = None
@@ -530,7 +541,7 @@ def list_query():
                                                 )
                                             )
                                         ).scalars().fetchmany(100)
-                    return render_template('snippets/browse.html', items=items)
+                    return render_template(route, items=items)
 
             if search_type == "user":
                 users:list[User] = None
@@ -556,6 +567,39 @@ def list_query():
                                 )
                             )
                         ).scalars().fetchmany(100)
-                return render_template('snippets/browse.html', users=users)
+                return render_template(route, users=users)
                     
-            return render_template('snippets/browse.html')
+            return render_template(route)
+
+@bp.route('/api/ban_user/<int:user_id>', methods=['POST'])
+@login_required
+def ban_user(user_id:int):
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        admin:bool = is_admin(session=sqlsession, user_id=g.user.id)
+        banned_user:User = get_user(session=sqlsession, user_id=user_id)
+
+        if admin:
+            banned_user.banned_status=True
+
+            return {'status':'success'}
+
+        return {'status':'failure'}
+
+@bp.route('/api/unban_user/<int:user_id>', methods=['POST'])
+@login_required
+def unban_user(user_id:int):
+    with Session.begin() as sqlsession:
+        sqlsession:Ses
+
+        admin:bool = is_admin(session=sqlsession, user_id=g.user.id)
+        banned_user:User = get_user(session=sqlsession, user_id=user_id)
+
+        if admin:
+            banned_user.banned_status=False
+
+            return {'status':'success'}
+
+        return {'status':'failure'}
+        
