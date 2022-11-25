@@ -38,6 +38,11 @@ def character_create():
 def character_edit():
     return character.edit()
 
+@bp.route('/api/familiar_create', methods=['POST'])
+@login_required
+def familiar_create():
+    return familiar.create()
+
 @bp.route('/api/familiar_edit', methods=['POST'])
 @login_required
 def familiar_edit():

@@ -151,6 +151,11 @@ def login_required(view):
         if not g.user:
             return redirect(url_for('auth.login'))
 
+        with Session.begin() as sqlsession:
+            user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
+            if user.banned_status:
+                return 'Ur banned lol'
+
         return view(**kwargs)
 
     return wrapped_view

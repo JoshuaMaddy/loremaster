@@ -66,6 +66,7 @@ def user_page(user_id:int):
             return render_template('navigation/user_page.html', user=user)
 
 @bp.route('/create/')
+@login_required
 def create():
     return render_template('navigation/editables/create_editable.html')
 
@@ -259,6 +260,11 @@ def familiar_page(familiar_id:int):
 
         return render_template('navigation/editables/familiar/familiar.html', editable=familiar, editor_perms=editor_perms, image=image)
 
+@bp.route('/familiar/create/')
+@login_required
+def familiar_creation():
+        return render_template('navigation/editables/familiar/familiar_creation.html', familiar=None)
+
 @bp.route('/familiar/edit/<int:familiar_id>')
 @login_required
 def familiar_edit(familiar_id:int):
@@ -429,12 +435,6 @@ def item_edit(item_id:int):
                 return render_template('navigation/editables/inventory/item/item_edit.html', item=item)
         
         return redirect(url_for('navi.index'))
-
-
-
-@bp.route('/search')
-def search():
-    return render_template('search.html')
 
 @bp.route('/browse')
 def browse():

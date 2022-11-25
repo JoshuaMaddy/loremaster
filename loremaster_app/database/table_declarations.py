@@ -80,6 +80,8 @@ class User(Base):
 
     admin_status:bool = Column(Boolean, nullable=False)
 
+    banned_status:bool = Column(Boolean, nullable=False)
+
     password:bytes = Column(BINARY, nullable=False)
 
     owns:list[Editable] = relationship('Editable', back_populates='owner')
@@ -89,13 +91,14 @@ class User(Base):
                         back_populates = 'editors')
 
     def __init__(self, username:str, password:bytes=None, first_name:str=None, 
-                last_name:str=None, email:str=None, admin_status:bool=None) -> None:
+                last_name:str=None, email:str=None, admin_status:bool=None, banned_status:bool=None) -> None:
         self.name = username
         self.password = password
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.admin_status = admin_status
+        self.banned_status = banned_status
 
         super().__init__()
 

@@ -293,7 +293,7 @@ $(function () {
     }
 
     // Bit of a hack, when any input that needs autocomplete is clicked, refresh autocomplete fields. Needed because fields come/go by user choice
-    $(document).on('click', '#location_input, .single_familiar, .single_editor, .relationship_character, #character_owner_selection', function (evt) {
+    $(document).on('click', '#location_input, .single_familiar, .single_editor, .relationship_character, #character_owner_input', function (evt) {
 
         // All autocomplete fields similar to this. Reccomended to copy/paste, edit url, data, and select. Read jQuery UI docs for more detail
         // https://jqueryui.com/autocomplete/
@@ -430,7 +430,7 @@ $(function () {
             delay: 200
         });
 
-        $(".character_owner_input").autocomplete({
+        $("#character_owner_input").autocomplete({
             source: function (request, response) {
                 $.ajax({
                     url: '/api/search',

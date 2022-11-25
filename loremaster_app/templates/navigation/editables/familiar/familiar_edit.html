@@ -71,12 +71,19 @@
             <hr>
 
             <!-- Character Owner -->
+            {% if familiar %}
             <div id="character_owner_selection">
                 <label for="character_owner">Character Owner</label>
                 <input type="text" name="character_owner" id="character_owner_input" value="{{familiar.owners[0].name if familiar.owners[0] else ''}}">
                 <input type="text" name="character_owner_id" id="character_owner_id" value="{{familiar.owners[0].id if familiar.owners[0] else ''}}" hidden>
             </div>
-
+            {% else %}
+            <div id="character_owner_selection">
+                <label for="character_owner">Character Owner</label>
+                <input type="text" name="character_owner" id="character_owner_input" value="">
+                <input type="text" name="character_owner_id" id="character_owner_id" value="" hidden>
+            </div>
+            {% endif %}
             <hr>
 
             <!-- Trait Selection -->
