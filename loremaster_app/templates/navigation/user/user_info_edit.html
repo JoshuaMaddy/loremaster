@@ -5,25 +5,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/plugins/emoticons/plugin.min.js" integrity="sha512-G42q3WE7uNjJHFlnBQdFxo3pjbv9lCBy9dctoscYJfSnyh2Bcek3z/90dAJrO442jj+/FuXt037KIs+Nz60A4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript" src="{{url_for('static', filename='user/user_edit.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='editable/edit.css')}}">
 {% endblock %}
 
 {% block content %}
     <form action="" id="user_form">
         <label for="username">Username</label>
         <input name="username" id="username" value="{{user.name}}" placeholder="Username" required>
-        
+        <hr>
         <label for="first_name">First name</label>
         <input name="first_name" id="first_name" value="{{user.first_name}}" placeholder="First name" required>
-
+        <hr>
         <label for="last_name">Last name</label>
         <input name="last_name" id="last_name" value="{{user.last_name}}" placeholder="Last name" required>
-
+        <hr>
         <label for="password">Password</label>
         <input name="password" id="password" value="" placeholder="Password" required>
-
+        <hr>
         <label for="email">Email</label>
         <input name="email" id="email" value="{{user.email}}" placeholder="Email" required>
-
+        <hr>
         <p>Description</p>
             <div id="text_editor" style="display: flex; justify-content:center; padding: 5vh 0 5vh 0">
                 <div id="text_box" style="width: 90vw; height: 50vh; box-shadow: -2px 6px 43px 26px rgba(62,65,72,0.18);
@@ -32,8 +33,11 @@
                     <textarea id="description">Description Text</textarea>
                 </div>
             </div>
+        <hr>
+        <div class="options">
         <button type="button" id="confirm">Sumbit</button>
         <button type="button">Disregard</button>
+        </div>
     </form>
     <div id="hidden_description" hidden>
         {% autoescape false %}
