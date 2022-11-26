@@ -13,10 +13,14 @@ from sqlalchemy.orm import Session as Ses
 
 from ..auth import login_required
 
-from . import image, character, familiar, location, item, inventory, guild
+from . import image, character, familiar, location, item, inventory, guild, user
 
 
 bp = Blueprint('api', __name__)
+
+@bp.route('/api/user_edit', methods=['POST'])
+def user_edit():
+    return user.edit()
 
 @bp.route('/api/image/<int:image_id>', methods=['GET'])
 def image_retrieve(image_id:int):
