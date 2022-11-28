@@ -115,3 +115,7 @@ a:visited:active {
 	outline: inherit;
     font-size: large;
 }
+div.image::before {
+    content:url(https://cdn.pixabay.com/photo/2017/08/31/04/01/d20-2699387_960_720.png/350x150);
+
+} 
