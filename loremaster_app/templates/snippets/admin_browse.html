@@ -26,6 +26,14 @@
     </div>
 {% endmacro -%}
 
+{% if editables %}
+<div class="editables">
+    <p>Editables</p>
+    {{ list_editables(editables) }}
+</div>
+{% endif %}
+
+
 {% if characters %}
 <div class="public_characters">
     <p>Public Characters</p>

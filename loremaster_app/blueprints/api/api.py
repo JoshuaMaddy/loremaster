@@ -575,6 +575,47 @@ def list_query():
                     
             return render_template(route)
 
+@bp.route('/api/admin_query', methods=['POST'])
+@login_required
+def admin_query():
+    admin_browse:str = 'snippets/admin_browse.html'
+
+    route:str = admin_browse
+
+    if request.is_json:
+        with Session.begin() as sqlsession:
+            sqlsession:Ses
+
+            user:User = get_user(session=sqlsession, user_id=g.user.id)
+
+            if user and user.admin_status:
+                route = admin_browse
+
+            search_info:dict = request.json
+            search_type:str = search_info.get('search_type')
+            
+            if search_type:
+                query:str = search_info.get('query')
+                tag:str = search_info.get('tag')
+
+                print(search_type, " tag: ", tag, " query: ", query)
+
+                if not query:
+                    query = ''
+                
+                if search_type == 'editable':
+
+                    editables:list[Editable] = None
+
+                    if not tag:
+                        tag = 'editable'                    
+
+                    if (tag == 'editable'):
+                        editables:list[Editable] = sqlsession.execute(select(Editable).where(Editable.name.ilike('%'+query+'%'))).scalars().fetchmany(100)
+                        users:list[User] = sqlsession.execute(select(User).where(User.name.ilike('%'+query+'%'))).scalars().fetchmany(100)
+                        editables = editables + users
+                        return render_template(route, editables=editables)
+
 @bp.route('/api/ban_user/<int:user_id>', methods=['POST'])
 @login_required
 def ban_user(user_id:int):

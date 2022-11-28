@@ -2,8 +2,9 @@
     display: grid;
     grid-template-areas: 
             "user_name user_name"
-            "search search";
-    grid-template-columns: 1fr 1fr;
+            "search search"
+            "results results";
+
 }
 
 .user_container{
@@ -45,24 +46,19 @@
     padding-top: 4rem;
 }
 
-#search_selection{
-    justify-content: center;
-    display: flex;
-    padding: 1em 1em 1em 1em;
+.ui-widget-tag #tags{
+    padding: 0.202em 0.202em 0.202em 0.202em
+
 }
 
-#tag_selection{
-    justify-content: center;
-    display: flex;
-    padding: 1em 1em 1em 1em;
+.ui-widget-tag #search{
+    display: inline;
+    padding: 0.1em 0.1em 0.1em 0.1em
 }
 
-.results > button{ 
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0.5em 0em 0.5em 0em;
-	cursor: pointer;
-	outline: inherit;
-    font-size: large;
+.public_characters{
+    display: grid;
+    grid-area: results;
+    padding-top: 1rem;
+    justify-content: center;
 }

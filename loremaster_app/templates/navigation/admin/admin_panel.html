@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script type="text/javascript" src="{{url_for('static', filename='browse_search.js')}}"></script>
+
 <script type="text/javascript" src="{{url_for('static', filename='admin.js')}}"></script>
 
 <link rel="stylesheet" href="{{url_for('static', filename='user/admin.css')}}"> 
@@ -14,7 +14,7 @@
 
 {% macro list_editables(iterator) -%}
     {% for element in iterator %}
-        {% if element.type == 'character' %}
+        {% if element.type == 'editable' %}
             <li><a href="{{url_for('navi.character_page', character_id=element.id)}}">Results: {{element.name}}</a>
         {% endif %}
     {% endfor %}
@@ -32,53 +32,21 @@
         </div>
         <div class = "search_menu">
             <form method="post" id="search_form">
-                <div class="ui-widget tag">
+                <div class="ui-widget-tag">
                   <label for="tags">Tags: </label>
                   <input id="tags" name="tags">
                   <input id="name_id" hidden>
+                  <button id="search", type="button">🔍</button>
                 </div>
+            </form>
               
-                <div id="search_selection">
-                  <label for="searchtype">Search For:</label>
-                  <div class="searchtype">
-                      <select name="searchtype" id="searchtype_dropdown">
-                          <option value="character">Character</option>
-                          <option value="location">Location</option>
-                          <option value="guild">Guild</option>
-                          <option value="item">Item</option>
-                          <option value="familiar">Familiar</option>
-                          <option value="user">User</option>
-                      </select>
-                  </div>
-                </div>
-              
-                <div id="tag_selection">
-                  <label for="tagtype">Search By:</label>
-                  <div class="tagtype">
-                      <select name="tagtype" id="tagtype_dropdown">
-                          <option value="character">Character</option>
-                          <option value="location">Location</option>
-                          <option value="familiar">Familiar</option>
-                          <option value="trait">Trait</option>
-                          <option value="stat">Stat</option>
-                          <option value="relation">Related to:</option>
-                          <option value="item">Item</option>
-                          <option value="guild">Guild</option>
-                          <option value="user">Owner</option>
-                      </select>
-                  </div>
-                </div>
-                
-              </form>
-              
-              <button id="search", type="button">
-                Search
-              </button>
 
-                <div class="public_characters">
-                    <p>Results:</p>
-                    {{list_editables(characters)}}
-                </div>
+
         </div>
+    </div>
+
+    <div class="public_characters">
+        <p>Results:</p>
+        {{list_editables(editable)}}
     </div>
 {%endblock%}
