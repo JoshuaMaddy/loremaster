@@ -60,16 +60,6 @@ search_by["location"] = $('<option>');
 search_by["location"].attr('value', "location").text("Location");
 search_by["leader"] = $('<option>');
 search_by["leader"].attr('value', "leader").text("Leader");
-search_by["trait"] = $('<option>');
-search_by["trait"].attr('value', "trait").text("Trait");
-search_by["stat"] = $('<option>');
-search_by["stat"].attr('value', "stat").text("Stat");
-search_by["relation"] = $('<option>');
-search_by["relation"].attr('value', "relation").text("Related to:");
-search_by["parentloc"] = $('<option>');
-search_by["parentloc"].attr('value', "parentloc").text("Parent Location");
-search_by["childloc"] = $('<option>');
-search_by["childloc"].attr('value', "childloc").text("Child Location");
 search_by["user"] = $('<option>');
 search_by["user"].attr('value', "user").text("User");
 
@@ -81,9 +71,6 @@ $(function(){
             case "character":
                 $("#tagtype_dropdown").append(search_by["character"]);
                 $("#tagtype_dropdown").append(search_by["location"]);
-                $("#tagtype_dropdown").append(search_by["trait"]);
-                $("#tagtype_dropdown").append(search_by["stat"]);
-                $("#tagtype_dropdown").append(search_by["relation"]);
                 $("#tagtype_dropdown").append(search_by["familiar"]);
                 $("#tagtype_dropdown").append(search_by["item"]);
                 $("#tagtype_dropdown").append(search_by["guild"]);
@@ -91,8 +78,6 @@ $(function(){
             case "location":
                 $("#tagtype_dropdown").append(search_by["location"]);   
                 $("#tagtype_dropdown").append(search_by["character"]);    
-                $("#tagtype_dropdown").append(search_by["parentloc"]);
-                $("#tagtype_dropdown").append(search_by["childloc"]);
                 break;
             case "item":
                 $("#tagtype_dropdown").append(search_by["item"]); 
@@ -106,9 +91,6 @@ $(function(){
             case "familiar":
                 $("#tagtype_dropdown").append(search_by["familiar"]);
                 $("#tagtype_dropdown").append(search_by["character"]);  
-                $("#tagtype_dropdown").append(search_by["trait"]);
-                $("#tagtype_dropdown").append(search_by["stat"]);
-                $("#tagtype_dropdown").append(search_by["relation"]);
                 break;
             case "user":
                 $("#tagtype_dropdown").append(search_by["user"]);
