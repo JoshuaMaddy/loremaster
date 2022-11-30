@@ -1,0 +1,10 @@
+include loremaster_app/loremaster.py
+include base.ipynb
+include requirements.txt
+
+graft loremaster_app/blueprints
+graft loremaster_app/database
+graft loremaster_app/static
+graft loremaster_app/templates
+
+global-exclude *.pyc
