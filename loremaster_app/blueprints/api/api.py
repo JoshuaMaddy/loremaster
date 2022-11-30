@@ -125,12 +125,16 @@ def search():
                 if search_type == 'location':
                     locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), Location.visibility == Visibilites.public))).scalars().all()
 
-                    location_list = [{'label':location.name, 'value':location.id} for location in locations]
+                    locations2 = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), Location.visibility == Visibilites.public))).scalars().all()
+
+                    locations = set(locations2).union(set(location))
+
+                    location_list = [{'label':location.name, 'value':location.id} for editable in locations]
 
                     return jsonify(location_list)
 
                 if search_type == 'character' or search_type == 'leader':
-                    characters = sqlsession.execute(\
+                    characters:set[Character] = sqlsession.execute(\
                         select(Character).where(\
                             and_(\
                                 Character.name.ilike('%'+query+'%') , \
@@ -140,12 +144,30 @@ def search():
                                     #)\
                                 )).scalars().all()
 
+                    characters2:set[Character] = sqlsession.execute(\
+                        select(Character).where(\
+                            and_(\
+                                Character.name.ilike('%'+query+'%') , \
+                                    #or_(\
+                                        Character.editors.contains(user) \
+                                        #Character.visibility == Visibilites.public)\
+                                    #)\
+                                ))).scalars().all()
+
+                    characters:set[Character] = set(characters).union(set(characters2))
+
+                    print(characters)
+
                     characters_list = [{'label':character.name, 'value':character.id} for character in characters]
 
                     return jsonify(characters_list)
                 
                 if search_type == 'familiar':
-                    familiars = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.visibility == Visibilites.public))).scalars().all()
+                    familiars:set[Familiar] = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.visibility == Visibilites.public))).scalars().all()
+
+                    familiars2:set[Familiar] = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.editors.contains(user)))).scalars().all()
+
+                    familiars = set(familiars).union(set(familiars2))
 
                     familiars_list = [{'label':familiar.name, 'value':familiar.id} for familiar in familiars]
 
@@ -161,9 +183,24 @@ def search():
                 if search_type == 'guild':
                     guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') ,Guild.visibility == Visibilites.public))).scalars().all()
 
+                    guilds2 = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , Guild.editors.contains(user)))).scalars().all()
+
+                    guilds = set(guilds).union(set(guilds2))
+
                     guild_list = [{'label':guild.name, 'value':guild.id} for guild in guilds]
 
                     return jsonify(guild_list)
+
+                if search_type == 'item':
+                    items = sqlsession.execute(select(Item).where(and_(Item.name.ilike('%'+query+'%') ,Item.visibility == Visibilites.public))).scalars().all()
+
+                    items2 = sqlsession.execute(select(Item).where(and_(Item.name.ilike('%'+query+'%') , Item.editors.contains(user)))).scalars().all()
+
+                    items = set(items).union(set(items2))
+
+                    item_list = [{'label':item.name, 'value':item.id} for item in items]
+
+                    return jsonify(item_list)
 
     return jsonify('not json')
 
