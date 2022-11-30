@@ -207,7 +207,7 @@ def list_query():
             sqlsession:Ses
 
             user:User = None
-            
+
             if g.user:
                 user:User = get_user(session=sqlsession, user_id=g.user.id)
 
@@ -220,8 +220,6 @@ def list_query():
             if search_type:
                 query:str = search_info.get('query')
                 tag:str = search_info.get('tag')
-
-                print(search_type, " tag: ", tag, " query: ", query)
 
                 if not query:
                     query = ''
