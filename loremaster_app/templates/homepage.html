@@ -11,8 +11,9 @@
     {% if g.user %}
         {% include 'snippets/user/owns.html' %}
     {% else %}
-    <img src="{{url_for('static',filename='images/dice.png')}}">
-    <div> <p>  <font size = "100"> Welcome To </font><br>  LoreMaster </p>
+    <div class="homepage">
+        <p>  <font size = "100"> Welcome To </font><br>  LoreMaster </p>
+        <img src="{{url_for('static',filename='images/dice.png')}}">
     </div>
     {% endif %}
 {% endblock %}

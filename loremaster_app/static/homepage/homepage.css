@@ -7,13 +7,21 @@
     margin: 0 0 0 1rem
 }
 
+.homepage{
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 p{
-    font-size: 100px;
-    margin: -525px 300px;
+    font-size: 7em;
     font-family: papyrus, fantasy;
+    margin: 0 4rem 0 0;
 }
 img {
-    width: 500px;
-    margin: 250px 1000px;
+    width: 30vw;
+    object-fit:contain;
 }
 
