@@ -27,6 +27,7 @@ def create():
                 relationships:list[dict] = familiar_info.get('relationships')
                 editor_ids:list[dict] = familiar_info.get('editor_ids')
                 image_ids:list[int] = familiar_info.get('image_ids')
+                vis_int:int = familiar_info.get('visibility')
                 
                 user:User = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
@@ -52,6 +53,9 @@ def create():
 
                     if editor_ids:
                         familiar.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                    if vis_int:
+                                familiar.set_visibility(sqlsession=sqlsession, vis_int=vis_int)
                 else:
                     flash('User not found in DB.')
                     return redirect
@@ -90,6 +94,7 @@ def edit():
                 familiar_ids:list[dict] = familiar_info.get('familiar_ids')
                 editor_ids:list[dict] = familiar_info.get('editor_ids')
                 image_ids:list[int] = familiar_info.get('image_ids')
+                vis_int:int = familiar_info.get('visibility')
 
                 if id:
                     redirect:str = jsonify({'ok': False, 'status':405, 'url':url_for('navi.familiar_edit', familiar_id=id)})
@@ -133,6 +138,9 @@ def edit():
 
                             if editor_ids:
                                 familiar.set_editors(sqlsession=sqlsession, editor_ids=editor_ids)
+
+                            if vis_int:
+                                familiar.set_visibility(sqlsession=sqlsession, vis_int=vis_int)
 
                             return(jsonify({'url':url_for('navi.familiar_page', familiar_id=familiar.id)}))
 

@@ -48,8 +48,9 @@ class FamiliarDescription {
     familiar_ids;
     inventories;
     editor_ids;
+    visibility;
     constructor(familiar = null, image_ids = null, description = null, traits = null, stats = null,
-        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null) {
+        relationships = null, familiar_ids = null, inventories = null, editor_ids = null, location_id = null, visibility = null) {
         this.familiar = familiar;
         this.image_ids = image_ids;
         this.description = description;
@@ -59,6 +60,7 @@ class FamiliarDescription {
         this.familiar_ids = familiar_ids;
         this.editor_ids = editor_ids;
         this.location_id = location;
+        this.visibility = visibility;
     }
 }
 
@@ -287,6 +289,10 @@ $(function () {
 
         if (form.get('location')) {
             familiarDescription.location_id = parseInt(form.get('location_id'));
+        }
+
+        if (form.get('visibility')) {
+            familiarDescription.visibility = form.get('visibility');
         }
 
         return familiarDescription

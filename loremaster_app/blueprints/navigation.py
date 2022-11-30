@@ -278,7 +278,7 @@ def familiar_page(familiar_id:int):
 @bp.route('/familiar/create/')
 @login_required
 def familiar_creation():
-        return render_template('navigation/editables/familiar/familiar_creation.html', familiar=None)
+        return render_template('navigation/editables/familiar/familiar_creation.html', familiar=None, Visibility=Visibilites)
 
 @bp.route('/familiar/edit/<int:familiar_id>')
 @login_required
@@ -292,7 +292,7 @@ def familiar_edit(familiar_id:int):
 
         if user and familiar: 
             if familiar in user.editor_perms:
-                return render_template('navigation/editables/familiar/familiar_edit.html', familiar=familiar)
+                return render_template('navigation/editables/familiar/familiar_edit.html', familiar=familiar, Visibility=Visibilites)
         
         return redirect(url_for('navi.index'))
 
