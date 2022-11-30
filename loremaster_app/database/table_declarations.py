@@ -144,6 +144,8 @@ class Editable(Base):
 
         self.editors.append(self.owner)
 
+        self.visibility = Visibilites.public
+
         super().__init__()
 
     id:int = Column(Integer, primary_key=True)

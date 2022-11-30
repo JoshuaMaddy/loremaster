@@ -196,7 +196,6 @@ def delete_editable():
     return('probably bad')
 
 @bp.route('/api/list_query', methods=['POST'])
-@login_required
 def list_query():
     normal_browse:str = 'snippets/browse.html'
     admin_browse:str = 'snippets/admin_browse.html'
@@ -207,7 +206,10 @@ def list_query():
         with Session.begin() as sqlsession:
             sqlsession:Ses
 
-            user:User = get_user(session=sqlsession, user_id=g.user.id)
+            user:User = None
+            
+            if g.user:
+                user:User = get_user(session=sqlsession, user_id=g.user.id)
 
             if user and user.admin_status:
                 route = admin_browse
