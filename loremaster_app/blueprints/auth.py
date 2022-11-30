@@ -109,7 +109,7 @@ def register():
                     error = f"User {username} is already registered."
                 else:
                     # Create user object
-                    user = User(username=username, password=encrypt(password), first_name=first_name, last_name=last_name, email=email, admin_status=False)
+                    user = User(username=username, password=encrypt(password), first_name=first_name, last_name=last_name, email=email, admin_status=False, banned_status=False)
 
                     # Add user to DB
                     sqlsession.add(user)
