@@ -123,11 +123,7 @@ def search():
                 user = sqlsession.execute(select(User).where(User.id == g.user.id)).scalar()
 
                 if search_type == 'location':
-                    locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), Location.visibility == Visibilites.public))).scalars().all()
-
-                    locations2 = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), Location.editors.contains(user)))).scalars().all()
-
-                    locations = set(locations).union(set(locations2))
+                    locations = sqlsession.execute(select(Location).where(and_(Location.name.ilike('%'+query+'%'), Location.editors.contains(user)))).scalars().all()
 
                     location_list = [{'label':location.name, 'value':location.id} for location in locations]
 
@@ -139,35 +135,17 @@ def search():
                             and_(\
                                 Character.name.ilike('%'+query+'%') , \
                                     #or_(\
-                                        #Character.editors.contains(user), \
-                                        Character.visibility == Visibilites.public)\
-                                    #)\
-                                )).scalars().all()
-
-                    characters2:set[Character] = sqlsession.execute(\
-                        select(Character).where(\
-                            and_(\
-                                Character.name.ilike('%'+query+'%') , \
-                                    #or_(\
                                         Character.editors.contains(user) \
                                         #Character.visibility == Visibilites.public)\
                                     #)\
                                 ))).scalars().all()
-
-                    characters:set[Character] = set(characters).union(set(characters2))
-
-                    print(characters)
 
                     characters_list = [{'label':character.name, 'value':character.id} for character in characters]
 
                     return jsonify(characters_list)
                 
                 if search_type == 'familiar':
-                    familiars:set[Familiar] = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.visibility == Visibilites.public))).scalars().all()
-
-                    familiars2:set[Familiar] = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.editors.contains(user)))).scalars().all()
-
-                    familiars = set(familiars).union(set(familiars2))
+                    familiars:set[Familiar] = sqlsession.execute(select(Familiar).where(and_(Familiar.name.ilike('%'+query+'%'), Familiar.editors.contains(user)))).scalars().all()
 
                     familiars_list = [{'label':familiar.name, 'value':familiar.id} for familiar in familiars]
 
@@ -181,22 +159,14 @@ def search():
                     return jsonify(users_list)
 
                 if search_type == 'guild':
-                    guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') ,Guild.visibility == Visibilites.public))).scalars().all()
-
-                    guilds2 = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , Guild.editors.contains(user)))).scalars().all()
-
-                    guilds = set(guilds).union(set(guilds2))
+                    guilds = sqlsession.execute(select(Guild).where(and_(Guild.name.ilike('%'+query+'%') , Guild.editors.contains(user)))).scalars().all()
 
                     guild_list = [{'label':guild.name, 'value':guild.id} for guild in guilds]
 
                     return jsonify(guild_list)
 
                 if search_type == 'item':
-                    items = sqlsession.execute(select(Item).where(and_(Item.name.ilike('%'+query+'%') ,Item.visibility == Visibilites.public))).scalars().all()
-
-                    items2 = sqlsession.execute(select(Item).where(and_(Item.name.ilike('%'+query+'%') , Item.editors.contains(user)))).scalars().all()
-
-                    items = set(items).union(set(items2))
+                    items = sqlsession.execute(select(Item).where(and_(Item.name.ilike('%'+query+'%') , Item.editors.contains(user)))).scalars().all()
 
                     item_list = [{'label':item.name, 'value':item.id} for item in items]
 

@@ -338,6 +338,10 @@ class Familiar(Editable):
 
         if character and character in user.editor_perms:
             self.owners = [character]
+    
+    def set_location(self, sqlsession:Ses, location_id:int) -> None:
+        self.location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
+        self.location_id = location_id
 
 class Guild(Editable):
     __tablename__ = "guild"

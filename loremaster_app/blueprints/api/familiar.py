@@ -25,6 +25,7 @@ def create():
                 traits:list[dict] = familiar_info.get('traits')
                 stats:list[dict] = familiar_info.get('stats')
                 relationships:list[dict] = familiar_info.get('relationships')
+                location_id:int = familiar_info.get('location_id')
                 editor_ids:list[dict] = familiar_info.get('editor_ids')
                 image_ids:list[int] = familiar_info.get('image_ids')
                 vis_int:int = familiar_info.get('visibility')
@@ -38,6 +39,9 @@ def create():
 
                     if image_ids:
                         familiar.set_images(sqlsession=sqlsession, image_ids=image_ids)
+
+                    if location_id != None:
+                        familiar.set_location(sqlsession=sqlsession, location_id=location_id)
 
                     if stats:
                         familiar.set_stats(stats=stats)
@@ -91,7 +95,7 @@ def edit():
                 traits:list[dict] = familiar_info.get('traits')
                 stats:list[dict] = familiar_info.get('stats')
                 relationships:list[dict] = familiar_info.get('relationships')
-                familiar_ids:list[dict] = familiar_info.get('familiar_ids')
+                location_id:int = familiar_info.get('location_id')
                 editor_ids:list[dict] = familiar_info.get('editor_ids')
                 image_ids:list[int] = familiar_info.get('image_ids')
                 vis_int:int = familiar_info.get('visibility')
@@ -123,6 +127,9 @@ def edit():
 
                             if image_ids:
                                 familiar.set_images(sqlsession=sqlsession, image_ids=image_ids)
+
+                            if location_id != None:
+                                familiar.set_location(sqlsession=sqlsession, location_id=location_id)
 
                             if stats:
                                 familiar.set_stats(stats=stats)

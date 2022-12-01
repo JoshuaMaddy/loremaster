@@ -59,7 +59,7 @@ class FamiliarDescription {
         this.relationships = relationships;
         this.familiar_ids = familiar_ids;
         this.editor_ids = editor_ids;
-        this.location_id = location;
+        this.location_id = location_id;
         this.visibility = visibility;
     }
 }
