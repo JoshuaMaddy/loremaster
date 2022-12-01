@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, ForeignKey, Integer, Enum, String, BINARY, Boolean, Float, Table, select, ForeignKeyConstraint
+from sqlalchemy import Column, ForeignKey, Integer, Enum, String, BINARY, Boolean, Float, Table, select
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 from sqlalchemy.orm import Session as Ses
@@ -63,6 +63,14 @@ class Visibilites(enum.Enum):
     private = 3
 
 class User(Base):
+    """
+    User contains all information about a user for LoreMaster, including their ID, 
+    name, email, password, and owned characters.
+
+    Returns:
+        User
+    """
+
     __tablename__ = "user"
 
     id:int = Column(Integer, primary_key=True)
@@ -91,6 +99,17 @@ class User(Base):
 
     def __init__(self, username:str, password:bytes=None, first_name:str=None, 
                 last_name:str=None, email:str=None, admin_status:bool=None, banned_status:bool=None) -> None:
+        """
+        Args:
+            username (str): string of username.
+            password (bytes): encoded bytes from .auth.encrypt.
+            first_name (str): string of first name.
+            last_name (str): string of last name.
+            email (str): string of email.
+            admin_status (bool): boolean, true being admin.
+            banned_status (bool): boolean, true being banned.
+        """
+        
         self.name = username
         self.password = password
         self.first_name = first_name
@@ -105,6 +124,18 @@ class User(Base):
         return f"User(name:{self.name}, id:{self.id})"
 
     def list_of_type(self, polymorphic_type:str, list_of_editbales:list[Editable]) -> list[Editable]:
+        """
+        Takes str of DB type to filter for user editables.
+
+        Args:
+            polymorphic_type (str): A DB type (eg, Character, Image, Item, etc.) 
+            to filter for from all user editables.
+            list_of_editbales (list[Editable]): list of editables to filter and return from.
+
+        Returns:
+            list[Editable]
+        """
+
         editable_type:list[Editable] = []
         for editable in list_of_editbales:
             if editable.type == polymorphic_type:
@@ -112,6 +143,13 @@ class User(Base):
         return editable_type
     
 class Editable(Base):
+    """
+    Editable is the base class for the majority of database items, providing basic functions like
+    visibility, owner, editors, name, description, and images.
+
+    Returns:
+        Editable
+    """
     __tablename__ = "editable"
 
     id:int = Column(Integer, primary_key=True)
@@ -139,6 +177,12 @@ class Editable(Base):
 
     
     def __init__(self, owner:User, name:str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
+
         self.owner = owner
         self.name = name
 
@@ -151,6 +195,13 @@ class Editable(Base):
     id:int = Column(Integer, primary_key=True)
 
     def set_editors(self, sqlsession:Ses, editor_ids:list[int]) -> None:
+        """
+        Sets what users are able to edit the object.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit
+            editor_ids (list[int]): Id's of users.
+        """
         if editor_ids:
             for editor_id in editor_ids:
                 editor:User = sqlsession.execute(select(User).where(User.id == editor_id)).scalar()
@@ -159,6 +210,13 @@ class Editable(Base):
                     self.editors.append(editor)
 
     def set_images(self, sqlsession:Ses, image_ids:list[int]) -> None:
+        """
+        Sets what images are associated with the object.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit
+            image_ids (list[int]): Id's of images.
+        """
         for index in range(len(image_ids)):
             image = sqlsession.execute(select(Image).where(Image.editable_id == image_ids[index])).scalar()
             if image:
@@ -166,6 +224,14 @@ class Editable(Base):
                 self.images.append(imageListItem)
 
     def set_visibility(self, sqlsession:Ses, visibility:Visibilites = None, vis_int:int = -1) -> None:
+        """
+        Sets the visibility of the object
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit
+            visibility (Visibilites): Visibility of the object.
+            vis_int (int): Defaults visibility to public, user can set 1-3 for different types of visibility.
+        """
         if not visibility == None: #if passed with a visibility value directly set that
             self.visibility = visibility
         elif int(vis_int) > -1: #else retrieve it by index
@@ -189,17 +255,37 @@ class Location(Editable):
     }
 
     def __init__(self, owner: User, name: str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
         super().__init__(owner, name)
 
     def __repr__(self) -> str:
         return f"Location{{name:{self.name}, id:{self.editable_id}}}"
 
     def set_parent(self, sqlsession:Ses, parent_location_id:int) -> None:
+        """
+        Sets the location as a parent location
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit
+            parent_location_id (int): Int of parent location ID
+        """
+        
         parent_location = sqlsession.execute(select(Location).where(Location.editable_id == parent_location_id)).scalar()
         if parent_location:
             self.parent = parent_location
 
     def set_children(self, sqlsession:Ses, children_location_ids:list[int]) -> None:
+        """
+        Sets the location as a child location.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit
+            children_location_id (int): Int of child location ID
+        """
         for location_id in children_location_ids:
             child_location = sqlsession.execute(select(Location).where(Location.editable_id == location_id)).scalar()
             if child_location:
@@ -230,22 +316,47 @@ class Character(Editable):
     }
 
     def __init__(self, owner: User, name: str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
         super().__init__(owner, name)
 
     def __repr__(self) -> str:
         return f"Character{{name:{self.name}, id:{self.editable_id}}}"
 
     def set_stats(self, stats:list[dict]) -> None:
+        """
+        Sets the stats to the character.
+
+        Args:
+            stats (list[dict]): Gets list of stats
+        """
         for stat in stats:
             new_stat:Stat = Stat(name=stat.get('stat_name'), short_description=stat.get('stat_description'))
             self.stats.append(new_stat)
 
     def set_traits(self, traits:list[dict]) -> None:
+        """
+        Sets the traits to the character.
+
+        Args:
+            traits (list[dict]): Gets list of traits.
+        """
         for trait in traits:
             new_trait:Trait = Trait(name=trait.get('trait_name'), short_description=trait.get('trait_description'))
             self.traits.append(new_trait)
 
     def set_relationships(self, sqlsession:Ses, user:User, relationships:list[dict]) -> None:
+        """
+        Sets the relationships of the character.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            relationships (list[dict]): Gets list of relationships.
+        """
         for relationship in relationships:
             name:str = relationship.get('relationship_name')
             character_id:int = relationship.get('character_id')
@@ -261,6 +372,14 @@ class Character(Editable):
                     self.relationships.append(new_relationship)
 
     def set_familiars(self, sqlsession:Ses, user:User, familiar_ids:list[int]) -> None:
+        """
+        Sets the familiars of the character.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            familiar_ids (list[int]): Gets list of familiar's ids.
+        """
         for familiar_id in familiar_ids:
             familiar:Familiar = sqlsession.execute(select(Familiar).where(Familiar.id == familiar_id)).scalar()
 
@@ -268,10 +387,26 @@ class Character(Editable):
                 self.familiars.append(familiar)
     
     def set_location(self, sqlsession:Ses, user:User, location_id:int) -> None:
+        """
+        Sets the location of the character.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            location_id (int): Gets the int of the location id.
+        """
         self.location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
         self.location_id = location_id
 
     def set_guild(self, sqlsession:Ses, user:User, guild_id:int) -> None:
+        """
+        Sets the guild of the character.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            guid_id (int): Gets the int of the guild id.
+        """
         self.guild = sqlsession.execute(select(Guild).where(Guild.id == guild_id)).scalar()
         self.guild_id = guild_id
 
@@ -303,22 +438,48 @@ class Familiar(Editable):
     }
 
     def __init__(self, owner: User, name: str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
+
         super().__init__(owner, name)
 
     def __repr__(self) -> str:
         return f"Familiar{{name:{self.name}, id:{self.editable_id}}}"
 
     def set_stats(self, stats:list[dict]) -> None:
+        """
+        Sets the stats to the familiar.
+
+        Args:
+            stats (list[dict]): Gets list of stats
+        """
         for stat in stats:
             new_stat:Stat = Stat(name=stat.get('stat_name'), short_description=stat.get('stat_description'))
             self.stats.append(new_stat)
 
     def set_traits(self, traits:list[dict]) -> None:
+        """
+        Sets the traits to the familiar.
+
+        Args:
+            traits (list[dict]): Gets list of traits.
+        """
         for trait in traits:
             new_trait:Trait = Trait(name=trait.get('trait_name'), short_description=trait.get('trait_description'))
             self.traits.append(new_trait)
 
     def set_relationships(self, sqlsession:Ses, user:User, relationships:list[dict]) -> None:
+        """
+        Sets the relationships of the familiar.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            relationships (list[dict]): Gets list of relationships.
+        """
         for relationship in relationships:
             name:str = relationship.get('relationship_name')
             character_id:int = relationship.get('character_id')
@@ -334,12 +495,27 @@ class Familiar(Editable):
                     self.relationships.append(new_relationship)
 
     def set_owner(self, sqlsession:Ses, user:User, owner_id:int) -> None:
+        """
+        Sets the owner of the familiar.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            owner_ids (int): Gets int of owners id.
+        """
         character:Character = sqlsession.execute(select(Character).where(Character.id == owner_id)).scalar()
 
         if character and character in user.editor_perms:
             self.owners = [character]
     
     def set_location(self, sqlsession:Ses, location_id:int) -> None:
+        """
+        Sets the location of the familiar.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            location_id (int): Gets the int of the location id.
+        """
         self.location = sqlsession.execute(select(Location).where(Location.id == location_id)).scalar()
         self.location_id = location_id
 
@@ -358,12 +534,25 @@ class Guild(Editable):
     guild_members:list[Character] = relationship('Character', secondary = guild_characters)
 
     def __init__(self, owner: User, name: str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
         super().__init__(owner, name)
 
     def __repr__(self) -> str:
         return f"Guild{{name:{self.name}, id:{self.editable_id}}}"
 
     def set_leader(self, sqlsession:Ses, user:User, leader_id:int) -> None:
+        """
+        Sets the leader of the guild.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            user (User): Gets the user.
+            leader_id (int): Gets the int of the leader's id.
+        """
         character:Character = sqlsession.execute(select(Character).where(Character.editable_id == leader_id)).scalar()
 
         if character and character in user.editor_perms:
@@ -371,6 +560,13 @@ class Guild(Editable):
             print(self.leader)
 
     def set_members(self, sqlsession:Ses, member_ids:list[int]) -> None:
+        """
+        Sets the members of the guild.
+
+        Args:
+            sqlsession (Ses): Open SQLAlchmey session set to autocommit.
+            members_id (list[int]): Gets the list of the members's id.
+        """
         for character_id in member_ids:
             member = sqlsession.execute(select(Character).where(Character.editable_id == character_id)).scalar()
             if member:
@@ -389,6 +585,11 @@ class Trait(Base):
     thumbnail:Image = relationship('Image')
 
     def __init__(self, name: str, short_description:str=None) -> None:
+        """
+        Args:
+            name (str): String of name.
+            short_description (str): String of the description
+        """
         self.name = name
         self.short_description = short_description
 
@@ -411,6 +612,11 @@ class Relationship(Base):
     character:Character = relationship('Character')
 
     def __init__(self, name: str, short_description:str=None) -> None:
+        """
+        Args:
+            name (str): String of name.
+            short_description (str): String of the description
+        """
         self.name = name
         self.short_description = short_description
 
@@ -426,6 +632,11 @@ class Stat(Base):
     short_description:str = Column(String(50), nullable=True)
 
     def __init__(self, name: str, short_description:str=None) -> None:
+        """
+        Args:
+            name (str): String of name.
+            short_description (str): String of the description
+        """
         self.name = name
         self.short_description = short_description
     
@@ -442,6 +653,11 @@ class Item(Editable):
     }
 
     def __init__(self, owner: User, name: str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
         super().__init__(owner, name)
 
     def __repr__(self) -> str:
@@ -462,6 +678,12 @@ class ItemListItem(Base):
     index:int = Column(Integer, nullable=False)
 
     def __init__(self, item:Item, count:float=1, index:float=-1) -> None:
+        """
+        Args:
+            item (Item): Gets the item.
+            count (float): Sets a count for the number of items.
+            index (float): Sets an index for inventory slot.
+        """
         self.item = item
         self.count = count
         self.index = index
@@ -481,12 +703,25 @@ class Inventory(Editable):
     }
 
     def __init__(self, owner:User, name:str) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+        """
         super().__init__(owner, name)
     
     def __repr__(self) -> str:
         return f"Inventory(name:{{{self.name}}})"
 
     def set_items(self, sqlsession:Ses, item_ids:list[int], item_counts:list[int]) -> None:
+        """
+        Sets items to the inventory
+
+        Args:
+            sqlsession (Ses):
+            item_ids (list[int]): Gets a list of the item's ids.
+            item_counts (list[int]): Gets the int for amount of each item.
+        """
         self.items = []
         for index in range(len(item_ids)):
             item:Item = sqlsession.execute(select(Item).where(Item.id == item_ids[index])).scalars().first()
@@ -508,6 +743,13 @@ class Image(Editable):
     }
 
     def __init__(self, owner: User, name: str, image_path:str = None, image_url:str = None) -> None:
+        """
+        Args:
+            owner (User): Assigns the editable's owner as the User.
+            name (str): String of name.
+            image_path (str): String of image path.
+            image_url (str): String of image url.
+        """
         self.image_path = image_path
         self.image_url = image_url
         super().__init__(owner, name)
@@ -529,6 +771,11 @@ class ImageListItem(Base):
     index = Column(Integer, nullable=False)
 
     def __init__(self, image:Image, index:int=-1) -> None:
+        """
+        Args:
+            image (Image): Gets image of image.
+            index (int): Sets the index to -1:
+        """
         self.image = image
         self.index = index
     
@@ -543,6 +790,11 @@ class Description(Base):
     type:str = Column(String(10))
 
     def __init__(self, text:str, type:str) -> None:
+        """
+        Args:
+            text (str): Gets string of text.
+            type (str): Gets string of type.
+        """
         self.text = text
         self.type = type
         super().__init__()

@@ -29,9 +29,9 @@
             <br>
 
             {% if editable.location %}
-                <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}"> Location: {{editable.location.name}}</a>
+                <p>Location: <a href="{{url_for('navi.location_page', location_id=editable.location.id)}}">{{editable.location.name}}</a></p>
             {% else %}
-                <p> Location: No Set Location </p>
+                <p>Location: No Set Location</p>
             {% endif %}
     
             <br>
